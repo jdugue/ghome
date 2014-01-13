@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+	{% if pieces %}
+		<ul>
+		{% for room in pieces %}
+  		<a  name="chambre" class="btn btn-default btn-xlarge "  href="/profil/piece/{{ room.nom }}">{{room.nom}}</a>
+  		{% endfor %}
+
+  		</ul>
+  	{% else %}
+  			<li>"il n'y as pas de pieces crée"</li>
+  	{% endif %}
+{% endblock %}

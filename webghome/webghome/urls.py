@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from hexanhome.models import Piece
 from django.contrib import admin
 admin.autodiscover()
 
@@ -16,4 +16,7 @@ urlpatterns = patterns('',
     url(r'^home/$', 'hexanhome.views.home'),
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', 'logout'),	
+    url(r'^profil/$', 'hexanhome.views.profil'),
+    url(r'^profil/piece/(?P<piece_name_url>\w+)/$', 'hexanhome.views.piece'),		
+
 )

@@ -5,10 +5,12 @@
 
 		<title> {% block title %}{% endblock %}</title>
 		<link rel="stylesheet" href="{% static 'hexanhome/css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'hexanhome/css/bootstrap-extensions.css' %}">
 	</head>
 
 	<body>
 		<div class="container">
+				{% include "menu.html" %}
 			<h1>{% block head %}{% endblock %}</h1>
 			{% block content %}{% endblock %}
 
