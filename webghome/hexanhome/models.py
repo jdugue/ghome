@@ -1,33 +1,39 @@
+# coding=UTF-8
+
 from django.db import models
 
 #TODO
 class Profil_activation(models.Model):
 	"""a définir"""
+	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)			
 
 class Profil(models.Model):
 	"""CLasse pour les profils définit par l'utilisateurs"""
+	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)	
-	etat = BooleanField()
+	etat = models.BooleanField()
 
-class Profil_Act(models.Model):
-	"""Modalité d'activation pour un profil"""
-	id_act = ForeignKey(Actionneur)
-	id_profil = ForeignKey(Profil)
-	nouvelle_val = IntegerField() 
+class Type(models.Model):
+	"""le type de la valeur renvoyé par le capteur : temperateur, allumé/éteint, etc ..."""
+	id = models.AutoField(primary_key=True)
+	nom = models.CharField(max_length=200)	
 
 class Piece(models.Model):
 	"""Piece dans laquelle se trouve le Capteur/Actionneur"""
+	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)		
 
 class Capteur(models.Model):
 	"""Classe permettant de representer un Capteur"""
+	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
 
 class Actionneur(models.Model):
 	"""Classe permettant de representer un Actionneur"""
+	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
@@ -36,26 +42,31 @@ class Actionneur(models.Model):
 	#0 ou 1 pour éteint ou allumé
 	valeur = models.BooleanField()
 
-class Type(models.Model):
-	"""le type de la valeur renvoyé par le capteur : temperateur, allumé/éteint, etc ..."""
-	nom = models.CharField(max_length=200)		
+class Profil_Act(models.Model):
+	"""Modalité d'activation pour un profil"""
+	id = models.AutoField(primary_key=True)
+	id_act = models.ForeignKey(Actionneur)
+	id_profil = models.ForeignKey(Profil)
+	nouvelle_val = models.IntegerField()
 
 # class Users(models.Model):
 # 	"""Classe permettant de representer un Actionneur"""
 # 	nom = models.CharField(max_length=200)
 
+class Attribut(models.Model):
+	"""Pour si un capteur renvoie plusieurs type de valeurs"""
+	id = models.AutoField(primary_key=True)
+	nom = models.CharField(max_length=200)
+	valeur = models.IntegerField()
+	#foreign key vers les type
+	id_type = models.ForeignKey(Type)
+
 class Attr_Capteur(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
+	id = models.AutoField(primary_key=True)
 	#foreign key vers les type
 	id_type = models.ForeignKey(Type)
 	#foreign key vers les capteurs
 	id_capt = models.ForeignKey(Capteur)
 	#foreign key vers les Attributs
-	id_attr = models.ForeignKey(Type)
-
-class Attribut(models.Model):
-	"""Pour si un capteur renvoie plusieurs type de valeurs"""
-	nom = models.CharField(max_length=200)
-	valeur = models.IntegerField()
-	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
+	id_attr = models.ForeignKey(Attribut)

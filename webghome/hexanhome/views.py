@@ -13,6 +13,7 @@ from django.template import RequestContext
 from django.shortcuts import *
 
 from hexanhome.models import *
+from hexanhome.dump import *
 
 def index(request):
 	# template = loader.get_template('hexanhome/index.html')
@@ -28,6 +29,5 @@ def logout(request):
 @login_required
 def home(request):
 	list_capteurs = Capteur.objects.all()
-	list_users = User.objects.all()
-
-	return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs })
+	dump = 	deep_dump_instance(list_capteurs[0])
+	return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'dump': dump })
