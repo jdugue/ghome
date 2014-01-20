@@ -2,6 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block head %}Home{% endblock %}
 {% block content %}
+
 	{% if user.is_authenticated %}
 		<h1>Hey Coucou !</h1>
 	{% else %}
@@ -14,5 +15,5 @@
 	{% endfor %}
 
 	{{dump}}
-	
+
 {% endblock %}

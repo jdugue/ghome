@@ -1,6 +1,6 @@
-from django.conf.urls import patterns, include, url
-
 from django.contrib import admin
+from django.conf.urls import patterns, include, url
+from django.contrib.auth.views import login, logout
 admin.autodiscover()
 
 # from hexanhome.views import HomeView
@@ -14,6 +14,9 @@ urlpatterns = patterns('',
     # url(r'^home/$', HomeView.as_view(), name='home'),
     url(r'^$', 'hexanhome.views.index'),
     url(r'^home/$', 'hexanhome.views.home'),
-    url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^logout/$', 'logout'),	
+    url(r'^nouvel_utilisateur/$', 'hexanhome.views.nouvel_utilisateur'),
+    # url(r'^login/$', 'django.contrib.auth.views.login'),
+    # url(r'^logout/$', 'logout'),	
+    (r'^login/$',  login),
+    (r'^logout/$', logout),
 )
