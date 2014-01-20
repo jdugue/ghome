@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Ajout Capteur{% endblock %}
+{% block content %}
+<h1>Ajout d'un capteur:</h1>
+<form id="category_form" method="post" action="/config/AjoutCapteur/">
+	{% csrf_token %}
+ 	<div class="form-group">
+    	<label>Nom</label>
+    	<input type="text" class="form-control" name="NomCapteur" id="nomCapteyr" placeholder="Enter nom">
+  	</div>
+  	{% if pieces %}
+  	<div class="form-group">
+  		<label>Pièce</label>
+  		<SELECT name="nomPiece" size="1">
+  			{% for piece in pieces %}
+				<OPTION>{{ piece.nom }}
+  			{% endfor %}
+  		</SELECT>
+  	</div>
+  	{% endif %}
+	<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
+</form>
+
+{% if tests %}
+	{% for test in tests %}
+	<h3> {{ test }}</h3>
+
+	{% endfor %}
+{% endif %}
+{% endblock %}

@@ -17,6 +17,10 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', 'logout'),	
     url(r'^profil/$', 'hexanhome.views.profil'),
-    url(r'^profil/piece/(?P<piece_name_url>\w+)/$', 'hexanhome.views.piece'),		
-
+    url(r'^profil/piece/(?P<piece_name_url>\w+)/$', 'hexanhome.views.piece'),
+    url(r'^config/$','hexanhome.views.config'),
+    url(r'^config/AjoutPiece/$','hexanhome.views.AjoutPiece'), 
+    url(r'^config/AjoutActionneur/$','hexanhome.views.AjoutActionneur'), 
+    url(r'^config/AjoutActionneur2/$','hexanhome.views.AjoutActionneur2'), 
+    url(r'^config/AjoutCapteur/$','hexanhome.views.AjoutCapteur'), 
 )
