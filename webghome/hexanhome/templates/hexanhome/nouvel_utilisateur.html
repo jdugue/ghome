@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Log in{% endblock %}
-{% block head %}Log in{% endblock %}
+{% block title %}Nouvel Utilisateur{% endblock %}
+{% block head %}Nouvel Utilisateur{% endblock %}
 {% block content %}
-    {% if form.has_errors %}
+
+	{% if form.has_errors %}
     <p> Username or password didn't work. Please enter them again </p>
     {% endif %}
 
@@ -29,5 +30,6 @@
       <input type="submit" value="login" />
     </form>
   </section>
+
 
 {% endblock %}

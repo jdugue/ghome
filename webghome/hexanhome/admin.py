@@ -2,6 +2,7 @@ from django.contrib import admin
 from hexanhome.models import *
 
 # Register your models here.
+admin.site.register(UserProfile)
 admin.site.register(Capteur)
 admin.site.register(Actionneur)
 admin.site.register(Profil_activation)
