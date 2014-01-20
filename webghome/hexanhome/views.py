@@ -173,5 +173,4 @@ def piece(request, piece_name_url):
 
 def home(request):
     list_capteurs = Capteur.objects.all()
-    dump =  deep_dump_instance(list_capteurs[0])
-    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'dump': dump })
+    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs })
