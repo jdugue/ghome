@@ -2,19 +2,15 @@
 {% block title %}Home{% endblock %}
 {% block head %}Home{% endblock %}
 {% block content %}
-    {% if user.is_authenticated %}
-        <h1>Hey Coucou !</h1>
-    {% else %}
-        <h1>Auth Bitch !</h1>
-    {% endif %}
+
+	{% if user.is_authenticated %}
+		<h1>Hey Coucou !</h1>
+	{% else %}
+		<h1>Auth Bitch !</h1>
+	{% endif %}
 
     {% for c in list_capteurs%}
         {{c.nom}}
-        <br>
-    {% endfor %}
-
-    {% for u in list_users%}
-        {{u.id}}
         <br>
     {% endfor %}
 {% endblock %}

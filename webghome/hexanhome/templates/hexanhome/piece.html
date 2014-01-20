@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}{{piece_name}}{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="panel panel-primary">
+  	<div class="panel-heading">
+  		<h3 class="panel-title">Liste des capteurs</h3>
+  	</div>
+  	<div class="panel-body">
+		{% if capteur %}
+			{% for capteurs in capteur %}
+			<div class="col-xs-6 col-sm-4">
+				<div class="panel panel-default">
+  					<div class="panel-heading">
+    					<h3 class="panel-title">{{capteurs.nom}}</h3>
+  					</div>
+  				<div class="panel-body">
+    				Panel content
+					<div class="checkbox">
+    					<label>
+      						<input type="checkbox"> 
+    					</label>
+					</div>
+  				</div>
+			</div>
+			</div>
+			{% endfor %}
+		<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+			{% csrf_token %}
+			<button type="submit" name='deletecapteur' class="btn btn-default btn-lg btn-block">Supprimer Capteur</button>
+		</form>
+		{% endif %}
+		</br>
+		<a class="btn btn-default btn-lg btn-block"  href="/config/AjoutCapteur">Ajout d'un capteur</a>
+	</div>
+</div>
+<div class="panel panel-primary">
+  	<div class="panel-heading">
+  		<h3 class="panel-title">Liste des actionneur</h3>
+  	</div>
+  	<div class="panel-body">
+			{% if actionneur %}
+			{% for actionneurs in actionneur %}
+			<div class="col-xs-6 col-sm-4">
+				<div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title">{{actionneurs.nom}}</h3>
+  						</div>
+  					{% if actionneurs.valuer = false%}
+  					<div class="panel-body">
+    					OFF
+  					</div>
+  					{% else %}
+  					<div class="panel-body">
+    					ON
+  					</div>
+  					{% endif %}
+  				</div>
+  			</div>
+				{% endfor %}
+		<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+			{% csrf_token %}
+			<button type="submit" name='deleteactionneur' class="btn btn-default btn-lg btn-block">Supprimer actionneur</button>
+		</form>
+		{% endif %}
+		</br>
+		<a class="btn btn-default btn-lg btn-block"  href="/config/AjoutActionneur2">Ajout d'un actionneur</a>
+</div>
+</div>
+</div>
+</br>
+<div class="container">
+	<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+		{% csrf_token %}
+		<button type="submit" name='deleteroombutton' class="btn btn-primary btn-lg btn-block">Supprimer pièce</button>
+	</form>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Ajout Pièce{% endblock %}
+{% block content %}
+{% if form %}
+<div class="container">
+<h1>Ajout d'une pièce:</h1>
+<form id="category_form" method="post" action="/config/AjoutPiece/">
+	<div>
+		{% csrf_token %}
+	  	{% for field in form %}
+        <div class="form-group">
+  			<label >{{ field.label }}</label>
+      		<input type="text" class="form-control" name="{{ field.name }}" id="id_{{ field.name }}" placeholder="{{ field.value  }}" > 
+      		{% if field.errors %}
+      		 	<span class="help-inline">
+      		 		{% for error in field.errors %}
+      		 		{{ error }}
+      		 		<br/> 
+      		 		{% endfor %}
+      		 	</span>
+
+      			 {% if field.help_text%}
+            	<p class="help-block">
+                	{{ field.help_text}}
+            	</p>
+        		{% endif %}
+       		{% endif %}
+       	</div>
+		{% endfor %}
+	</div>
+  	<input type="submit" value="Submit"  class="btn btn-default">
+</form>
+{% endif %}
+</div>
+{% endblock %}

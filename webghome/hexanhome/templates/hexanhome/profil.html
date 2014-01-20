@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% csrf_token %}
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+	{% if pieces %}
+		<ul>
+		{% for room in pieces %}
+  		<a class="btn btn-default btn-xlarge "  href="/profil/piece/{{ room.nom }}">{{room.nom}}</a>
+  		{% endfor %}
+  		</ul>
+  	{% else %}
+  			<li>"Aucune piéce n'a été créer"</li>
+  	{% endif %}
+  	<div>
+  		<h3>Ajout d'une pièce:</h3>
+		<a class="btn btn-default btn-lg btn-block"  href="/config/AjoutPiece">Ajout d'une pièce</a>
+	</div>
+
+{% endblock %}
+
