@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ajout Actionneur{% endblock %}
 {% block content %}
+<div class="container" </div>
 <h1>Ajout d'une actioneur:</h1>
 <form id="category_form" method="post" action="/config/AjoutActionneur2/">
 	{% csrf_token %}
@@ -52,4 +53,5 @@
 
 	{% endfor %}
 {% endif %}
+ </div>
 {% endblock %}

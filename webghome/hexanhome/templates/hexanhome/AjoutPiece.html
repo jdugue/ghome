@@ -2,6 +2,7 @@
 {% block title %}Ajout Pièce{% endblock %}
 {% block content %}
 {% if form %}
+<div class="container">
 <h1>Ajout d'une pièce:</h1>
 <form id="category_form" method="post" action="/config/AjoutPiece/">
 	<div>
@@ -9,7 +10,7 @@
 	  	{% for field in form %}
         <div class="form-group">
   			<label >{{ field.label }}</label>
-      		<input type="text" class="form-control" name="{{ field.name }}" id="id_{{ field.name }}" value="{{ field.value  }}" > 
+      		<input type="text" class="form-control" name="{{ field.name }}" id="id_{{ field.name }}" placeholder="{{ field.value  }}" > 
       		{% if field.errors %}
       		 	<span class="help-inline">
       		 		{% for error in field.errors %}
@@ -30,4 +31,5 @@
   	<input type="submit" value="Submit"  class="btn btn-default">
 </form>
 {% endif %}
+</div>
 {% endblock %}
