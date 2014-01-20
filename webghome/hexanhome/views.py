@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 
+#IMPORTS DJANGO
 from django.views.generic import TemplateView
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect
@@ -14,12 +15,16 @@ from django.template import RequestContext
 
 from django.shortcuts import *
 
+# IMPORTS AUTRES
 from registration.forms import RegistrationForm
 from registration.models import RegistrationProfile
 # from registration.backends.default import DefaultBackend
 
+# IMPORTS PERSO
 from hexanhome.models import *
 from hexanhome.forms import *
+import weather
+
 from django.core.context_processors import csrf
 
 
@@ -173,4 +178,6 @@ def piece(request, piece_name_url):
 
 def home(request):
     list_capteurs = Capteur.objects.all()
-    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs })
+    w = weather.WeatherDownloader('Lyon')
+    parsed = w.getCurrentWeatherData()
+    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'weather': parsed})

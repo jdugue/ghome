@@ -11,14 +11,11 @@ class WeatherDownloader(object):
 
 	def getCurrentWeatherData(self):
 		r = requests.get(self.url, params=self.params)	
-		print(r.url)
 		if r.status_code == requests.codes.ok:
-			print('Request OK')
 			data = json.loads(r.text)
 			parsed_data = self.parseCurrentWeatherData(data)
-			print(data['weather'][0]['description'])
-			print(parsed_data)
-		else:
+			return parsed_data
+		else:	
 			print('Bad request')
 
 	def parseCurrentWeatherData(self, data):
