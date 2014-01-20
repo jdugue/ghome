@@ -2,6 +2,7 @@
 {% block title %}Home{% endblock %}
 {% block head %}Home{% endblock %}
 {% block content %}
+<div class= "container">
 
 	{% if user.is_authenticated %}
 		<h1>Hey Coucou !</h1>
@@ -13,4 +14,5 @@
         {{c.nom}}
         <br>
     {% endfor %}
+</div>
 {% endblock %}
