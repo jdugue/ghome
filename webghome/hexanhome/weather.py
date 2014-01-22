@@ -18,8 +18,8 @@ class WeatherDownloader(object):
 		else:	
 			print('Bad request')
     
-    def getForecastWeatherData(self):
-        r = requests.get
+    #def getForecastWeatherData(self):
+     #   r = requests.get
         #TODO
 
 	def parseCurrentWeatherData(self, data):
