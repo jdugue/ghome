@@ -15,18 +15,18 @@
       {% csrf_token %}
       <p>
         <label for="id_username">Username:</label>
-        {{ form.username }}
+        <input type="text" class="form-control" name="username" id="username">
       </p>
       <p>
         <label for="id_password">Password:</label>
-        {{ form.password }}
+        <input type="password" class="form-control" name="password" id="password">
       </p>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" />
       {% else %}
         <input type="hidden" name="next" value="/home/" />
       {% endif %}
-      <input type="submit" value="login" />
+      <input type="submit" value="Valider" />
     </form>
   </section>
 

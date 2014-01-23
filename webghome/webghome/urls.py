@@ -12,12 +12,8 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('hexanhome.urls')),
-    # url(r'^home/$', HomeView.as_view(), name='home'),
-    # url(r'^login/$', 'django.contrib.auth.views.login'),
-    # url(r'^logout/$', 'logout'),	
-    (r'^login/$',  login),
-    (r'^logout/$', logout),
-    # url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^logout/$', 'logout'),	
+
+    url(r'^login/$', 'hexanhome.views.login_view'),
+    url(r'^logout/$', 'hexanhome.views.logout_view'),	
 )
 
