@@ -15,8 +15,10 @@
         <br>
     {% endfor %}
 
-    <p> Temperature: {{weather.current_temp}}  &deg;C
-    </br> Description: {{weather.description}} </p>
+    <p>
+        <span class="thermometer">{{weather.current_temp}}&deg;C</span>
+        Description: {{weather.description}} 
+    </p>
 
 </div>
 {% endblock %}

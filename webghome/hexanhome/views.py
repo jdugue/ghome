@@ -44,7 +44,7 @@ def login_view(request):
 	        # Redirect to a success page.
 	        return HttpResponseRedirect("/home")
 	# Show an error page
-    return render(request,'registration/login.html')
+    return render(request,'hexanhome/login.html')
 	# return render_to_response('home.html', RequestContext(request))
 
 
@@ -53,16 +53,16 @@ def logout_view(request):
     # Redirect to a success page.
     return HttpResponseRedirect("/login")
 
-def nouvel_utilisateur(request):
+def signup(request):
     if request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         new_user = User.objects.create_user(username=username, password=password)   
         new_user.save()
-        return Redirect()
+        return HttpResponseRedirect("/home")
     else:
-        form = RegistrationForm()
-        return render_to_response('hexanhome/nouvel_utilisateur.html' , {'form':form})
+        # form = RegistrationForm()
+        return render(request,'hexanhome/signup.html')
 
 def profil(request):
 	context = RequestContext(request)
