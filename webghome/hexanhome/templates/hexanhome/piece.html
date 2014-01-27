@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+
 {% block title %}{{piece_name}}{% endblock %}
+
+
 
 {% block content %}
 <div class="container">
@@ -8,15 +11,30 @@
   		<h3 class="panel-title">Liste des capteurs</h3>
   	</div>
   	<div class="panel-body">
-		{% if capteur %}
-			{% for capteurs in capteur %}
+		{% if capteurValue %}
+		{% for capteurtest,value in capteurValue.items %}
 			<div class="col-xs-6 col-sm-4">
 				<div class="panel panel-default">
-  					<div class="panel-heading">
-    					<h3 class="panel-title">{{capteurs.nom}}</h3>
+  					<div class="panel-heading"  onClick="ChangeName();" name="PanelHeading">
+    					
+    					<form id="name_form" method="post" action="/profil/piece/{{piece_name}}/"  >
+    						{% csrf_token %}
+    						<h3 class="panel-title" id="ValueNomCapteur" name="oldNom">{{capteurtest.nom}}</h3>
+    							<input type="hidden" name="oldname" value="{{capteurtest.nom}}">
+    							<input type="hidden" name="piece_name" value="{{piece_name}}">
+							<input type="text" class="form-control" name="NomCapteur" style="display:none" id="nomCapteur" placeholder="Entrer nom" value="{{capteurtest.nom}}">
+						</form>
+
   					</div>
   				<div class="panel-body">
-    				Panel content
+  					{% if value %}
+  					{%for valeur in value%}
+  						{{valeur.id_attr.valeur}}
+  					{% endfor %}
+  					{% else %}
+  						</br>
+    				{% endif %}
+
 					<div class="checkbox">
     					<label>
       						<input type="checkbox"> 
@@ -47,15 +65,9 @@
   						<div class="panel-heading">
     						<h3 class="panel-title">{{actionneurs.nom}}</h3>
   						</div>
-  					{% if actionneurs.valuer = false%}
   					<div class="panel-body">
-    					OFF
+    					{{actionneurs.valeur}}
   					</div>
-  					{% else %}
-  					<div class="panel-body">
-    					ON
-  					</div>
-  					{% endif %}
   				</div>
   			</div>
 				{% endfor %}
@@ -76,4 +88,28 @@
 		<button type="submit" name='deleteroombutton' class="btn btn-primary btn-lg btn-block">Supprimer pièce</button>
 	</form>
 </div>
+			
+			{% for capteurtest,value in capteurValue.items %}
+				{% for valeur in value%}
+					<label> {{valeur.id_attr.valeur}} </label>
+					<label> {{capteurtest.nom}} </label>
+				{% endfor %}
+				{% endfor %}
+		
+  					
+
+{% endblock %}
+
+{%block footer%}
+<script language="JavaScript">
+  function ChangeName()
+  {
+    panel = document.getElementById("nomCapteur");
+    panel.style.display="block";
+    nom=document.getElementById("ValueNomCapteur");
+    nom.style.display="none"
+  }
+
+</script>
+
 {% endblock %}

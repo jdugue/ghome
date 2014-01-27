@@ -36,7 +36,7 @@ nosetests.xml
 .pydevproject
 
 #django settings
-settings.py7
+settings.py
 
 #Database connection info
 configdb.cfg
