@@ -127,7 +127,8 @@ def AjoutCapteur(request):
 		nomcapteur = request.POST['NomCapteur']
 		identifiant = request.POST['numeroIdentifiant']
 		piece = Piece.objects.get(nom=piece_name)
-		capteur = Capteur.objects.filter( identifiant = identifiant).update(nom = nomcapteur, id_piece = piece)	
+		capteur = Capteur( identifiant = identifiant, nom = nomcapteur, id_piece = piece)	
+		capteur.save()
 		piece_name = piece_name.replace(' ', '_')
 		url = '/profil/piece/' + piece_name +'/'
 		return HttpResponseRedirect(url)
@@ -153,9 +154,8 @@ def piece(request, piece_name_url):
 		if 'NomCapteur' in request.POST:
 			nouveauxnom = request.POST['NomCapteur']
 			oldname = request.POST['oldname']
-			piece_name = request.POST['piece_name']
 			Capteur.objects.filter(nom = oldname).update(nom = nouveauxnom)
-			url = '/profil/piece/' + piece_name +'/'
+			url = '/profil/piece/' + piece_name_url +'/'
 			return HttpResponseRedirect(url)
 		else : 
 			return HttpResponseRedirect('/profil/')
@@ -167,6 +167,7 @@ def piece(request, piece_name_url):
 			#Verifie qu'il existe une piece avec ce nom
 			piece = Piece.objects.get(nom=piece_name)
 			#On ajoute la categorie objet de la base de donnée au context
+			context_dixt['piece_url'] = piece_name_url
 			context_dixt['piece'] = piece
 			list_capteurs = Capteur.objects.filter(id_piece = piece.id)
 			list_actionneur = Actionneur.objects.filter(id_piece=piece.id)
