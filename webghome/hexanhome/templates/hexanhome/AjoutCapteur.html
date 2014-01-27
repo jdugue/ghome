@@ -13,7 +13,6 @@
 </script>
 {% endblock %}
 {% block content %}
-<div class="container">
 <h1>Ajout d'un capteur:</h1>
 <form id="category_form" name="formulaire" method="post" action="/config/AjoutCapteur/">
 	{% csrf_token %}
@@ -38,6 +37,4 @@
 	<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
 </form>
 
-
-</div>
 {% endblock %}

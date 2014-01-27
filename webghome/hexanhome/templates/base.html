@@ -13,18 +13,16 @@
 	</head>
 
 	<body>
-	
-				{% include "menu.html" %}
 				<div class ="container">
+				{% include "menu.html" %}
 					<h1>{% block head %}{% endblock %}</h1>
-				</div>
 			{% block content %}{% endblock %}
 
 			<br>
 			<br>
 			<br>
 
-			
+			</div>
 	
 
 	</body>

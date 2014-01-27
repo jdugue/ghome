@@ -5,7 +5,6 @@
 
 
 {% block content %}
-<div class="container">
 <div class="panel panel-primary">
   	<div class="panel-heading">
   		<h3 class="panel-title">Liste des capteurs</h3>
@@ -85,15 +84,9 @@
 		{% csrf_token %}
 		<button type="submit" name='deleteroombutton' class="btn btn-danger btn-lg btn-block">Supprimer pièce</button>
 	</form>
-</div>
+
 			
-			{% for capteurtest,value in capteurValue.items %}
-				{% for valeur in value%}
-					<label> {{valeur.id_attr.valeur}} </label>
-					<label> {{capteurtest.nom}} </label>
-				{% endfor %}
-				{% endfor %}
-		
+	
   					
 
 {% endblock %}
