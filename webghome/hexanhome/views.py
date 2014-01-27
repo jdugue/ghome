@@ -28,7 +28,7 @@ import weather
 
 from django.core.context_processors import csrf
 
-
+@login_required(login_url='/login/')
 def index(request):
     # template = loader.get_template('hexanhome/index.html')
     return render(request , 'hexanhome/index.html')
@@ -42,17 +42,21 @@ def login_view(request):
 	        # Correct password, and the user is marked "active"
 	        login(request, user)
 	        # Redirect to a success page.
+    	if request.GET.get('next', ''):
+    		next = request.POST.get('next', '')
+    		return HttpResponseRedirect(next)
+    	else:
 	        return HttpResponseRedirect("/home")
 	# Show an error page
     return render(request,'hexanhome/login.html')
 	# return render_to_response('home.html', RequestContext(request))
-
 
 def logout_view(request):
     logout(request)
     # Redirect to a success page.
     return HttpResponseRedirect("/login")
 
+@login_required(login_url='/login/')
 def signup(request):
     if request.POST:
         username = request.POST.get('username', '')
@@ -64,6 +68,7 @@ def signup(request):
         # form = RegistrationForm()
         return render(request,'hexanhome/signup.html')
 
+@login_required(login_url='/login/')
 def profil(request):
 	context = RequestContext(request)
 	piece_list = Piece.objects.all()
@@ -72,9 +77,11 @@ def profil(request):
 		piece.url = piece.nom.replace(' ', '_')
 	return render_to_response('hexanhome/profil.html',context_dixt,context)
 
+@login_required(login_url='/login/')
 def config(request):
     return render_to_response('hexanhome/config.html', RequestContext(request))
 
+@login_required(login_url='/login/')
 def AjoutPiece(request):
 	context = RequestContext(request)
 	if request.method =='POST':
@@ -90,7 +97,7 @@ def AjoutPiece(request):
 		form = PieceForm()
 		return render_to_response('hexanhome/AjoutPiece.html', { 'form' : form},context)
 
-
+@login_required(login_url='/login/')
 def AjoutActionneur2(request):
 	c = {}
    	c.update(csrf(request))
@@ -118,6 +125,7 @@ def AjoutActionneur2(request):
 		context_dixt['types'] = type_list	
 		return render_to_response('hexanhome/AjoutActionneur2.html',context_dixt,context)
 
+@login_required(login_url='/login/')
 def AjoutCapteur(request):
 	c = {}
    	c.update(csrf(request))
@@ -138,6 +146,7 @@ def AjoutCapteur(request):
 		context_dixt['capteurs'] = capteur_list
 		return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
 
+@login_required(login_url='/login/')
 def piece(request, piece_name_url):
 	#permet l'utilisation de la méthode POST
 	c = {}
