@@ -36,4 +36,10 @@ nosetests.xml
 .pydevproject
 
 #django settings
-settings.py*
+settings.py
+
+#Database connection info
+configdb.cfg
+
+#Fichiers temporaires
+*~
