@@ -42,9 +42,10 @@ class Piece(models.Model):
 class Capteur(models.Model):
 	"""Classe permettant de representer un Capteur"""
 	id = models.AutoField(primary_key=True)
-	nom = models.CharField(max_length=200)
+	nom = models.CharField(max_length=200 , blank=True)
 	#foreign key vers les pieces
-	id_piece = models.ForeignKey(Piece)
+	id_piece = models.ForeignKey(Piece,null = True, blank = True)
+	identifiant = models.IntegerField()
 
 class Actionneur(models.Model):
 	"""Classe permettant de representer un Actionneur"""
@@ -75,6 +76,7 @@ class Attribut(models.Model):
 	valeur = models.IntegerField()
 	#foreign key vers les type
 	id_type = models.ForeignKey(Type)
+	identifiant = models.IntegerField()
 
 class Attr_Capteur(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""

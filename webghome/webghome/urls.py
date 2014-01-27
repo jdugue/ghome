@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     # url(r'^$', 'webghome.views.home', name='home'),
 
     url(r'^admin/', include(admin.site.urls)),
+    # url(r'^home/$', HomeView.as_view(), name='home'),	
     url(r'^', include('hexanhome.urls')),	
+
 )
 
