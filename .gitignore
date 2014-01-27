@@ -36,4 +36,4 @@ nosetests.xml
 .pydevproject
 
 #django settings
-settings.py
+settings.py*
