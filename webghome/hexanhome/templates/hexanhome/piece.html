@@ -16,12 +16,10 @@
 			<div class="col-xs-6 col-sm-4">
 				<div class="panel panel-default">
   					<div class="panel-heading"  onClick="ChangeName();" name="PanelHeading">
-    					
-    					<form id="name_form" method="post" action="/profil/piece/{{piece_name}}/"  >
+    					<form id="name_form" method="post" action="/profil/piece/{{piece_url}}/"  >
     						{% csrf_token %}
     						<h3 class="panel-title" id="ValueNomCapteur" name="oldNom">{{capteurtest.nom}}</h3>
     							<input type="hidden" name="oldname" value="{{capteurtest.nom}}">
-    							<input type="hidden" name="piece_name" value="{{piece_name}}">
 							<input type="text" class="form-control" name="NomCapteur" style="display:none" id="nomCapteur" placeholder="Entrer nom" value="{{capteurtest.nom}}">
 						</form>
 
@@ -71,7 +69,7 @@
   				</div>
   			</div>
 				{% endfor %}
-		<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+		<form id="category_form" method="post" action="/profil/piece/{{piece_url}}/">
 			{% csrf_token %}
 			<button type="submit" name='deleteactionneur' class="btn btn-default btn-lg btn-block">Supprimer actionneur</button>
 		</form>
@@ -83,9 +81,9 @@
 </div>
 </br>
 <div class="container">
-	<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+	<form id="category_form" method="post" action="/profil/piece/{{piece_url}}/">
 		{% csrf_token %}
-		<button type="submit" name='deleteroombutton' class="btn btn-primary btn-lg btn-block">Supprimer pièce</button>
+		<button type="submit" name='deleteroombutton' class="btn btn-danger btn-lg btn-block">Supprimer pièce</button>
 	</form>
 </div>
 			

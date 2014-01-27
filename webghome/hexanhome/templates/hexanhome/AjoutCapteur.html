@@ -31,18 +31,10 @@
   		</SELECT>
   	</div>
   	{% endif %}
-    {% if capteurs %}
-    <div class="form-group">
-      <label>Identifiant</label>
-      <SELECT name="numeroIdentifiant"size="1">
-        {% for capteur in capteurs %}
-          {% if not capteur.nom  %}
-        <OPTION>{{ capteur.identifiant }}
-          {% endif %}
-        {% endfor %}
-      </SELECT>
-    </div>
-    {% endif %}
+      <div class="form-group">
+  <label>Identifiant</label>
+      <input type="text" class="form-control" name="numeroIdentifiant" id="numeroIdentifiant" placeholder="Enter identifiant">
+      </div>
 	<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
 </form>
 
