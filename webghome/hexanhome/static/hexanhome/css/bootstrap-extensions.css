@@ -6,7 +6,6 @@
        -moz-border-radius: 16px;
             border-radius: 16px;
     background-color: white;
-    
     }
 
 @media (max-width: 991px) {
@@ -82,5 +81,4 @@
     left:4px;
     background:#db3f02;
 }
-
 

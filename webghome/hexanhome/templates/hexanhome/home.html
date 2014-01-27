@@ -16,9 +16,14 @@
     {% endfor %}
 
     <p>
-        <span class="thermometer">{{weather.current_temp}}&deg;C</span>
+        Temperature: {{weather.current_temp}}&deg;C <br>
         Description: {{weather.description}} 
     </p>
+
+    <div class="row">
+     <div class="span4">4 colonnes</div>
+     <div class="span8">8 colonnes</div>
+   </div>
 
 </div>
 {% endblock %}
