@@ -2,19 +2,7 @@
 
 {% block title %}{{piece_name}}{% endblock %}
 
-{%block header%}
-<script language="JavaScript">
-  function ChangeName()
-  {
-    panel = document.getElementById("nomCapteur");
-    panel.style.display="block";
-    nom=document.getElementById("ValueNomCapteur");
-    nom.style.display="none"
-  }
 
-</script>
-
-{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -109,5 +97,19 @@
 				{% endfor %}
 		
   					
+
+{% endblock %}
+
+{%block footer%}
+<script language="JavaScript">
+  function ChangeName()
+  {
+    panel = document.getElementById("nomCapteur");
+    panel.style.display="block";
+    nom=document.getElementById("ValueNomCapteur");
+    nom.style.display="none"
+  }
+
+</script>
 
 {% endblock %}

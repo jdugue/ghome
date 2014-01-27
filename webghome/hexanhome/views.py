@@ -108,6 +108,7 @@ def AjoutActionneur2(request):
 		piece = Piece.objects.get(nom=piece_name)
 		actionneur = Actionneur(nom = nomactionneur, id_piece = piece,id_type = typeselect,valeur= value)
 		actionneur.save()
+		piece_name = piece_name.replace(' ', '_')
 		url = '/profil/piece/' + piece_name +'/'
 		return HttpResponseRedirect(url)
 	else :
@@ -127,8 +128,7 @@ def AjoutCapteur(request):
 		identifiant = request.POST['numeroIdentifiant']
 		piece = Piece.objects.get(nom=piece_name)
 		capteur = Capteur.objects.filter( identifiant = identifiant).update(nom = nomcapteur, id_piece = piece)	
-		piece_list = Piece.objects.all()
-		context_dixt={'pieces':piece_list}
+		piece_name = piece_name.replace(' ', '_')
 		url = '/profil/piece/' + piece_name +'/'
 		return HttpResponseRedirect(url)
 	else :
