@@ -4,44 +4,44 @@
 <h1>Ajout d'une actioneur:</h1>
 <form id="category_form" method="post" action="/config/AjoutActionneur2/">
 	{% csrf_token %}
- 	<div class="form-group">
-    	<label>Nom</label>
-    	<input type="text" class="form-control" name="NomActionneur" id="nameActionneur" placeholder="Enter nom">
-  	</div>
-  	{% if pieces %}
-  	<div class="form-group">
-  		<label>Pièce</label>
-  		<SELECT name="nomPiece" size="1">
-  			{% for piece in pieces %}
+	<div class="form-group">
+		<label>Nom</label>
+		<input type="text" class="form-control" name="NomActionneur" id="nameActionneur" placeholder="Enter nom">
+	</div>
+	{% if pieces %}
+	<div class="form-group">
+		<label>Pièce</label>
+		<SELECT name="nomPiece" size="1">
+			{% for piece in pieces %}
 				<OPTION>{{ piece.nom }}
-  			{% endfor %}
-  		</SELECT>
-  	</div>
-  	{% endif %}
+			{% endfor %}
+		</SELECT>
+	</div>
+	{% endif %}
 
-  	{% if types %}
-  	<div class="form-group">
-  		<label>Type</label>
-  		<SELECT name="nomType" size="1">
-  			{% for type in types %}
+	{% if types %}
+	<div class="form-group">
+		<label>Type</label>
+		<SELECT name="nomType" size="1">
+			{% for type in types %}
 				<OPTION>{{ type.nom }}
-  			{% endfor %}
-  		</SELECT>
-  	</div>
-  	{% endif %}
+			{% endfor %}
+		</SELECT>
+	</div>
+	{% endif %}
 
-  	<h3>Etat :</h3>
-  	<div class="radio">
-  		<label>
-    		<input type="radio" name="Value1" id="Value1" value="option1" checked>
-    		OFF
-  		</label>
+	<h3>Etat :</h3>
+	<div class="radio">
+		<label>
+			<input type="radio" name="Value1" id="Value1" value="option1" checked>
+			OFF
+		</label>
 	</div>
 	<div class="radio">
-  		<label>
-    		<input type="radio" name="Value1" id="Value2" value="option2">
-    		ON
-  		</label>
+		<label>
+			<input type="radio" name="Value1" id="Value2" value="option2">
+			ON
+		</label>
 	</div>
 	<input type="submit" value="Valider" name="AjoutActionneur"  class="btn btn-default">
 </form>
