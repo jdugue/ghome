@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Ajout Actionneur{% endblock %}
 {% block content %}
-<div class="container" </div>
 <h1>Ajout d'une actioneur:</h1>
 <form id="category_form" method="post" action="/config/AjoutActionneur2/">
 	{% csrf_token %}
@@ -47,5 +46,4 @@
 	<input type="submit" value="Valider" name="AjoutActionneur"  class="btn btn-default">
 </form>
 
- </div>
 {% endblock %}
