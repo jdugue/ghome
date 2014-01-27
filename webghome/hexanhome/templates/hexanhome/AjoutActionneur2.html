@@ -35,23 +35,17 @@
   	<div class="radio">
   		<label>
     		<input type="radio" name="Value1" id="Value1" value="option1" checked>
-    		ON
+    		OFF
   		</label>
 	</div>
 	<div class="radio">
   		<label>
-    		<input type="radio" name="Value2" id="Value2" value="option2">
-    		OFF
+    		<input type="radio" name="Value1" id="Value2" value="option2">
+    		ON
   		</label>
 	</div>
 	<input type="submit" value="Valider" name="AjoutActionneur"  class="btn btn-default">
 </form>
 
-{% if tests %}
-	{% for test in tests %}
-	<h3> {{ test }}</h3>
-
-	{% endfor %}
-{% endif %}
  </div>
 {% endblock %}

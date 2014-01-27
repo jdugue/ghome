@@ -6,7 +6,7 @@
 	{% if pieces %}
 		<ul>
 		{% for room in pieces %}
-  		<a class="btn btn-default btn-xlarge "  href="/profil/piece/{{ room.nom }}">{{room.nom}}</a>
+  		<a class="btn btn-default btn-xlarge "  href="/profil/piece/{{ room.url }}">{{room.nom}}</a>
   		{% endfor %}
   		</ul>
   	{% else %}
