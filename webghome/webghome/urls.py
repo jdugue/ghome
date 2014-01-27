@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, include, url
 from hexanhome.models import Piece
 from django.contrib import admin
-from django.conf.urls import patterns, include, url
-from django.contrib.auth.views import login, logout
 admin.autodiscover()
 
 # from hexanhome.views import HomeView
@@ -10,7 +8,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'webghome.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     # url(r'^home/$', HomeView.as_view(), name='home'),
@@ -29,5 +26,7 @@ urlpatterns = patterns('',
     url(r'^config/AjoutPiece/$','hexanhome.views.AjoutPiece'), 
     url(r'^config/AjoutActionneur2/$','hexanhome.views.AjoutActionneur2'), 
     url(r'^config/AjoutCapteur/$','hexanhome.views.AjoutCapteur'), 	
+    url(r'^', include('hexanhome.urls')),	
+
 )
 

@@ -1,11 +1,13 @@
 #-*- coding: utf-8 -*-
 
+#IMPORTS DJANGO
 from django.views.generic import TemplateView
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate
+from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.forms import *
@@ -14,12 +16,16 @@ from django.template import RequestContext
 
 from django.shortcuts import *
 
-from registration.forms import RegistrationForm
-from registration.models import RegistrationProfile
+# IMPORTS AUTRES
+# from registration.forms import RegistrationForm
+# from registration.models import RegistrationProfile
 # from registration.backends.default import DefaultBackend
 
+# IMPORTS PERSO
 from hexanhome.models import *
 from hexanhome.forms import *
+import weather
+
 from django.core.context_processors import csrf
 
 
@@ -27,36 +33,36 @@ def index(request):
     # template = loader.get_template('hexanhome/index.html')
     return render(request , 'hexanhome/index.html')
 
-def login(request):
+def login_view(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-        # Correct password, and the user is marked "active"
-        auth.login(request, user)
-        # Redirect to a success page.
-        return HttpResponseRedirect("/home")
-    else:
-        # Show an error page
-        return HttpResponseRedirect("/login")
+    user = authenticate(username=username, password=password)
+    if user is not None:
+    	if user.is_active:
+	        # Correct password, and the user is marked "active"
+	        login(request, user)
+	        # Redirect to a success page.
+	        return HttpResponseRedirect("/home")
+	# Show an error page
+    return render(request,'hexanhome/login.html')
+	# return render_to_response('home.html', RequestContext(request))
 
-    # return render_to_response('home.html', RequestContext(request))
 
 def logout_view(request):
     logout(request)
     # Redirect to a success page.
-    return HttpResponseRedirect("/account/loggedout/")
+    return HttpResponseRedirect("/login")
 
-def nouvel_utilisateur(request):
+def signup(request):
     if request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         new_user = User.objects.create_user(username=username, password=password)   
         new_user.save()
-        return Redirect()
+        return HttpResponseRedirect("/home")
     else:
-        form = RegistrationForm()
-        return render_to_response('hexanhome/nouvel_utilisateur.html' , {'form':form})
+        # form = RegistrationForm()
+        return render(request,'hexanhome/signup.html')
 
 def profil(request):
 	context = RequestContext(request)
@@ -181,6 +187,9 @@ def piece(request, piece_name_url):
 
 		return render_to_response('hexanhome/piece.html',context_dixt, context)
 
+@login_required(login_url='/login/')
 def home(request):
     list_capteurs = Capteur.objects.all()
-    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs })
+    w = weather.WeatherDownloader('Lyon')
+    parsed = w.getCurrentWeatherData()
+    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'weather': parsed}, context_instance=RequestContext(request))
