@@ -69,23 +69,23 @@
 					</div>
 				</div>
 			{% endfor %}
-		<form id="category_form" method="post" action="/profil/piece/{{piece_url}}/">
-			{% csrf_token %}
-			<button type="submit" name='deleteactionneur' class="btn btn-default btn-lg btn-block">Supprimer actionneur</button>
-		</form>
+			<form id="category_form" method="post" action="/profil/piece/{{piece_url}}/">
+				{% csrf_token %}
+				<button type="submit" name='deleteactionneur' class="btn btn-default btn-lg btn-block">Supprimer actionneur</button>
+			</form>
 		{% endif %}
 		</br>
 		<a class="btn btn-default btn-lg btn-block"  href="/config/AjoutActionneur2">Ajout d'un actionneur</a>
 	</div>
 </div>
-</div>
+
 </br>
 <div class="container">
 	<form id="category_form" method="post" action="/profil/piece/{{piece_url}}/">
 		{% csrf_token %}
 		<button type="submit" name='deleteroombutton' class="btn btn-danger btn-lg btn-block">Supprimer pièce</button>
 	</form>
-
+</div>
 			
 	
 					
