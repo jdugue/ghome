@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 import socket
 import datetime
 import sys
@@ -26,27 +28,62 @@ class Trame:
 		
 class Database:
 	def __init__(self):
-		configParsed = ConfigParser.ConfigParser()
-		configParsed.read('configdb.cfg')
-		connectString = configdb.get('database_info','connectString')
-		self.db = MySQLdb.connect(connectString)
-		
-	def execute (request):
-		cursor = self.db.cursor()
+		configParser = ConfigParser.ConfigParser()
+		configParser.read('configdb.cfg')
+		self.host = configParser.get('database_info','host')
+		self.user = configParser.get('database_info','user')
+		self.passwd = configParser.get('database_info','passwd')
+		self.db_name = configParser.get('database_info','db')
+
+	def connectDb(self):
+		try:
+			return MySQLdb.connect(self.host, self.user, self.passwd, self.db_name)
+		except MySQLdb.Error, e:
+			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+	
+
+	def executeQuery (self, request):
+		db = self.connectDb()
+		cursor = db.cursor()
 		cursor.execute(request)
-		result = self.cursor.fetchall()
+		result = cursor.fetchall()
 		cursor.close()
+		db.close()
 		return result
-		
-	def closedb ():
-		self.db.close()
-		
+
+	def executeUpdate (self, request):
+		db = self.connectDb()
+		cursor = db.cursor()
+		try:
+			cursor.execute(request)		
+			db.commit()
+			db.close()
+			return True
+		except MySQLdb.Error, e:
+			db.rollback()
+			cursor.close()
+			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+			db.close()
+			return False
+
+
+	def isIdPresentOnDb(self, id):
+		resultCapteur = self.executeQuery('SELECT identifiant FROM hexanhome_capteur WHERE identifiant={0};'.format(id))
+		resultActionneur = False # self.execute('SELECT id_piece_id FROM hexanhome_piece WHERE id={0};'.format(id))
+		if (resultCapteur or resultActionneur):
+			return True
+		else:
+			return False
+
+	def updateValueForCapteur(self, idCapteur, value):
+		updateRequest = 'UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant={1}'.format(value,idCapteur)
+		self.executeUpdate(updateRequest)
 		
 
-def traiterTrame (trame):
-	Trame tr = Trame(trame)
-	if trameIdentifiee(trame):
-		majDonnees(trame)
+def traiterTrame(trame):
+	tr = Trame(trame)
+	if trameIdentifiee(tr):
+		majDonnees(tr)
 		
 		
 def trameIdentifiee (trame):
@@ -55,4 +92,4 @@ def trameIdentifiee (trame):
 
 def majDonnees(trame):
 	# Mettre à jour la base de données avec les données de la trame
-
+	pass
