@@ -4,10 +4,10 @@
 <script language="JavaScript">
   function Lien()
   {
-    optionSelect = document.formulaire.numeroIdentifiant.selectedIndex;
-    numCapteur=document.formulaire.numeroIdentifiant.options[optionSelect].value;
-    champNom=document.formulaire.NomCapteur;
-    champNom.imput.value=nomCapteur;
+	optionSelect = document.formulaire.numeroIdentifiant.selectedIndex;
+	numCapteur=document.formulaire.numeroIdentifiant.options[optionSelect].value;
+	champNom=document.formulaire.NomCapteur;
+	champNom.imput.value=nomCapteur;
   }
 
 </script>
@@ -16,15 +16,15 @@
 <h1>Ajout d'un capteur:</h1>
 <form id="category_form" name="formulaire" method="post" action="/config/AjoutCapteur/">
 	{% csrf_token %}
- 	<div class="form-group">
-    	<label>Nom</label>
-    	<input type="text" class="form-control" name="NomCapteur" id="nomCapteur" placeholder="Enter nom">
-  	</div>
-  	{% if pieces %}
-  	<div class="form-group">
-  		<label>Pièce</label>
-  		<SELECT name="nomPiece" size="1">
-  			{% for piece in pieces %}
+	<div class="form-group">
+		<label>Nom</label>
+		<input type="text" class="form-control" name="NomCapteur" id="nomCapteur" placeholder="Enter nom">
+	</div>
+	{% if pieces %}
+	<div class="form-group">
+		<label>Pièce</label>
+		<SELECT name="nomPiece" size="1">
+			{% for piece in pieces %}
 				<OPTION>{{ piece.nom }}
   			{% endfor %}
   		</SELECT>
