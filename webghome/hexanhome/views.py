@@ -72,9 +72,9 @@ def signup(request):
 def profil(request):
 	context = RequestContext(request)
 	piece_list = Piece.objects.all()
-	context_dixt={'pieces':piece_list}
 	for piece in piece_list:
 		piece.url = piece.nom.replace(' ', '_')
+	context_dixt={'pieces':piece_list}
 	return render_to_response('hexanhome/profil.html',context_dixt,context)
 
 @login_required(login_url='/login/')
@@ -124,6 +124,28 @@ def AjoutActionneur2(request):
 		type_list= Type.objects.all()
 		context_dixt['types'] = type_list	
 		return render_to_response('hexanhome/AjoutActionneur2.html',context_dixt,context)
+
+def register(request):
+	context = RequestContext(request)
+	if request.method == 'POST':
+		user_form = UserForm(data=request.POST)
+		if user_form.is_valid() :
+			user = user_form.save()
+			user.set_password(user.password)
+			user.save()
+			new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
+			if new_user is not None:
+				login(request, new_user)
+				return HttpResponseRedirect('/home')
+			else : 
+				return HttpResponseRedirect('/home')
+		else:
+			return render_to_response('hexanhome/register.html',{'user_form': user_form,'erreur':'true'},context)
+
+	else:
+		user_form = UserForm()
+
+		return render_to_response('hexanhome/register.html',{'user_form': user_form},context)
 
 @login_required(login_url='/login/')
 def AjoutCapteur(request):

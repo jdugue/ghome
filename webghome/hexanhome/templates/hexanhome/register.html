@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+  {% if user_form %}
+    <h1>Register</h1>
+    <form id="register_form" method="POST" action="/register/">
+     {% csrf_token %}
+    <div>
+      {% for field in user_form %}
+        <div class="form-group {%if erreur %}{%if field.errors %}has-error {%else%} {% if field.label != 'Password' %} has-success {%endif%} {%endif%}  {%endif%}">
+        <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+          {{field}}
+          {% if field.errors %}
+            <span class="help-inline">
+              {% for error in field.errors %}
+                {{ error }}
+                <br/> 
+              {% endfor %}
+            </span>
+
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <input type="submit" value="Submit"  class="btn btn-default">
+    </form>
+  {% endif %}
+{% endblock %}
