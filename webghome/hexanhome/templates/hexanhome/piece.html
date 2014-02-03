@@ -32,6 +32,11 @@
 								</br>
 							{% endif %}
 
+				            <i class="fa fa-pencil-square-o"> fa-pencil-square-o</i>
+                        </div>
+                    </div>
+                </div>
+
 							<div class="checkbox">
 								<label>
 									<input type="checkbox"> 
@@ -52,11 +57,12 @@
 </div>
 
 <div class="panel panel-primary">
-	<div class="panel-heading">
-		<h3 class="panel-title">Liste des actionneur</h3>
-	</div>
-	<div class="panel-body">
-		{% if actionneur %}
+
+  	<div class="panel-heading">
+  		<h3 class="panel-title">Liste des actionneurs</h3>
+  	</div>
+  	<div class="panel-body">
+			{% if actionneur %}
 			{% for actionneurs in actionneur %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">

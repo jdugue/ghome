@@ -12,4 +12,5 @@ urlpatterns = patterns('hexanhome.views',
     url(r'^config/AjoutCapteur/$','AjoutCapteur'), 	
     url(r'^login/$', 'login_view'),
     url(r'^logout/$', 'logout_view'),
+    url(r'^register/$','register'),
 )
