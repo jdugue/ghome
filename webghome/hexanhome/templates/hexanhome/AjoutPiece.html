@@ -1,32 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Ajout Pièce{% endblock %}
 {% block content %}
-{% if form %}
-<h1>Ajout d'une pièce:</h1>
-<form id="category_form" method="post" action="/config/AjoutPiece/">
-	<div>
-		{% csrf_token %}
-	  	{% for field in form %}
-        <div class="form-group">
-  			<label >{{ field.label }}</label>
-      		<input type="text" class="form-control" name="{{ field.name }}" id="id_{{ field.name }}" placeholder="{{ field.value  }}" > 
-      		{% if field.errors %}
-      		 	<span class="help-inline">
-      		 		{% for error in field.errors %}
-      		 		{{ error }}
-      		 		<br/> 
-      		 		{% endfor %}
-      		 	</span>
-      			 {% if field.help_text%}
-            	<p class="help-block">
-                	{{ field.help_text}}
-            	</p>
-        		{% endif %}
-       		{% endif %}
-       	</div>
-		{% endfor %}
-	</div>
-  	<input type="submit" value="Submit"  class="btn btn-default">
-</form>
-{% endif %}
+	<h1>Ajout d'une pièce:</h1>
+	<form id="category_form" method="post" action="/config/AjoutPiece/">
+	 	{% csrf_token %}
+	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
+			<label class="control-label" for="NomPiece">Nom</label>
+			<input type="text" class="form-control" name="NomPiece" id="NomPiece" placeholder="Enter nom">
+			{%if erreur %}
+	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+	        	<span class="help-block">{{erreur}}</span>
+	        {%endif%}
+	  	</div>
+		<input type="submit" value="Entrer"  class="btn btn-default">
+  </form>
+
 {% endblock %}

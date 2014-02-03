@@ -85,17 +85,17 @@ def config(request):
 def AjoutPiece(request):
 	context = RequestContext(request)
 	if request.method =='POST':
-		form = PieceForm(request.POST)
-		if form.is_valid():
-			form.save(commit=True)
-			piece_list = Piece.objects.all()
-			context_dixt={'pieces':piece_list}
-			return render_to_response('hexanhome/profil.html',context_dixt,context)
-		else:
-			return render_to_response('hexanhome/AjoutPiece.html', { 'form' : form},context)
+		nompiece = request.POST['NomPiece']
+		try:
+			piece = Piece.objects.get(nom = nompiece)
+			return render_to_response('hexanhome/AjoutPiece.html', { 'erreur' : 'Une piece de ce nom existe deja'},context)
+		except Piece.DoesNotExist:
+			pieceurl = nompiece.replace(' ','_')
+			piece = Piece(nom = nompiece, url= pieceurl, user = request.user)
+			piece.save()
+			return HttpResponseRedirect('/home')
 	else :
-		form = PieceForm()
-		return render_to_response('hexanhome/AjoutPiece.html', { 'form' : form},context)
+		return render_to_response('hexanhome/AjoutPiece.html',context)
 
 @login_required(login_url='/login/')
 def AjoutActionneur2(request):
@@ -156,23 +156,33 @@ def AjoutCapteur(request):
 		piece_name = request.POST['nomPiece']
 		nomcapteur = request.POST['NomCapteur']
 		identifiant = request.POST['numeroIdentifiant']
-		capteurtype = request.POST['capteurtype']
-		piece = Piece.objects.get(nom=piece_name)
-		capteur = Capteur( user = request.user,identifiant = identifiant, nom = nomcapteur, id_piece = piece, capteurtype = capteurtype )	
-		capteur.save()
-		type = Type.objects.get(nom = 'bool')
-		if(capteurtype == 'D'):
-			attribut = Attribut(nom= 'presence' ,valeur=None, id_type= type , identifiant=identifiant)
-			attribut.save()
-			attribut = Attribut(nom= 'luminosite' ,valeur=None, id_type= type , identifiant=identifiant)
-			attribut.save()
-		elif(capteurtype == 'F'):
-			attribut = Attribut(nom= 'contact' ,valeur=None, id_type= type , identifiant=identifiant)
-			attribut.save()
-		elif(capteurtype == 'C'):
-			attribut = Attribut(nom= 'temperature' ,valeur=None, id_type= type , identifiant=identifiant)
-			attribut.save()
-		return HttpResponseRedirect('/home')
+		try:
+			capteur = Capteur.objects.get(identifiant = identifiant )
+			piece_list = Piece.objects.all()
+			capteur_list = Capteur.objects.all()
+			context_dixt={'pieces':piece_list}
+			context_dixt['capteurs'] = capteur_list
+			context_dixt['typeCapteur_CHOICES']=Capteur.typeCapteur_CHOICES
+			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
+			return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
+		except Capteur.DoesNotExist:
+			capteurtype = request.POST['capteurtype']
+			piece = Piece.objects.get(nom=piece_name)
+			capteur = Capteur( user = request.user,identifiant = identifiant, nom = nomcapteur, id_piece = piece, capteurtype = capteurtype )	
+			capteur.save()
+			type = Type.objects.get(nom = 'bool')
+			if(capteurtype == 'D'):
+				attribut = Attribut(nom= 'presence' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut.save()
+				attribut = Attribut(nom= 'luminosite' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut.save()
+			elif(capteurtype == 'F'):
+				attribut = Attribut(nom= 'contact' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut.save()
+			elif(capteurtype == 'C'):
+				attribut = Attribut(nom= 'temperature' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut.save()
+			return HttpResponseRedirect('/home')
 	else :
 		piece_list = Piece.objects.all()
 		capteur_list = Capteur.objects.all()
@@ -239,8 +249,6 @@ def home(request):
 		piece.delete()	
 		return HttpResponseRedirect('/home/')
 	else:
-		list_capteurs = Capteur.objects.all()
-		parsed= '' 
 		w = weather.WeatherDownloader('Lyon')
 		parsed = w.getCurrentWeatherData()
-		return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'weather': parsed}, context_instance=RequestContext(request))
+		return render_to_response('hexanhome/home.html', { 'weather': parsed}, context_instance=RequestContext(request))

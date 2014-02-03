@@ -20,7 +20,11 @@
                                         </div>
                                         <div class="panel-body">
                                             {% for capteurvalue in capteur.attr_capteur_set.all%}
-                                                <h3>{{ capteurvalue.id_attr.valeur }}</h3>
+                                                {% if capteurvalue.id_attr.valeur  == '' %}
+                                                    <h3>None</h3>
+                                                {%else%}
+                                                    <h3>{{ capteurvalue.id_attr.valeur }}</h3>
+                                                {%endif%}
                                             {% endfor %}
                                         </div>
                                      </div>
@@ -38,7 +42,7 @@
             {% endfor %}
 
         </div>
-        {% if weather.current_temp != ''%}
+        {% if weather.description != ' '%}
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Météo</h3>

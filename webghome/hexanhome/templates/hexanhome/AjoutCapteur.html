@@ -29,20 +29,24 @@
 	  				{% endfor %}
 	  			</SELECT>
 	  		</div>
-	  	{% endif %}	
+	  	{% endif %}
 	  	{% if typeCapteur_CHOICES %}
 			<div class="form-group">
-				<label>Pièce</label>
+				<label>Type</label>
 				<SELECT name="capteurtype" size="1">
 					{% for typecapteur in typeCapteur_CHOICES %}
 						<OPTION value="{{typecapteur.0}}" >{{ typecapteur.1}}
 	  				{% endfor %}
 	  			</SELECT>
 	  		</div>
-	  	{% endif %}
-	      <div class="form-group">
-	        <label>Identifiant</label>
-	        <input type="text" class="form-control" name="numeroIdentifiant" id="numeroIdentifiant" placeholder="Enter identifiant">
+	  	{% endif %}	
+	      <div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
+	        <label class="control-label"  for="numeroIdentifiant">Identifiant</label>
+	        <input type="text" class="form-control " name="numeroIdentifiant" id="numeroIdentifiant" placeholder="Enter identifiant">
+	        {%if erreurID %}
+	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+	        	<span class="help-block">{{erreurID}}</span>
+	        {%endif%}
 	      </div>
 		<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
 	</form>
