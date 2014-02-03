@@ -1,40 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Ajout Capteur{% endblock %}
 {% block header%}
-<script language="JavaScript">
-  function Lien()
-  {
-	optionSelect = document.formulaire.numeroIdentifiant.selectedIndex;
-	numCapteur=document.formulaire.numeroIdentifiant.options[optionSelect].value;
-	champNom=document.formulaire.NomCapteur;
-	champNom.imput.value=nomCapteur;
-  }
+	<script language="JavaScript">
+	  function Lien()
+	  {
+		optionSelect = document.formulaire.numeroIdentifiant.selectedIndex;
+		numCapteur=document.formulaire.numeroIdentifiant.options[optionSelect].value;
+		champNom=document.formulaire.NomCapteur;
+		champNom.imput.value=nomCapteur;
+	  }
 
-</script>
+	</script>
 {% endblock %}
 {% block content %}
-<h1>Ajout d'un capteur:</h1>
-<form id="category_form" name="formulaire" method="post" action="/config/AjoutCapteur/">
-	{% csrf_token %}
-	<div class="form-group">
-		<label>Nom</label>
-		<input type="text" class="form-control" name="NomCapteur" id="nomCapteur" placeholder="Enter nom">
-	</div>
-	{% if pieces %}
-	<div class="form-group">
-		<label>Pièce</label>
-		<SELECT name="nomPiece" size="1">
-			{% for piece in pieces %}
-				<OPTION>{{ piece.nom }}
-  			{% endfor %}
-  		</SELECT>
-  	</div>
-  	{% endif %}
-      <div class="form-group">
-        <label>Identifiant</label>
-        <input type="text" class="form-control" name="numeroIdentifiant" id="numeroIdentifiant" placeholder="Enter identifiant">
-      </div>
-	<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
-</form>
+	<h1>Ajout d'un capteur:</h1>
+	<form id="category_form" name="formulaire" method="post" action="/config/AjoutCapteur/">
+		{% csrf_token %}
+		<div class="form-group">
+			<label>Nom</label>
+			<input type="text" class="form-control" name="NomCapteur" id="nomCapteur" placeholder="Enter nom">
+		</div>
+		{% if pieces %}
+			<div class="form-group">
+				<label>Pièce</label>
+				<SELECT name="nomPiece" size="1">
+					{% for piece in pieces %}
+						<OPTION>{{ piece.nom }}
+	  				{% endfor %}
+	  			</SELECT>
+	  		</div>
+	  	{% endif %}	
+	  	{% if typeCapteur_CHOICES %}
+			<div class="form-group">
+				<label>Pièce</label>
+				<SELECT name="capteurtype" size="1">
+					{% for typecapteur in typeCapteur_CHOICES %}
+						<OPTION value="{{typecapteur.0}}" >{{ typecapteur.1}}
+	  				{% endfor %}
+	  			</SELECT>
+	  		</div>
+	  	{% endif %}
+	      <div class="form-group">
+	        <label>Identifiant</label>
+	        <input type="text" class="form-control" name="numeroIdentifiant" id="numeroIdentifiant" placeholder="Enter identifiant">
+	      </div>
+		<input type="submit" value="Valider" name="AjoutCapteur"  class="btn btn-default">
+	</form>
 
 {% endblock %}

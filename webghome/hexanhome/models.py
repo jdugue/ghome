@@ -5,17 +5,17 @@ from django.contrib.auth.models import User
 
 #Class for user registration
 class UserProfile(models.Model):
-    # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(User)
+	# This line is required. Links UserProfile to a User model instance.
+	user = models.OneToOneField(User)
 
-    # The additional attributes we wish to include.
-    website = models.URLField(blank=True)
-    # Install PIL before uncomment this line
-    # picture = models.ImageField(upload_to='profile_images', blank=True)
+	# The additional attributes we wish to include.
+	website = models.URLField(blank=True)
+	# Install PIL before uncomment this line
+	# picture = models.ImageField(upload_to='profile_images', blank=True)
 
-    # Override the __unicode__() method to return out something meaningful!
-    def __unicode__(self):
-        return self.user.username
+	# Override the __unicode__() method to return out something meaningful!
+	def __unicode__(self):
+		return self.user.username
 
 #TODO
 class Profil_activation(models.Model):
@@ -58,10 +58,11 @@ class Capteur(models.Model):
 	id_piece = models.ForeignKey(Piece,null = True, blank = True)
 	identifiant = models.IntegerField()
 	typeCapteur_CHOICES = (
-    ('détzctzue de présence et de luminosité'),
-    ('Contatc de fenêtre'),
-    ('Capteur température')
-)
+		('D','détecteur de présence et de luminosité'),
+		('F','Contact de fenêtre'),
+		('C','Capteur température')	
+	)
+	capteurtype = models.CharField(max_length=1, choices=typeCapteur_CHOICES)
 	def __unicode__(self):
 		return unicode(self.nom)
 
@@ -95,7 +96,7 @@ class Attribut(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)
-	valeur = models.IntegerField()
+	valeur = models.IntegerField(blank = True,null = True)
 	#foreign key vers les type
 	id_type = models.ForeignKey(Type)
 	identifiant = models.IntegerField()

@@ -156,17 +156,29 @@ def AjoutCapteur(request):
 		piece_name = request.POST['nomPiece']
 		nomcapteur = request.POST['NomCapteur']
 		identifiant = request.POST['numeroIdentifiant']
+		capteurtype = request.POST['capteurtype']
 		piece = Piece.objects.get(nom=piece_name)
-		capteur = Capteur( identifiant = identifiant, nom = nomcapteur, id_piece = piece)	
+		capteur = Capteur( user = request.user,identifiant = identifiant, nom = nomcapteur, id_piece = piece, capteurtype = capteurtype )	
 		capteur.save()
-		piece_name = piece_name.replace(' ', '_')
-		url = '/profil/piece/' + piece_name +'/'
-		return HttpResponseRedirect(url)
+		type = Type.objects.get(nom = 'bool')
+		if(capteurtype == 'D'):
+			attribut = Attribut(nom= 'presence' ,valeur=None, id_type= type , identifiant=identifiant)
+			attribut.save()
+			attribut = Attribut(nom= 'luminosite' ,valeur=None, id_type= type , identifiant=identifiant)
+			attribut.save()
+		elif(capteurtype == 'F'):
+			attribut = Attribut(nom= 'contact' ,valeur=None, id_type= type , identifiant=identifiant)
+			attribut.save()
+		elif(capteurtype == 'C'):
+			attribut = Attribut(nom= 'temperature' ,valeur=None, id_type= type , identifiant=identifiant)
+			attribut.save()
+		return HttpResponseRedirect('/home')
 	else :
 		piece_list = Piece.objects.all()
 		capteur_list = Capteur.objects.all()
 		context_dixt={'pieces':piece_list}
 		context_dixt['capteurs'] = capteur_list
+		context_dixt['typeCapteur_CHOICES']=Capteur.typeCapteur_CHOICES
 		return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
 
 @login_required(login_url='/login/')
