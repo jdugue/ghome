@@ -40,45 +40,51 @@ class Database:
 			return MySQLdb.connect(self.host, self.user, self.passwd, self.db_name)
 		except MySQLdb.Error, e:
 			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+			return False
 	
 
 	def executeQuery (self, request):
-		db = self.connectDb()
-		cursor = db.cursor()
+		
+		cursor = self.db.cursor()
 		cursor.execute(request)
 		result = cursor.fetchall()
 		cursor.close()
-		db.close()
 		return result
 
 	def executeUpdate (self, request):
-		db = self.connectDb()
-		cursor = db.cursor()
+		cursor = self.db.cursor()
 		try:
 			cursor.execute(request)		
 			db.commit()
-			db.close()
+			cursor.close()
 			return True
 		except MySQLdb.Error, e:
 			db.rollback()
 			cursor.close()
 			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
-			db.close()
 			return False
 
 
 	def isIdPresentOnDb(self, id):
-		resultCapteur = self.executeQuery('SELECT identifiant FROM hexanhome_capteur WHERE identifiant={0};'.format(id))
-		resultActionneur = False # self.execute('SELECT id_piece_id FROM hexanhome_piece WHERE id={0};'.format(id))
-		if (resultCapteur or resultActionneur):
-			return True
+		# Renvoit False, si pas pu se connecter ou si pas dans la base
+		self.db = self.connectDb()
+		if(self.db):
+			resultCapteur = self.executeQuery('SELECT identifiant FROM hexanhome_capteur WHERE identifiant={0};'.format(id))
+			resultActionneur = False # self.execute('SELECT id_piece_id FROM hexanhome_piece WHERE id={0};'.format(id))
+			self.db.close()
+			if (resultCapteur or resultActionneur):
+				return True
 		else:
 			return False
 
-	def updateValueForCapteur(self, idCapteur, value):
-		updateRequest = 'UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant={1}'.format(value,idCapteur)
-		self.executeUpdate(updateRequest)
-		
+	def updateValueForCapteur(self, idCapteur, value, name):
+		# Row exists when sensor is already created on the webserver
+		self.db = self.connectDb()
+		if(self.db):
+			updateRequest = 'UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant={1} AND nom={2}'.format(value,idCapteur,name)
+			self.executeUpdate(updateRequest)
+			self.db.close()
+
 
 def traiterTrame(trame):
 	tr = Trame(trame)
@@ -93,3 +99,14 @@ def trameIdentifiee (trame):
 def majDonnees(trame):
 	# Mettre à jour la base de données avec les données de la trame
 	pass
+	
+################## COMMUNICATION ACTIONNEURS #######################
+def listenWebServer ():
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	server_adress = ('localhost', 8080)
+	sock.connect(server_adress)
+	while True:
+		data = sock.recv(2048)
+		# Envoyer login/mot de passe #
+		# Traiter la trame #
+####################################################################

@@ -1,0 +1,13 @@
+Serveur cote Django
+port 8080
+TCP
+
+G: CONNECT_vincent_vvevinte  ( CONNECT_user_password )
+D: OK
+D: LOGIN_FAILED
+
+D: ON_xxxx  ( ON_idactionneur )
+G: OK
+
+D: OFF_xxxx ( OFF_idactionneur )
+G: OK
