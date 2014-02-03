@@ -1,4 +1,4 @@
-<nav class="navbar navbar-custom" role="navigation">
+<nav class="navbar navbar-inverse" role="navigation">
 	<div class="container">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
@@ -12,19 +12,19 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="/home">Home</a></li>
+				<li id="li_home"><a href="/home">Home</a></li>
 				{% if user.is_authenticated %}
-				<li><a href="/profil">Profil</a></li>
-				<li><a href="/config">Config</a></li>
+				<li id="li_profil"><a href="/profil">Profil</a></li>
+				<li id="li_config"><a href="/config">Config</a></li>
 				{% else %}
-				<li><a href="/register">Register</a></li>
+				<li id="li_register"><a href="/register">Register</a></li>
 				{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				{% if user.is_authenticated %}
-					<li><a href="/logout">Logout</a></li>
+					<li id="li_logout"><a href="/logout">Logout</a></li>
 				{% else %}
-					<li><a href="/login">Login</a></li>
+					<li id="li_login"><a href="/login">Login</a></li>
 				{% endif %}
 			</ul>
 		</div> <!-- /.navbar-collapse -->

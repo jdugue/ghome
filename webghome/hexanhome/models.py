@@ -21,31 +21,49 @@ class UserProfile(models.Model):
 class Profil_activation(models.Model):
 	"""a définir"""
 	id = models.AutoField(primary_key=True)
-	nom = models.CharField(max_length=200)			
+	nom = models.CharField(max_length=200)	
+	def __unicode__(self):
+		return unicode(self.nom)		
 
 class Profil(models.Model):
 	"""CLasse pour les profils définit par l'utilisateurs"""
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)	
 	etat = models.BooleanField()
+	def __unicode__(self):
+		return unicode(self.nom)
 
 class Type(models.Model):
 	"""le type de la valeur renvoyé par le capteur : temperateur, allumé/éteint, etc ..."""
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)	
+	def __unicode__(self):
+		return unicode(self.nom)
 
 class Piece(models.Model):
 	"""Piece dans laquelle se trouve le Capteur/Actionneur"""
 	id = models.AutoField(primary_key=True)
-	nom = models.CharField(max_length=200)		
+	nom = models.CharField(max_length=200)	
+	url= models.CharField(max_length=200)
+	user = models.ForeignKey(User)
+	def __unicode__(self):
+		return unicode(self.nom)	
 
 class Capteur(models.Model):
 	"""Classe permettant de representer un Capteur"""
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200 , blank=True)
 	#foreign key vers les pieces
+	user = models.ForeignKey(User)
 	id_piece = models.ForeignKey(Piece,null = True, blank = True)
 	identifiant = models.IntegerField()
+	typeCapteur_CHOICES = (
+    ('détzctzue de présence et de luminosité'),
+    ('Contatc de fenêtre'),
+    ('Capteur température')
+)
+	def __unicode__(self):
+		return unicode(self.nom)
 
 class Actionneur(models.Model):
 	"""Classe permettant de representer un Actionneur"""
@@ -54,9 +72,11 @@ class Actionneur(models.Model):
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
 	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
-	#0 ou 1 pour éteint ou allumé
 	valeur = models.BooleanField()
+	user = models.ForeignKey(User)
+	id_actionneur = models.IntegerField()
+	def __unicode__(self):
+		return unicode(self.nom)
 
 class Profil_Act(models.Model):
 	"""Modalité d'activation pour un profil"""
@@ -64,6 +84,8 @@ class Profil_Act(models.Model):
 	id_act = models.ForeignKey(Actionneur)
 	id_profil = models.ForeignKey(Profil)
 	nouvelle_val = models.IntegerField()
+	def __unicode__(self):
+		return unicode(self.id_act)
 
 # class Users(models.Model):
 # 	"""Classe permettant de representer un Actionneur"""
@@ -77,6 +99,8 @@ class Attribut(models.Model):
 	#foreign key vers les type
 	id_type = models.ForeignKey(Type)
 	identifiant = models.IntegerField()
+	def __unicode__(self):
+		return unicode(self.nom)
 
 class Attr_Capteur(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
@@ -87,3 +111,5 @@ class Attr_Capteur(models.Model):
 	id_capt = models.ForeignKey(Capteur)
 	#foreign key vers les Attributs
 	id_attr = models.ForeignKey(Attribut)
+	def __unicode__(self):
+		return unicode(self.id_capt)

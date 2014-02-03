@@ -221,7 +221,14 @@ def piece(request, piece_name_url):
 
 @login_required(login_url='/login/')
 def home(request):
-    list_capteurs = Capteur.objects.all()
-    w = weather.WeatherDownloader('Lyon')
-    parsed = w.getCurrentWeatherData()
-    return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'weather': parsed}, context_instance=RequestContext(request))
+	if request.method =='POST':
+		piece_nom=request.POST['piece_nom']
+		piece = Piece.objects.get(nom=piece_nom)
+		piece.delete()	
+		return HttpResponseRedirect('/home/')
+	else:
+		list_capteurs = Capteur.objects.all()
+		parsed= '' 
+		w = weather.WeatherDownloader('Lyon')
+		parsed = w.getCurrentWeatherData()
+		return render_to_response('hexanhome/home.html', { 'list_capteurs': list_capteurs, 'weather': parsed}, context_instance=RequestContext(request))

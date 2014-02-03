@@ -8,6 +8,7 @@
 			<link rel="stylesheet" href="{% static 'hexanhome/css/bootstrap.min.css'  %}" type="text/css">
 			<link rel="stylesheet" href="{% static 'hexanhome/css/bootstrap-extensions.css' %}">
 			<link rel="stylesheet" href="{% static 'hexanhome/css/font-awesome.min.css.css' %}">
+			<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 			<script src="{% static 'hexanhome/js/jquery-2.1.0.js' %}"></script>
     		<script src="{% static 'hexanhome/js/bootstrap.js' %}"></script>
 		
@@ -29,6 +30,38 @@
 
 	</body>
 <footer>
+		<script language="JavaScript">
+	    	function FindCurrentName(){
+	    		PageName = document.location.href;
+	    		while(PageName != ''){
+	    			LastPageName = PageName;
+	    			PageName=PageName.substring(PageName.indexOf('/')+1);
+	    		}
+	    		return  LastPageName.toLowerCase();
+	    	}
+
+			$(document).ready(function(){
+				CurrentPage = FindCurrentName();
+				switch(CurrentPage){
+					case'home/':
+						$('#li_home').addClass('active');	
+						break;
+					case'profil/':
+						$('#li_profil').addClass('active');	
+						break;
+					case'config/':
+						$('#li_config').addClass('active');	
+						break;
+					case'register/':
+						$('#li_register').addClass('active');	
+						break;
+					case'login/':
+						$('#li_login').addClass('active');
+						break;
+					}
+
+			});
+		</script>
 	{%block footer%}{% endblock %}
 
 </footer>

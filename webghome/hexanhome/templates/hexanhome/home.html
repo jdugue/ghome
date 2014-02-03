@@ -1,27 +1,75 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
-{% block head %}Home{% endblock %}
 {% block content %}
 
 	{% if user.is_authenticated %}
-		<h1>Hey Coucou !</h1>
-	{% else %}
-		<h1>Auth Bitch !</h1>
-	{% endif %}
+        <div class="row" >
+            {% for piece in user.piece_set.all%}
+                <div class="col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{piece.nom}}</h3>
+                        </div>
+                        <div class="panel-body">
+                        {% for capteur in piece.capteur_set.all%}
+                            <div class="row" >
+                                <div class="col-md-6">
+                                     <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">{{capteur.nom}}</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            {% for capteurvalue in capteur.attr_capteur_set.all%}
+                                                <h3>{{ capteurvalue.id_attr.valeur }}</h3>
+                                            {% endfor %}
+                                        </div>
+                                     </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                            <form id="category_form" method="post" action="/home/">
+                                {% csrf_token %}
+                                <input type="hidden" name="piece_nom" value="{{piece.nom}}">
+                                <button type="submit" class="btn btn-danger btn-lg btn-block">Supprimer pièce</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
 
-    {% for c in list_capteurs%}
-        {{c.nom}}
-        <br>
-    {% endfor %}
+        </div>
+        {% if weather.current_temp != ''%}
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Météo</h3>
+                </div>
+                <div class="panel-body">
+                    {% if weather.current_temp < 0 %}
+                        <div class="row" >
+                            <div class="col-md-8">
+                                <img  style="display:table-cell; vertical-align:middle;" alt="" src="{{MEDIA_URL}}meteo/j_ai_froid" width="50%"/>
+                                <h3  style="display:table-cell; vertical-align:middle;">Temperature: {{weather.current_temp}}&deg;C </h3>
+                            </div>
+                            <div class="col-md-4">
+                                <p style ="vertical-align:middle;">    Description: {{weather.description}} </p>
+                            </div>
+                        </div>
+                    {%else%}
+                        <div class="row" >
+                            <div class="col-md-8">
+                                <h3  style="display:table-cell; vertical-align:middle;">Temperature: {{weather.current_temp}}&deg;C </h3>
+                            </div>
+                            <div class="col-md-4">
+                                <p style ="vertical-align:middle;">    Description: {{weather.description}} </p>
+                            </div>
+                        </div>
+                    {% endif%}
 
-    <p>
-        Temperature: {{weather.current_temp}}&deg;C <br>
-        Description: {{weather.description}} 
-    </p>
+                </div>
+            </div>
+            {% endif%}
+    {% endif %}
 
-    <div class="row">
-     <div class="span4">4 colonnes</div>
-     <div class="span8">8 colonnes</div>
-   </div>
+  
 
 {% endblock %}
