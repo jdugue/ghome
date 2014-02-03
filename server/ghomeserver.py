@@ -93,3 +93,14 @@ def trameIdentifiee (trame):
 def majDonnees(trame):
 	# Mettre à jour la base de données avec les données de la trame
 	pass
+	
+################## COMMUNICATION ACTIONNEURS #######################
+def listenWebServer ():
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	server_adress = ('localhost', 8080)
+	sock.connect(server_adress)
+	while True:
+		data = sock.recv(2048)
+		# Envoyer login/mot de passe #
+		# Traiter la trame #
+####################################################################
