@@ -98,32 +98,31 @@ def AjoutPiece(request):
 		return render_to_response('hexanhome/AjoutPiece.html',context)
 
 @login_required(login_url='/login/')
-def AjoutActionneur2(request):
+def AjoutActionneur(request):
 	c = {}
    	c.update(csrf(request))
    	context = RequestContext(request)
 	if request.method =='POST':
-		piece_name = request.POST['nomPiece']
-		type_name = request.POST['nomType']
-		nomactionneur = request.POST['NomActionneur']
-		value= request.POST['Value1']
-		if(value == 'option1'):
-			value=0
-		else:
-			value=1
-		typeselect = Type.objects.get(nom =type_name)
-		piece = Piece.objects.get(nom=piece_name)
-		actionneur = Actionneur(nom = nomactionneur, id_piece = piece,id_type = typeselect,valeur= value)
-		actionneur.save()
-		piece_name = piece_name.replace(' ', '_')
-		url = '/profil/piece/' + piece_name +'/'
-		return HttpResponseRedirect(url)
+		identifiant = request.POST['NumeroIdentifiant']
+		try:
+			actionneur = Actionneur.objects.get(identifiant = identifiant)
+			piece_list = Piece.objects.all()
+			context_dixt={'pieces':piece_list}
+			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
+			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+		except:
+			piece_name = request.POST['nomPiece']
+			nomactionneur = request.POST['NomActionneur']
+			piece = Piece.objects.get(nom=piece_name)
+			actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece,identifiant= identifiant)
+			actionneur.save()
+			piece_name = piece_name.replace(' ', '_')
+			url = '/profil/piece/' + piece_name +'/'
+			return HttpResponseRedirect(url)
 	else :
 		piece_list = Piece.objects.all()
 		context_dixt={'pieces':piece_list}
-		type_list= Type.objects.all()
-		context_dixt['types'] = type_list	
-		return render_to_response('hexanhome/AjoutActionneur2.html',context_dixt,context)
+		return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
 
 def register(request):
 	context = RequestContext(request)
@@ -172,16 +171,24 @@ def AjoutCapteur(request):
 			capteur.save()
 			type = Type.objects.get(nom = 'bool')
 			if(capteurtype == 'D'):
-				attribut = Attribut(nom= 'presence' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut = Attribut(nom= 'présence' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
-				attribut = Attribut(nom= 'luminosite' ,valeur=None, id_type= type , identifiant=identifiant)
+				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur.save()
+				attribut = Attribut(nom= 'luminosité' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
+				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur.save()
 			elif(capteurtype == 'F'):
 				attribut = Attribut(nom= 'contact' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
+				Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur.save()
 			elif(capteurtype == 'C'):
-				attribut = Attribut(nom= 'temperature' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut = Attribut(nom= 'température' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
+				Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur.save()
 			return HttpResponseRedirect('/home')
 	else :
 		piece_list = Piece.objects.all()
@@ -244,10 +251,19 @@ def piece(request, piece_name_url):
 @login_required(login_url='/login/')
 def home(request):
 	if request.method =='POST':
-		piece_nom=request.POST['piece_nom']
-		piece = Piece.objects.get(nom=piece_nom)
-		piece.delete()	
-		return HttpResponseRedirect('/home/')
+		if'Supp_piece' in request.POST:
+			piece_nom=request.POST['piece_nom']
+			piece = Piece.objects.get(nom=piece_nom)
+			piece.delete()	
+			return HttpResponseRedirect('/home/')
+		elif 'Supp_capteur' in request.POST:
+			capteur_id=request.POST['capteur_identifiant']
+			capteur = Capteur.objects.get(identifiant = capteur_id)
+			for capteurvalue in capteur.attr_capteur_set.all():
+				capteurvalue.id_attr.delete()
+				capteurvalue.delete()
+			capteur.delete()
+			return HttpResponseRedirect('/home/')
 	else:
 		w = weather.WeatherDownloader('Lyon')
 		parsed = w.getCurrentWeatherData()

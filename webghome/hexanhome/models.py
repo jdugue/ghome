@@ -73,9 +73,9 @@ class Actionneur(models.Model):
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
 	#foreign key vers les type
-	valeur = models.BooleanField()
+	valeur = models.BooleanField(default =False)
 	user = models.ForeignKey(User)
-	id_actionneur = models.IntegerField()
+	identifiant = models.IntegerField()
 	def __unicode__(self):
 		return unicode(self.nom)
 

@@ -20,12 +20,18 @@
                                         </div>
                                         <div class="panel-body">
                                             {% for capteurvalue in capteur.attr_capteur_set.all%}
-                                                {% if capteurvalue.id_attr.valeur  == '' %}
-                                                    <h3>None</h3>
+                                                    <h2>{{capteurvalue.id_attr}} :</h2>
+                                                {% if capteurvalue.id_attr.valeur == ''  %}
+                                                    <h5>None</h5>
                                                 {%else%}
                                                     <h3>{{ capteurvalue.id_attr.valeur }}</h3>
                                                 {%endif%}
                                             {% endfor %}
+                                            <form id="category_form" method="post" action="/home/">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="capteur_identifiant" value="{{capteur.identifiant}}">
+                                                <button type="submit" name="Supp_capteur"class="btn btn-danger ">Supprimer Capteur</button>
+                                            </form>
                                         </div>
                                      </div>
                                 </div>
@@ -34,7 +40,7 @@
                             <form id="category_form" method="post" action="/home/">
                                 {% csrf_token %}
                                 <input type="hidden" name="piece_nom" value="{{piece.nom}}">
-                                <button type="submit" class="btn btn-danger btn-lg btn-block">Supprimer pièce</button>
+                                <button type="submit" name="Supp_piece"class="btn btn-danger ">Supprimer pièce</button>
                             </form>
                         </div>
                     </div>
@@ -42,7 +48,7 @@
             {% endfor %}
 
         </div>
-        {% if weather.description != ' '%}
+        {% if weather != ''%}
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Météo</h3>
