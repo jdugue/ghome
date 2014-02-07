@@ -6,6 +6,7 @@ import sys
 import re
 import MySQLdb
 import ConfigParser
+from thread import *
 
 class Trame:
 	def __init__(self, trame):
@@ -22,7 +23,7 @@ class Trame:
 		def gethseq(): return self.hseq
 		def getorg(): return self.org
 		def getdb(): return self.data_bytes
-		def getid(): return self.id_butes
+		def getid(): return self.id_bytes
 		def getstatus(): return self.status
 		def getchecksum(): return self.checksum
 		
