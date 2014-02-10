@@ -34,9 +34,9 @@ def index(request):
     return render(request , 'hexanhome/index.html')
 
 def login_view(request):
-    username = request.POST.get('username', '')
+    email = request.POST.get('email', '')
     password = request.POST.get('password', '')
-    user = authenticate(username=username, password=password)
+    user = authenticate(email=email, password=password)
     if user is not None:
     	if user.is_active:
 	        # Correct password, and the user is marked "active"
