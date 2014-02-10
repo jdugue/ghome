@@ -3,6 +3,7 @@
 {% block content %}
 
 	{% if user.is_authenticated %}
+    <h3>{{user.email}}</h3>
         <div class="row" >
             {% for piece in user.piece_set.all%}
                 <div class="col-md-6">
@@ -71,7 +72,7 @@
             {% endfor %}
 
         </div>
-        {% if weather != ''%}
+        {% if weather != ' '%}
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Météo</h3>

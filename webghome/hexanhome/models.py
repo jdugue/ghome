@@ -21,9 +21,7 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email,
-                          is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser, **extra_fields)
+        user = self.model(email=email,is_staff=is_staff, is_active=True,is_superuser=is_superuser, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -75,6 +73,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         "Returns the short name for the user."
         return self.first_name
+
+    def get_email(self):
+    	return self.email
 
     def email_user(self, subject, message, from_email=None):
         """
@@ -164,7 +165,7 @@ class Attribut(models.Model):
 	valeur = models.IntegerField(blank = True,null = True)
 	#foreign key vers les type
 	id_type = models.ForeignKey(Type)
-	identifiant = models.IntegerField()
+	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
 		return unicode(self.nom)
 

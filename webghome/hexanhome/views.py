@@ -30,43 +30,43 @@ from django.core.context_processors import csrf
 
 @login_required(login_url='/login/')
 def index(request):
-    # template = loader.get_template('hexanhome/index.html')
-    return render(request , 'hexanhome/index.html')
+	# template = loader.get_template('hexanhome/index.html')
+	return render(request , 'hexanhome/index.html')
 
 def login_view(request):
-    email = request.POST.get('email', '')
-    password = request.POST.get('password', '')
-    user = authenticate(email=email, password=password)
-    if user is not None:
-    	if user.is_active:
-	        # Correct password, and the user is marked "active"
-	        login(request, user)
-	        # Redirect to a success page.
-    	if request.GET.get('next', ''):
-    		next = request.POST.get('next', '')
-    		return HttpResponseRedirect(next)
-    	else:
-	        return HttpResponseRedirect("/home")
+	email = request.POST.get('email', '')
+	password = request.POST.get('password', '')
+	user = authenticate(email=email, password=password)
+	if user is not None:
+		if user.is_active:
+			# Correct password, and the user is marked "active"
+			login(request, user)
+			# Redirect to a success page.
+		if request.GET.get('next', ''):
+			next = request.POST.get('next', '')
+			return HttpResponseRedirect(next)
+		else:
+			return HttpResponseRedirect("/home")
 	# Show an error page
-    return render(request,'hexanhome/login.html')
+	return render(request,'hexanhome/login.html')
 	# return render_to_response('home.html', RequestContext(request))
 
 def logout_view(request):
-    logout(request)
-    # Redirect to a success page.
-    return HttpResponseRedirect("/login")
+	logout(request)
+	# Redirect to a success page.
+	return HttpResponseRedirect("/login")
 
 @login_required(login_url='/login/')
 def signup(request):
-    if request.POST:
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
-        new_user = User.objects.create_user(username=username, password=password)   
-        new_user.save()
-        return HttpResponseRedirect("/home")
-    else:
-        # form = RegistrationForm()
-        return render(request,'hexanhome/signup.html')
+	if request.POST:
+		username = request.POST.get('username', '')
+		password = request.POST.get('password', '')
+		new_user = User.objects.create_user(username=username, password=password)   
+		new_user.save()
+		return HttpResponseRedirect("/home")
+	else:
+		# form = RegistrationForm()
+		return render(request,'hexanhome/signup.html')
 
 @login_required(login_url='/login/')
 def profil(request):
@@ -77,7 +77,7 @@ def profil(request):
 
 @login_required(login_url='/login/')
 def config(request):
-    return render_to_response('hexanhome/config.html', RequestContext(request))
+	return render_to_response('hexanhome/config.html', RequestContext(request))
 
 @login_required(login_url='/login/')
 def AjoutPiece(request):
@@ -86,7 +86,13 @@ def AjoutPiece(request):
 		nompiece = request.POST['NomPiece']
 		try:
 			piece = Piece.objects.get(nom = nompiece)
-			return render_to_response('hexanhome/AjoutPiece.html', { 'erreur' : 'Une piece de ce nom existe deja'},context)
+			if piece.user.email == request.user.email:
+				return render_to_response('hexanhome/AjoutPiece.html', { 'erreur' : 'Une piece de ce nom existe deja'},context)
+			else:
+				pieceurl = nompiece.replace(' ','_')
+				piece = Piece(nom = nompiece, url= pieceurl, user = request.user)
+				piece.save()
+				return HttpResponseRedirect('/home')
 		except Piece.DoesNotExist:
 			pieceurl = nompiece.replace(' ','_')
 			piece = Piece(nom = nompiece, url= pieceurl, user = request.user)
@@ -98,8 +104,8 @@ def AjoutPiece(request):
 @login_required(login_url='/login/')
 def AjoutActionneur(request):
 	c = {}
-   	c.update(csrf(request))
-   	context = RequestContext(request)
+	c.update(csrf(request))
+	context = RequestContext(request)
 	if request.method =='POST':
 		identifiant = request.POST['NumeroIdentifiant']
 		try:
@@ -127,9 +133,9 @@ def register(request):
 	if request.method == 'POST':
 		user_form = CustomUserCreationForm(data=request.POST)
 		if user_form.is_valid() :
-			user = user_form.save()
-			user.set_password(user.password)
-			user.save()
+			email=request.POST['email']
+			password = request.POST['password1']
+			CustomUser.objects.create_user(email, password)
 			new_user = authenticate(email=request.POST['email'], password=request.POST['password1'])
 			if new_user is not None:
 				login(request, new_user)
@@ -147,9 +153,9 @@ def register(request):
 @login_required(login_url='/login/')
 def AjoutCapteur(request):
 	c = {}
-   	c.update(csrf(request))
-   	context = RequestContext(request)
-   	if request.method =='POST':
+	c.update(csrf(request))
+	context = RequestContext(request)
+	if request.method =='POST':
 		piece_name = request.POST['nomPiece']
 		nomcapteur = request.POST['NomCapteur']
 		identifiant = request.POST['numeroIdentifiant']
@@ -200,12 +206,12 @@ def AjoutCapteur(request):
 def piece(request, piece_name_url):
 	#permet l'utilisation de la méthode POST
 	c = {}
-   	c.update(csrf(request))
-   	context = RequestContext(request)
-   	#Change un underscore de l'url par un espace
-   	piece_name = piece_name_url.replace('_',' ')
-   	if request.method =='POST':
-   		if 'deleteroombutton' in request.POST:
+	c.update(csrf(request))
+	context = RequestContext(request)
+	#Change un underscore de l'url par un espace
+	piece_name = piece_name_url.replace('_',' ')
+	if request.method =='POST':
+		if 'deleteroombutton' in request.POST:
 			piece = Piece.objects.get(nom=piece_name)
 			piece.delete()	
 			return HttpResponseRedirect('/profil/')
