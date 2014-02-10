@@ -3,18 +3,19 @@
 {% block title %}Profil{% endblock %}
 
 {% block content %}
-	{% if pieces %}
-		<ul>
-		{% for room in pieces %}
-  		<a class="btn btn-default btn-xlarge "  href="/profil/piece/{{ room.url }}">{{room.nom}}</a>
-  		{% endfor %}
-  		</ul>
-  	{% else %}
-  			<li>"Aucune piéce n'a été créée"</li>
-  	{% endif %}
-  	<div>
-  		<h3>Ajout d'une pièce:</h3>
-		<a class="btn btn-default btn-lg btn-block"  href="/config/AjoutPiece">Ajout d'une pièce</a>
-	</div>
+	{% if profil_list %}
+		{% for profil in profil_list %}
+		<h5 id="profilAffichage" onClick="Redirect('/profil/settings/{{ profil.nom }}');" onmouseover="this.style.background='#428bca';" onmouseout="this.style.background='white'; ">{{profil.nom}}</h5>
+		{% endfor %}
+	{% endif%}
+	<a class="btn btn-default btn-lg btn-block " href='/profil/Ajouter_Profil' >Ajouter Profil</a>
 {% endblock %}
 
+{% block footer%}
+<script language="JavaScript">
+function Redirect(url){
+	window.location=url;
+}
+</script>
+
+{%endblock%}

@@ -13,4 +13,6 @@ urlpatterns = patterns('hexanhome.views',
     url(r'^login/$', 'login_view'),
     url(r'^logout/$', 'logout_view'),
     url(r'^register/$','register'),
+    url(r'^profil/settings/(?P<profil_name_url>\w+)/$','settings'),
+    url(r'profil/Ajouter_Profil/$','AjouterProfil'),
 )

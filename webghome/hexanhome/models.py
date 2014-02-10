@@ -2,22 +2,87 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.http import urlquote
+from django.utils.translation import ugettext_lazy as _
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-#Class for user registration
-class UserProfile(models.Model):
-	# This line is required. Links UserProfile to a User model instance.
-	user = models.OneToOneField(User)
 
-	# The additional attributes we wish to include.
-	website = models.URLField(blank=True)
-	# Install PIL before uncomment this line
-	# picture = models.ImageField(upload_to='profile_images', blank=True)
 
-	# Override the __unicode__() method to return out something meaningful!
-	def __unicode__(self):
-		return self.user.username
+class CustomUserManager(BaseUserManager):
 
+    def _create_user(self, email, password,
+                     is_staff, is_superuser, **extra_fields):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email,
+                          is_staff=is_staff, is_active=True,
+                          is_superuser=is_superuser, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        return self._create_user(email, password, False, False,
+                                 **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return self._create_user(email, password, True, True,
+                                 **extra_fields)
+
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    A fully featured User model with admin-compliant permissions that uses
+    a full-length email field as the username.
+
+    Email and password are required. Other fields are optional.
+    """
+    email = models.EmailField(_('email address'), max_length=254, unique=True)
+    ip_adress = models.URLField(blank = True)
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    is_staff = models.BooleanField(_('staff status'), default=False,
+        help_text=_('Designates whether the user can log into this admin '
+                    'site.'))
+    is_active = models.BooleanField(_('active'), default=True,
+        help_text=_('Designates whether this user should be treated as '
+                    'active. Unselect this instead of deleting accounts.'))
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
+
+    def get_absolute_url(self):
+        return "/users/%s/" % urlquote(self.email)
+
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()
+
+    def get_short_name(self):
+        "Returns the short name for the user."
+        return self.first_name
+
+    def email_user(self, subject, message, from_email=None):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email])
 #TODO
+
 class Profil_activation(models.Model):
 	"""a définir"""
 	id = models.AutoField(primary_key=True)
@@ -45,7 +110,7 @@ class Piece(models.Model):
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200)	
 	url= models.CharField(max_length=200)
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	def __unicode__(self):
 		return unicode(self.nom)	
 
@@ -54,7 +119,7 @@ class Capteur(models.Model):
 	id = models.AutoField(primary_key=True)
 	nom = models.CharField(max_length=200 , blank=True)
 	#foreign key vers les pieces
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	id_piece = models.ForeignKey(Piece,null = True, blank = True)
 	identifiant = models.IntegerField()
 	typeCapteur_CHOICES = (
@@ -74,7 +139,7 @@ class Actionneur(models.Model):
 	id_piece = models.ForeignKey(Piece)
 	#foreign key vers les type
 	valeur = models.BooleanField(default =False)
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	identifiant = models.IntegerField()
 	def __unicode__(self):
 		return unicode(self.nom)

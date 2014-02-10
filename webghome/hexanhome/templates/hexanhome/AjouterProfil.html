@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Ajouter Profil{% endblock %}
+{% block content %}
+	<h1>Ajout d'une profil:</h1>
+	<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
+	 	{% csrf_token %}
+	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
+			<label class="control-label" for="NomProfil">Nom</label>
+			<input type="text" class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
+			{%if erreur %}
+	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+	        	<span class="help-block">{{erreur}}</span>
+	        {%endif%}
+	  	</div>
+		<input type="submit" value="Entrer"  class="btn btn-default">
+  </form>
+
+{% endblock %}

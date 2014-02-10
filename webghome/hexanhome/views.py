@@ -71,10 +71,8 @@ def signup(request):
 @login_required(login_url='/login/')
 def profil(request):
 	context = RequestContext(request)
-	piece_list = Piece.objects.all()
-	for piece in piece_list:
-		piece.url = piece.nom.replace(' ', '_')
-	context_dixt={'pieces':piece_list}
+	profil_list = Profil.objects.all()
+	context_dixt={'profil_list':profil_list}
 	return render_to_response('hexanhome/profil.html',context_dixt,context)
 
 @login_required(login_url='/login/')
@@ -182,12 +180,12 @@ def AjoutCapteur(request):
 			elif(capteurtype == 'F'):
 				attribut = Attribut(nom= 'contact' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
-				Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
 			elif(capteurtype == 'C'):
 				attribut = Attribut(nom= 'température' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
-				Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
+				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
 			return HttpResponseRedirect('/home')
 	else :
@@ -264,7 +262,31 @@ def home(request):
 				capteurvalue.delete()
 			capteur.delete()
 			return HttpResponseRedirect('/home/')
+		elif 'Supp_actionneur' in request.POST:
+			actionneur_id=request.POST['actionneur_identifiant']
+			actionneur = Actionneur.objects.get(identifiant = actionneur_id)
+			actionneur.delete()
+			return HttpResponseRedirect('/home/')
 	else:
 		w = weather.WeatherDownloader('Lyon')
 		parsed = w.getCurrentWeatherData()
 		return render_to_response('hexanhome/home.html', { 'weather': parsed}, context_instance=RequestContext(request))
+
+@login_required(login_url='/login/')
+def settings(request,profil_name_url):
+	context = RequestContext(request)
+	profil_name = profil_name_url.replace('_',' ')
+	context_dixt={'profil_name' : profil_name}
+	return render_to_response('hexanhome/settings.html',context_dixt,context)
+
+def AjouterProfil(request):
+	context = RequestContext(request)
+	if request.method == 'POST':
+		nomprofil= request.POST['NomProfil']
+		profil = Profil(nom=nomprofil, etat = 'ON')
+		profil.save()
+		profil_url = nomprofil.replace(' ','_')
+		url = '/profil/settings/' + profil_url
+		return HttpResponseRedirect(url)
+	else:
+		return render_to_response('hexanhome/AjouterProfil.html',context)
