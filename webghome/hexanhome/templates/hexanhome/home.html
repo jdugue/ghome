@@ -47,8 +47,15 @@
                                             <div class="panel-body">
                                                 <div id="capteurAffichage">
                                                     <h4>{{actionneur.valeur}} </h4>
+
                                                 </div>
                                                 </br>
+                                                 <form id="actionneur_form" method="post" action="/home/">
+                                                         {% csrf_token %}
+                                                        <input type="hidden" name="actionneur_id" value="{{actionneur.identifiant}}">
+                                                        <button type="submit" name="Actionner" class="btn btn-primary btn-xs  ">Actionner</button>
+                                                </form>
+                                                 </br>
                                                 <form id="category_form" method="post" action="/home/">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="actionneur_identifiant" value="{{actionneur.identifiant}}">
