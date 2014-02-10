@@ -6,6 +6,7 @@ import sys
 import re
 import MySQLdb
 import ConfigParser
+from thread import *
 
 class Trame:
 	def __init__(self, trame):
@@ -22,7 +23,7 @@ class Trame:
 		def gethseq(): return self.hseq
 		def getorg(): return self.org
 		def getdb(): return self.data_bytes
-		def getid(): return self.id_butes
+		def getid(): return self.id_bytes
 		def getstatus(): return self.status
 		def getchecksum(): return self.checksum
 		
@@ -84,29 +85,52 @@ class Database:
 			updateRequest = 'UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant={1} AND nom={2}'.format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
+	
+	def getIdTypeByIdCapteur(self, idCapteur):
+		self.db = self.connectDb()
+		if(self.db):
+			getRequest = 'SELECT capteurtype FROM hexanhome_capteur WHERE identifiant={0}'.format(idCapteur)
+			result = self.executeQuery(getRequest)
+			self.db.close()
+			return result.capteurtype
+			
 
 
 def traiterTrame(trame):
 	tr = Trame(trame)
-	if trameIdentifiee(tr):
-		majDonnees(tr)
+	DB = Database()
+	
+	if trameIdentifiee(tr, DB):
+		majDonnees(tr, DB)
 		
-		
-def trameIdentifiee (trame):
-	# Déterminer si l'identifiant de la trame est dans la base de données
-	return True
 
-def majDonnees(trame):
+def parseTemperatureFromTrame(data_trame):
+	# Récupère la valeur de température depuis la partie Data d'une trame de capteur 0.40
+	return 40*int(data_trame[4:6],16)/255
+
+def trameIdentifiee (trame, database):
+	# Déterminer si l'identifiant de la trame est dans la base de données
+	return (database.isIdPresentOnDb(trame.getid()))
+
+def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
-	pass
+	if (database.getIdTypeByIdCapteur(trame.getid()) == 'C'):
+		database.updateValueForCapteur(trame.getdb())
+	else :
+		pass
 	
 ################## COMMUNICATION ACTIONNEURS #######################
-def listenWebServer ():
+def listenTrameServer ():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server_adress = ('localhost', 8080)
+	server_adress = ('134.214.106.23', 5000)
 	sock.connect(server_adress)
+
+	#Write all receptions
 	while True:
-		data = sock.recv(2048)
-		# Envoyer login/mot de passe #
-		# Traiter la trame #
+		data = sock.recv(4096)
+		start_new_thread(traiterTrame,(data,))
+		print >>sys.stderr, "%s" % data
 ####################################################################
+
+if __name__ == '__main__':
+	listenTrameServer ()
