@@ -21,9 +21,7 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
-        user = self.model(email=email,
-                          is_staff=is_staff, is_active=True,
-                          is_superuser=is_superuser, **extra_fields)
+        user = self.model(email=email,is_staff=is_staff, is_active=True,is_superuser=is_superuser, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -35,6 +33,8 @@ class CustomUserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         return self._create_user(email, password, True, True,
                                  **extra_fields)
+
+
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """
@@ -76,11 +76,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         "Returns the short name for the user."
         return self.first_name
 
+    def get_email(self):
+    	return self.email
+
     def email_user(self, subject, message, from_email=None):
         """
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email])
+
+    def set_ip(self,ip):
+    	self.ip_adress = ip
+    	self.save()
+    	return True
 #TODO
 
 class Profil_activation(models.Model):
@@ -163,8 +171,8 @@ class Attribut(models.Model):
 	nom = models.CharField(max_length=200)
 	valeur = models.IntegerField(blank = True,null = True)
 	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
-	identifiant = models.IntegerField()
+	id_type = models.ForeignKey(Type,blank = True, null = True)
+	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
 		return unicode(self.nom)
 
@@ -172,7 +180,7 @@ class Attr_Capteur(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
 	id = models.AutoField(primary_key=True)
 	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
+	id_type = models.ForeignKey(Type,blank = True, null = True)
 	#foreign key vers les capteurs
 	id_capt = models.ForeignKey(Capteur)
 	#foreign key vers les Attributs

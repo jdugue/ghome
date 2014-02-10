@@ -43,6 +43,7 @@ configdb.cfg
 
 #Database script
 managedb.sh
+script.sql
 
 #Fichiers temporaires
 *~
