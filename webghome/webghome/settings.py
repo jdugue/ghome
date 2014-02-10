@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     #personnal app
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'tastypie',
     'hexanhome',
 )
 

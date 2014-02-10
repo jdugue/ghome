@@ -1,4 +1,5 @@
 from flask import Flask, request
+import requests
 app = Flask (__name__)
 
 @app.route("/actionneur", methods=["GET"])
@@ -21,4 +22,10 @@ def learning():
 		return 'Pas d\'id actionneur'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+	#on envoie une requete au server pour savoir si on continue
+	url = 'http://127.0.0.1:8000/login_client/'
+	params = {'user':'1000', 'password': 'coucou'}
+	r = requests.post(url, params=params)  
+	if r.status_code == requests.codes.ok:
+		data = json.loads(r.text)
+	app.run(debug=True)
