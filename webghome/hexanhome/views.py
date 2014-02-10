@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.forms import *
 
 from django.template import RequestContext
@@ -34,6 +35,7 @@ def index(request):
 	return render(request , 'hexanhome/index.html')
 
 def login_view(request):
+	context = RequestContext(request)
 	email = request.POST.get('email', '')
 	password = request.POST.get('password', '')
 	user = authenticate(email=email, password=password)
@@ -48,6 +50,8 @@ def login_view(request):
 		else:
 			return HttpResponseRedirect("/home")
 	# Show an error page
+	else:
+		return render_to_response('hexanhome/login.html', { 'erreur' : 'Erreur lors de l authentification'},context)
 	return render(request,'hexanhome/login.html')
 	# return render_to_response('home.html', RequestContext(request))
 
@@ -77,7 +81,8 @@ def profil(request):
 
 @login_required(login_url='/login/')
 def config(request):
-	return render_to_response('hexanhome/config.html', RequestContext(request))
+	piece_list = Piece.objects.filter(user= request.user)
+	return render_to_response('hexanhome/config.html',{ 'piece_list' : piece_list}, RequestContext(request))
 
 @login_required(login_url='/login/')
 def AjoutPiece(request):
@@ -85,14 +90,9 @@ def AjoutPiece(request):
 	if request.method =='POST':
 		nompiece = request.POST['NomPiece']
 		try:
-			piece = Piece.objects.get(nom = nompiece)
-			if piece.user.email == request.user.email:
-				return render_to_response('hexanhome/AjoutPiece.html', { 'erreur' : 'Une piece de ce nom existe deja'},context)
-			else:
-				pieceurl = nompiece.replace(' ','_')
-				piece = Piece(nom = nompiece, url= pieceurl, user = request.user)
-				piece.save()
-				return HttpResponseRedirect('/home')
+			request.user.set_ip('12345')
+			piece = Piece.objects.get(nom = nompiece, user = request.user)
+			return render_to_response('hexanhome/AjoutPiece.html', { 'erreur' : 'Une piece de ce nom existe deja'},context)
 		except Piece.DoesNotExist:
 			pieceurl = nompiece.replace(' ','_')
 			piece = Piece(nom = nompiece, url= pieceurl, user = request.user)
@@ -109,24 +109,27 @@ def AjoutActionneur(request):
 	if request.method =='POST':
 		identifiant = request.POST['NumeroIdentifiant']
 		try:
-			actionneur = Actionneur.objects.get(identifiant = identifiant)
-			piece_list = Piece.objects.all()
+			actionneur = Actionneur.objects.get(identifiant = identifiant, user = request.user)
+			piece_list = Piece.objects.filter(user = request.user)
 			context_dixt={'pieces':piece_list}
 			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
 			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
 		except:
 			piece_name = request.POST['nomPiece']
 			nomactionneur = request.POST['NomActionneur']
-			piece = Piece.objects.get(nom=piece_name)
+			piece = Piece.objects.get(nom=piece_name, user = request.user)
 			actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece,identifiant= identifiant)
 			actionneur.save()
 			piece_name = piece_name.replace(' ', '_')
 			url = '/profil/piece/' + piece_name +'/'
 			return HttpResponseRedirect(url)
 	else :
-		piece_list = Piece.objects.all()
-		context_dixt={'pieces':piece_list}
-		return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+			piece_list = Piece.objects.filter(user = request.user)
+			if piece_list:
+				context_dixt={'pieces':piece_list}
+				return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+			else:
+				return HttpResponseRedirect('/config/AjoutPiece/')
 
 def register(request):
 	context = RequestContext(request)
@@ -160,20 +163,21 @@ def AjoutCapteur(request):
 		nomcapteur = request.POST['NomCapteur']
 		identifiant = request.POST['numeroIdentifiant']
 		try:
-			capteur = Capteur.objects.get(identifiant = identifiant )
-			piece_list = Piece.objects.all()
-			capteur_list = Capteur.objects.all()
+			capteur = Capteur.objects.get(identifiant = identifiant, user = request.user )
+			piece_list = Piece.objects.filter(user = request.user)
 			context_dixt={'pieces':piece_list}
-			context_dixt['capteurs'] = capteur_list
 			context_dixt['typeCapteur_CHOICES']=Capteur.typeCapteur_CHOICES
 			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
 			return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
 		except Capteur.DoesNotExist:
 			capteurtype = request.POST['capteurtype']
-			piece = Piece.objects.get(nom=piece_name)
+			piece = Piece.objects.get(nom=piece_name, user = request.user)
 			capteur = Capteur( user = request.user,identifiant = identifiant, nom = nomcapteur, id_piece = piece, capteurtype = capteurtype )	
 			capteur.save()
-			type = Type.objects.get(nom = 'bool')
+			try:
+				type = Type.objects.get(nom = 'bool')
+			except Type.DoesNotExist:
+				type=None
 			if(capteurtype == 'D'):
 				attribut = Attribut(nom= 'présence' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
@@ -195,12 +199,13 @@ def AjoutCapteur(request):
 				attr_capteur.save()
 			return HttpResponseRedirect('/home')
 	else :
-		piece_list = Piece.objects.all()
-		capteur_list = Capteur.objects.all()
-		context_dixt={'pieces':piece_list}
-		context_dixt['capteurs'] = capteur_list
-		context_dixt['typeCapteur_CHOICES']=Capteur.typeCapteur_CHOICES
-		return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
+		piece_list = Piece.objects.filter(user = request.user)
+		if piece_list:
+			context_dixt={'pieces':piece_list}
+			context_dixt['typeCapteur_CHOICES']=Capteur.typeCapteur_CHOICES
+			return render_to_response('hexanhome/AjoutCapteur.html',context_dixt,context)
+		else:
+			return HttpResponseRedirect('/config/AjoutPiece/')
 
 @login_required(login_url='/login/')
 def piece(request, piece_name_url):
@@ -212,7 +217,7 @@ def piece(request, piece_name_url):
 	piece_name = piece_name_url.replace('_',' ')
 	if request.method =='POST':
 		if 'deleteroombutton' in request.POST:
-			piece = Piece.objects.get(nom=piece_name)
+			piece = Piece.objects.get(nom=piece_name, user = request.user)
 			piece.delete()	
 			return HttpResponseRedirect('/profil/')
 		if 'NomCapteur' in request.POST:
@@ -229,7 +234,7 @@ def piece(request, piece_name_url):
 		context_dixt={'piece_name':piece_name}
 		try:
 			#Verifie qu'il existe une piece avec ce nom
-			piece = Piece.objects.get(nom=piece_name)
+			piece = Piece.objects.get(nom=piece_name, user = request.user)
 			#On ajoute la categorie objet de la base de donnée au context
 			context_dixt['piece_url'] = piece_name_url
 			context_dixt['piece'] = piece
@@ -257,12 +262,12 @@ def home(request):
 	if request.method =='POST':
 		if'Supp_piece' in request.POST:
 			piece_nom=request.POST['piece_nom']
-			piece = Piece.objects.get(nom=piece_nom)
+			piece = Piece.objects.get(nom = piece_nom, user = request.user)
 			piece.delete()	
 			return HttpResponseRedirect('/home/')
 		elif 'Supp_capteur' in request.POST:
 			capteur_id=request.POST['capteur_identifiant']
-			capteur = Capteur.objects.get(identifiant = capteur_id)
+			capteur = Capteur.objects.get(identifiant = capteur_id, user= request.user) 
 			for capteurvalue in capteur.attr_capteur_set.all():
 				capteurvalue.id_attr.delete()
 				capteurvalue.delete()
@@ -270,7 +275,7 @@ def home(request):
 			return HttpResponseRedirect('/home/')
 		elif 'Supp_actionneur' in request.POST:
 			actionneur_id=request.POST['actionneur_identifiant']
-			actionneur = Actionneur.objects.get(identifiant = actionneur_id)
+			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
 			actionneur.delete()
 			return HttpResponseRedirect('/home/')
 	else:

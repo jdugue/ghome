@@ -34,6 +34,8 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, True, True,
                                  **extra_fields)
 
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     """
     A fully featured User model with admin-compliant permissions that uses
@@ -82,6 +84,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email])
+
+    def set_ip(self,ip):
+    	self.ip_adress = ip
+    	self.save()
+    	return True
 #TODO
 
 class Profil_activation(models.Model):
@@ -164,7 +171,7 @@ class Attribut(models.Model):
 	nom = models.CharField(max_length=200)
 	valeur = models.IntegerField(blank = True,null = True)
 	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
+	id_type = models.ForeignKey(Type,blank = True, null = True)
 	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
 		return unicode(self.nom)
@@ -173,7 +180,7 @@ class Attr_Capteur(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
 	id = models.AutoField(primary_key=True)
 	#foreign key vers les type
-	id_type = models.ForeignKey(Type)
+	id_type = models.ForeignKey(Type,blank = True, null = True)
 	#foreign key vers les capteurs
 	id_capt = models.ForeignKey(Capteur)
 	#foreign key vers les Attributs
