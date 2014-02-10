@@ -303,7 +303,10 @@ def login_client(request):
 		if user is not None:
 			ip = get_client_ip(request)
 			adresse = ''.join(['http://', ip, ':', port])
-			return adresse
+			user.set_ip(adresse)
+			return HttpResponse('Bien joue')
+		else:
+			return HttpResponse('email: ' +email+' password: '+password + '- user is none')
 	return HttpResponse('email: ' +email+' password: '+password + " inconnu")
 	#return HttpReponse(jsondata,mimetype='application/json')
 
