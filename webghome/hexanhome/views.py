@@ -64,18 +64,6 @@ def logout_view(request):
 	return HttpResponseRedirect("/login")
 
 @login_required(login_url='/login/')
-def signup(request):
-	if request.POST:
-		username = request.POST.get('username', '')
-		password = request.POST.get('password', '')
-		new_user = User.objects.create_user(username=username, password=password)   
-		new_user.save()
-		return HttpResponseRedirect("/home")
-	else:
-		# form = RegistrationForm()
-		return render(request,'hexanhome/signup.html')
-
-@login_required(login_url='/login/')
 def profil(request):
 	context = RequestContext(request)
 	profil_list = Profil.objects.all()
