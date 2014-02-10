@@ -272,7 +272,13 @@ def home(request):
 			return HttpResponseRedirect('/home/')
 		elif 'Actionner' in request.POST:
 			url = request.user.ip_adress + '/actionneur'
-			params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'off'}
+			actionneur = Actionneur.objects.get(identifiant =request.POST['actionneur_id'], user = request.user )
+			if actionneur.valeur == False:
+				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'on'}
+				actionneur.update(valeur = True)
+			else:
+				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'off'}
+				actionneur.update(valeur = False)	
 			r = requests.get(url,params = params)
 			return HttpResponseRedirect('/home/')
 	else:
