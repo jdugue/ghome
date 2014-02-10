@@ -51,7 +51,8 @@ def login_view(request):
 			return HttpResponseRedirect("/home")
 	# Show an error page
 	else:
-		return render_to_response('hexanhome/login.html', { 'erreur' : 'Erreur lors de l authentification'},context)
+		if request.POST:
+			return render_to_response('hexanhome/login.html', { 'erreur' : 'Erreur lors de l authentification'},context)
 	return render(request,'hexanhome/login.html')
 	# return render_to_response('home.html', RequestContext(request))
 
