@@ -121,7 +121,7 @@ class Capteur(models.Model):
 	#foreign key vers les pieces
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	id_piece = models.ForeignKey(Piece,null = True, blank = True)
-	identifiant = models.IntegerField()
+	identifiant = models.CharField(max_length=8)
 	typeCapteur_CHOICES = (
 		('D','détecteur de présence et de luminosité'),
 		('F','Contact de fenêtre'),
@@ -140,7 +140,7 @@ class Actionneur(models.Model):
 	#foreign key vers les type
 	valeur = models.BooleanField(default =False)
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
-	identifiant = models.IntegerField()
+	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
 		return unicode(self.nom)
 
