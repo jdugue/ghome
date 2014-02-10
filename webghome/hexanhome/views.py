@@ -34,9 +34,9 @@ def index(request):
     return render(request , 'hexanhome/index.html')
 
 def login_view(request):
-    username = request.POST.get('username', '')
+    email = request.POST.get('email', '')
     password = request.POST.get('password', '')
-    user = authenticate(username=username, password=password)
+    user = authenticate(email=email, password=password)
     if user is not None:
     	if user.is_active:
 	        # Correct password, and the user is marked "active"
@@ -125,12 +125,12 @@ def AjoutActionneur(request):
 def register(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
-		user_form = UserForm(data=request.POST)
+		user_form = CustomUserCreationForm(data=request.POST)
 		if user_form.is_valid() :
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			new_user = authenticate(username=request.POST['username'], password=request.POST['password'])
+			new_user = authenticate(email=request.POST['email'], password=request.POST['password1'])
 			if new_user is not None:
 				login(request, new_user)
 				return HttpResponseRedirect('/home')
@@ -140,7 +140,7 @@ def register(request):
 			return render_to_response('hexanhome/register.html',{'user_form': user_form,'erreur':'true'},context)
 
 	else:
-		user_form = UserForm()
+		user_form = CustomUserCreationForm()
 
 		return render_to_response('hexanhome/register.html',{'user_form': user_form},context)
 
