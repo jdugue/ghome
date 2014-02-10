@@ -31,7 +31,9 @@ class CustomUserCreationForm(UserCreationForm):
     A form that creates a user, with no privileges, from the given email and
     password.
     """
-
+    email = forms.CharField(widget = forms.EmailInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Mot de passe')
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), label='Confirmer mot de passe')
     def __init__(self, *args, **kargs):
         super(CustomUserCreationForm, self).__init__(*args, **kargs)
         del self.fields['username']
