@@ -15,4 +15,6 @@ urlpatterns = patterns('hexanhome.views',
     url(r'^register/$','register'),
     url(r'^profil/settings/(?P<profil_name_url>\w+)/$','settings'),
     url(r'profil/Ajouter_Profil/$','AjouterProfil'),
+    #URLS DE L'API
+    url(r'login_client/$','AjouterProfil'),
 )
