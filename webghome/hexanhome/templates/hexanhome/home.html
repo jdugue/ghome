@@ -53,7 +53,7 @@
                                                  <form id="actionneur_form" method="post" action="/home/">
                                                          {% csrf_token %}
                                                         <input type="hidden" name="actionneur_id" value="{{actionneur.identifiant}}">
-                                                        <button type="submit" name="Actionner" class="btn btn-primary btn-xs  ">Actionner</button>
+                                                        <button type="submit" name="Actionner" class="btn btn-primary btn-xs  ">{% if actionneur.valeur == True%}Eteindre{%else%} Allumer {%endif%}</button>
                                                 </form>
                                                  </br>
                                                 <form id="category_form" method="post" action="/home/">

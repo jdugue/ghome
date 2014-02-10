@@ -275,10 +275,12 @@ def home(request):
 			actionneur = Actionneur.objects.get(identifiant =request.POST['actionneur_id'], user = request.user )
 			if actionneur.valeur == False:
 				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'on'}
-				Actionneur.objects.get(identifiant =request.POST['actionneur_id'], user = request.user ).update(valeur = True)
+				actionneur.valeur = True
+				actionneur.save()
 			else:
 				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'off'}
-				Actionneur.objects.get(identifiant =request.POST['actionneur_id'], user = request.user ).update(valeur = False)	
+				actionneur.valeur = False
+				actionneur.save()
 			r = requests.get(url,params = params)
 			return HttpResponseRedirect('/home/')
 	else:
