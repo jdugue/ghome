@@ -18,6 +18,7 @@ from django.forms import *
 from django.template import RequestContext
 
 from django.shortcuts import *
+import requests
 
 # IMPORTS AUTRES
 # from registration.forms import RegistrationForm
@@ -268,6 +269,11 @@ def home(request):
 			actionneur_id=request.POST['actionneur_identifiant']
 			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
 			actionneur.delete()
+			return HttpResponseRedirect('/home/')
+		elif 'Actionner' in request.POST:
+			url = request.user.ip_adress + '/actionneur'
+			params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'off'}
+			r = requests.get(url,params = params)
 			return HttpResponseRedirect('/home/')
 	else:
 		w = weather.WeatherDownloader('Lyon')
