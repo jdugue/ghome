@@ -291,5 +291,5 @@ def AjouterProfil(request):
 	else:
 		return render_to_response('hexanhome/AjouterProfil.html',context)
 
-def login_client(request)
+def login_client(request):
 	return HttpReponse(jsondata,mimetype='application/json')
