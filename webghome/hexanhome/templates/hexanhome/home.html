@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-
 	{% if user.is_authenticated %}
-    <h3>{{user.email}}</h3>
         <div class="row" >
             {% for piece in user.piece_set.all%}
                 <div class="col-md-6">
@@ -49,8 +47,15 @@
                                             <div class="panel-body">
                                                 <div id="capteurAffichage">
                                                     <h4>{{actionneur.valeur}} </h4>
+
                                                 </div>
                                                 </br>
+                                                 <form id="actionneur_form" method="post" action="/home/">
+                                                         {% csrf_token %}
+                                                        <input type="hidden" name="actionneur_id" value="{{actionneur.identifiant}}">
+                                                        <button type="submit" name="Actionner" class="btn btn-primary btn-xs  ">{% if actionneur.valeur == True%}Eteindre{%else%} Allumer {%endif%}</button>
+                                                </form>
+                                                 </br>
                                                 <form id="category_form" method="post" action="/home/">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="actionneur_identifiant" value="{{actionneur.identifiant}}">

@@ -3,7 +3,6 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('hexanhome.views',
 	url(r'^$', 'index'),
     url(r'^home/$', 'home'),
-    url(r'^signup/$', 'signup'),
     url(r'^profil/$', 'profil'),
     url(r'^profil/piece/(?P<piece_name_url>\w+)/$', 'piece'),
     url(r'^config/$','config'),
@@ -16,5 +15,5 @@ urlpatterns = patterns('hexanhome.views',
     url(r'^profil/settings/(?P<profil_name_url>\w+)/$','settings'),
     url(r'profil/Ajouter_Profil/$','AjouterProfil'),
     #URLS DE L'API
-    url(r'login_client/$','AjouterProfil'),
+    url(r'login_client/$','login_client'),
 )

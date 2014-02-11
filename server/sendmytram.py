@@ -14,7 +14,7 @@ print >>sys.stderr, 'Connecting up on %s port %s' % server_adress
 #Connection to server
 sock.connect(server_adress)
 
-my_trame = 'A55A6B0550000000FF9F1E5330FF'
+my_trame = 'A55A6B0570000000FF9F1E5330FF'
 
 sock.send(my_trame)
 

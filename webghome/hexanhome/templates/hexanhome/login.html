@@ -7,8 +7,8 @@
     {% endif %}
 
     <section>
-    {% if form.errors %}
-      <p>Your username and password didn't match, please try again.</p>
+   {% if erreur %}
+        <div class="alert alert-danger">Your username and/or password were incorrect!</div>
     {% endif %}
 
     <form method="post" action=".">

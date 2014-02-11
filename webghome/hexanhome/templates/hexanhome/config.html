@@ -4,7 +4,7 @@
 <h3>Ajout d'une pièce:</h3>
 <a class="btn btn-default"  href="/config/AjoutPiece">Ajout d'une pièce</a>
 <h3>Ajout d'un capteur:</h3>
-<a class="btn btn-default"  href="/config/AjoutCapteur">Ajout d'un capteur</a>
+<a class="btn btn-default"  href="/config/AjoutCapteur" {%if not piece_list%}disabled="disabled"{%endif%}>Ajout d'un capteur </a>
 <h3>Ajout d'un actionneur:</h3>
-<a class="btn btn-default"  href="/config/AjoutActionneur">Ajout d'un actionneur</a>
+<a class="btn btn-default"  href="/config/AjoutActionneur" {%if not piece_list%}disabled="disabled"{%endif%}>Ajout d'un actionneur</a>
 {% endblock %}
