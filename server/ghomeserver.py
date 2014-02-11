@@ -47,13 +47,12 @@ class Database:
 	def executeUpdate (self, request):
 		cursor = self.db.cursor()
 		try:
+			print request
 			cursor.execute(request)		
-			db.commit()
-			cursor.close()
+			self.db.commit()
 			return True
 		except MySQLdb.Error, e:
-			db.rollback()
-			cursor.close()
+			self.db.rollback()
 			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
 			return False
 
@@ -63,20 +62,19 @@ class Database:
 		self.db = self.connectDb()
 		if(self.db):
 			request = "SELECT identifiant FROM hexanhome_capteur WHERE identifiant='{0}';".format(id)
-			print request
 			resultCapteur = self.executeQuery(request)
 			resultActionneur = False # self.execute('SELECT id_piece_id FROM hexanhome_piece WHERE id={0};'.format(id))
 			self.db.close()
 			if (resultCapteur or resultActionneur):
 				return True
-		else:
-			return False
+			else:
+				return False
 
 	def updateValueForCapteur(self, idCapteur, value, name):
 		# Row exists when sensor is already created on the webserver
 		self.db = self.connectDb()
 		if(self.db):
-			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom={2}".format(value,idCapteur,name)
+			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
 	
@@ -95,7 +93,6 @@ def traiterTrame(trame):
 	DB = Database()
 	
 	if trameIdentifiee(tr, DB):
-		print "Passage 1"
 		majDonnees(tr, DB)
 		
 
@@ -110,10 +107,8 @@ def trameIdentifiee (trame, database):
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
-		print "Passage 2"
 		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
 	else :
-		print "Passage 3"
 		pass
 	
 ################## COMMUNICATION ACTIONNEURS #######################
