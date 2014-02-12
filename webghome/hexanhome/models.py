@@ -131,9 +131,9 @@ class Capteur(models.Model):
 	id_piece = models.ForeignKey(Piece,null = True, blank = True)
 	identifiant = models.CharField(max_length=8)
 	typeCapteur_CHOICES = (
-		('D','détecteur de présence et de luminosité'),
-		('F','Contact de fenêtre'),
-		('C','Capteur température')	
+		('D','detecteur de presence et de luminosite'),
+		('F','Contact de fenetre'),
+		('C','Capteur temperature')	
 	)
 	capteurtype = models.CharField(max_length=1, choices=typeCapteur_CHOICES)
 	def __unicode__(self):
