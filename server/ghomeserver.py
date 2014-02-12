@@ -10,7 +10,7 @@ from thread import *
 
 class Trame:
 	def __init__(self, trame):
-		if (len(trame) == 14):
+		if (len(trame) == 28):
 			self.sync = trame[:4]
 			self.hseq = trame[4:6]
 			self.org = trame[6:8]
@@ -18,14 +18,6 @@ class Trame:
 			self.id_bytes = trame[16:24]
 			self.status = trame[24:26]
 			self.checksum = trame[26:28]
-			
-		def getsync(): return self.sync
-		def gethseq(): return self.hseq
-		def getorg(): return self.org
-		def getdb(): return self.data_bytes
-		def getid(): return self.id_bytes
-		def getstatus(): return self.status
-		def getchecksum(): return self.checksum
 		
 class Database:
 	def __init__(self):
@@ -55,13 +47,12 @@ class Database:
 	def executeUpdate (self, request):
 		cursor = self.db.cursor()
 		try:
+			print request
 			cursor.execute(request)		
-			db.commit()
-			cursor.close()
+			self.db.commit()
 			return True
 		except MySQLdb.Error, e:
-			db.rollback()
-			cursor.close()
+			self.db.rollback()
 			print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
 			return False
 
@@ -70,29 +61,30 @@ class Database:
 		# Renvoit False, si pas pu se connecter ou si pas dans la base
 		self.db = self.connectDb()
 		if(self.db):
-			resultCapteur = self.executeQuery('SELECT identifiant FROM hexanhome_capteur WHERE identifiant={0};'.format(id))
+			request = "SELECT identifiant FROM hexanhome_capteur WHERE identifiant='{0}';".format(id)
+			resultCapteur = self.executeQuery(request)
 			resultActionneur = False # self.execute('SELECT id_piece_id FROM hexanhome_piece WHERE id={0};'.format(id))
 			self.db.close()
 			if (resultCapteur or resultActionneur):
 				return True
-		else:
-			return False
+			else:
+				return False
 
 	def updateValueForCapteur(self, idCapteur, value, name):
 		# Row exists when sensor is already created on the webserver
 		self.db = self.connectDb()
 		if(self.db):
-			updateRequest = 'UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant={1} AND nom={2}'.format(value,idCapteur,name)
+			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
 		if(self.db):
-			getRequest = 'SELECT capteurtype FROM hexanhome_capteur WHERE identifiant={0}'.format(idCapteur)
+			getRequest = "SELECT capteurtype FROM hexanhome_capteur WHERE identifiant='{0}'".format(idCapteur)
 			result = self.executeQuery(getRequest)
 			self.db.close()
-			return result.capteurtype
+			return result[0][0]
 			
 
 
@@ -110,12 +102,12 @@ def parseTemperatureFromTrame(data_trame):
 
 def trameIdentifiee (trame, database):
 	# Déterminer si l'identifiant de la trame est dans la base de données
-	return (database.isIdPresentOnDb(trame.getid()))
-
+	return (database.isIdPresentOnDb(trame.id_bytes))
+	
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
-	if (database.getIdTypeByIdCapteur(trame.getid()) == 'C'):
-		database.updateValueForCapteur(trame.getdb())
+	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
+		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
 	else :
 		pass
 	
@@ -128,8 +120,8 @@ def listenTrameServer ():
 	#Write all receptions
 	while True:
 		data = sock.recv(4096)
+		print "%s" % data
 		start_new_thread(traiterTrame,(data,))
-		print >>sys.stderr, "%s" % data
 ####################################################################
 
 if __name__ == '__main__':
