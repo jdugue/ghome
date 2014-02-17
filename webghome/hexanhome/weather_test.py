@@ -1,3 +1,4 @@
 import weather
 a = weather.WeatherDownloader('Lyon')
-a.getCurrentWeatherData()
+b = a.getCurrentWeatherData()
+print(b.weather_condition)
