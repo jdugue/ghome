@@ -107,7 +107,7 @@ def trameIdentifiee (trame, database):
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
-		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
+		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
 	else :
 		pass
 	
