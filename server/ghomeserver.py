@@ -87,6 +87,27 @@ class Database:
 			return result[0][0]
 			
 
+class HomeWatcher(object):
+	"""docstring for HomeWatcher"""
+	def __init__(self, arg):
+		super(HomeWatcher, self).__init__()
+
+	def getTime():
+		now = datetime.datetime.now()
+		return now.hour + now.minute + now.second()
+
+	def getWeekday():
+		now = datetime.datetime.now()
+		return now.weekday()
+
+	def getTemperature():
+		
+
+	def getWeatherCondition():
+		
+
+	def getPresence():
+
 
 def traiterTrame(trame):
 	tr = Trame(trame)
@@ -107,7 +128,7 @@ def trameIdentifiee (trame, database):
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
-		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
+		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
 	else :
 		pass
 	
