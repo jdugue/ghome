@@ -13,82 +13,82 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 class CustomUserManager(BaseUserManager):
 
-    def _create_user(self, email, password,
-                     is_staff, is_superuser, **extra_fields):
-        """
-        Creates and saves a User with the given email and password.
-        """
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email,is_staff=is_staff, is_active=True,is_superuser=is_superuser, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+	def _create_user(self, email, password,
+					 is_staff, is_superuser, **extra_fields):
+		"""
+		Creates and saves a User with the given email and password.
+		"""
+		if not email:
+			raise ValueError('The given email must be set')
+		email = self.normalize_email(email)
+		user = self.model(email=email,is_staff=is_staff, is_active=True,is_superuser=is_superuser, **extra_fields)
+		user.set_password(password)
+		user.save(using=self._db)
+		return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        return self._create_user(email, password, False, False,
-                                 **extra_fields)
+	def create_user(self, email, password=None, **extra_fields):
+		return self._create_user(email, password, False, False,
+								 **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True,
-                                 **extra_fields)
+	def create_superuser(self, email, password, **extra_fields):
+		return self._create_user(email, password, True, True,
+								 **extra_fields)
 
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    """
-    A fully featured User model with admin-compliant permissions that uses
-    a full-length email field as the username.
+	"""
+	A fully featured User model with admin-compliant permissions that uses
+	a full-length email field as the username.
 
-    Email and password are required. Other fields are optional.
-    """
-    email = models.EmailField(_('email address'), max_length=254, unique=True)
-    ip_adress = models.URLField(blank = True)
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    is_staff = models.BooleanField(_('staff status'), default=False,
-        help_text=_('Designates whether the user can log into this admin '
-                    'site.'))
-    is_active = models.BooleanField(_('active'), default=True,
-        help_text=_('Designates whether this user should be treated as '
-                    'active. Unselect this instead of deleting accounts.'))
-    objects = CustomUserManager()
+	Email and password are required. Other fields are optional.
+	"""
+	email = models.EmailField(_('email address'), max_length=254, unique=True)
+	ip_adress = models.URLField(blank = True)
+	first_name = models.CharField(_('first name'), max_length=30, blank=True)
+	last_name = models.CharField(_('last name'), max_length=30, blank=True)
+	is_staff = models.BooleanField(_('staff status'), default=False,
+		help_text=_('Designates whether the user can log into this admin '
+					'site.'))
+	is_active = models.BooleanField(_('active'), default=True,
+		help_text=_('Designates whether this user should be treated as '
+					'active. Unselect this instead of deleting accounts.'))
+	objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+	USERNAME_FIELD = 'email'
+	REQUIRED_FIELDS = []
 
-    class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
+	class Meta:
+		verbose_name = _('user')
+		verbose_name_plural = _('users')
 
-    def get_absolute_url(self):
-        return "/users/%s/" % urlquote(self.email)
+	def get_absolute_url(self):
+		return "/users/%s/" % urlquote(self.email)
 
-    def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+	def get_full_name(self):
+		"""
+		Returns the first_name plus the last_name, with a space in between.
+		"""
+		full_name = '%s %s' % (self.first_name, self.last_name)
+		return full_name.strip()
 
-    def get_short_name(self):
-        "Returns the short name for the user."
-        return self.first_name
+	def get_short_name(self):
+		"Returns the short name for the user."
+		return self.first_name
 
-    def get_email(self):
-    	return self.email
+	def get_email(self):
+		return self.email
 
-    def email_user(self, subject, message, from_email=None):
-        """
-        Sends an email to this User.
-        """
-        send_mail(subject, message, from_email, [self.email])
+	def email_user(self, subject, message, from_email=None):
+		"""
+		Sends an email to this User.
+		"""
+		send_mail(subject, message, from_email, [self.email])
 
-    def set_ip(self,ip):
-    	self.ip_adress = ip
-    	self.save()
-    	return True
+	def set_ip(self,ip):
+		self.ip_adress = ip
+		self.save()
+		return True
 #TODO
 
 class Profil_activation(models.Model):
@@ -187,3 +187,85 @@ class Attr_Capteur(models.Model):
 	id_attr = models.ForeignKey(Attribut)
 	def __unicode__(self):
 		return unicode(self.id_capt)
+
+
+class RuleProfile(models.Model):
+	"""docstring fos RuleProfile"""
+	user = models.ForeignKey(settings.AUTH_USER_MODEL)
+	def __init__(self, user):
+		super(RuleProfile, self).__init__()
+		self.rules = []
+		self.actions = []
+		self.user = user
+
+
+class RuleAction(models.Model):
+	"""docstring fos RuleAction""" 
+	# action doit etre 'on' ou 'off'
+	action = models.CharField(max_length=200)
+	profil = models.ForeignKey(RuleProfile)
+	
+	def __init__(self, action):	
+		super(RuleAction, self).__init__()
+		self.action = action
+
+class PresenceRule(models.Model):
+	profil = models.ForeignKey(RuleProfile)
+	isPresent = models.BooleanField(default =False)
+	idCapteur = models.ForeignKey(Capteur)
+	def __init__(self, isPresent):
+		super(PresenceRule, self).__init__()
+		self.isPresent = isPresent
+
+	def is_verified(self, isPresent):
+		return self.isPresent == isPresent
+
+class TimeRule(models.Model):
+	"""docstring for TimeRule"""
+	profil = models.ForeignKey(RuleProfile)
+	start_time = models.DateField()
+	end_time = models.DateField()
+	def __init__(self, start_time, end_time):
+		super(TimeRule, self).__init__()
+		self.start_time = start_time
+		self.end_time = end_time
+
+	def is_verified(self, time):
+		if self.start_time < self.end_time :
+			return self.start_time < time < self.end_time
+		else:
+			return (self.start_time < time < 24) or (0 < time < self.end_time)
+
+class TemperatureRule(models.Model):
+	profil = models.ForeignKey(RuleProfile)
+	idCapteur = models.ForeignKey(Capteur)
+	temperatureValue = models.IntegerField()
+	isMinimum = models.IntegerField()
+
+	def __init__(self, temperatureValue, isMinimum):
+		super(TemperatureRule, self).__init__()
+		self.temperatureValue = temperatureValue
+		self.isMinimum = isMinimum
+
+	
+class WeatherRule(models.Model):
+	profil = models.ForeignKey(RuleProfile)
+	weatherCondition = models.CharField(max_length=200)
+	"""docstring for WeatherRule"""
+	def __init__(self, weatherCondition):
+		super(WeatherRule, self).__init__()
+		self.weatherCondition = weatherCondition
+	
+	def is_verified(self, weatherCondition):
+		return self.weatherCondition == weatherCondition
+
+class WeekdayRule(models.Model):
+	profil = models.ForeignKey(RuleProfile)
+	weekday = models.CharField(max_length=200)
+	"""docstring for WeekdayRule"""
+	def __init__(self, weekday):
+		super(WeekdayRule, self).__init__()
+		self.weekday = weekday		
+	def is_verified(self, weekDay):
+		self.weekday = weekDay
+		return self.weekday

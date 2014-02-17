@@ -171,11 +171,11 @@ def AjoutCapteur(request):
 			except Type.DoesNotExist:
 				type=None
 			if(capteurtype == 'D'):
-				attribut = Attribut(nom= 'présence' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut = Attribut(nom= 'presence' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
 				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
-				attribut = Attribut(nom= 'luminosité' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut = Attribut(nom= 'luminosite' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
 				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
@@ -185,7 +185,7 @@ def AjoutCapteur(request):
 				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
 			elif(capteurtype == 'C'):
-				attribut = Attribut(nom= 'température' ,valeur=None, id_type= type , identifiant=identifiant)
+				attribut = Attribut(nom= 'temperature' ,valeur=None, id_type= type , identifiant=identifiant)
 				attribut.save()
 				attr_capteur=Attr_Capteur(id_type=type, id_capt = capteur ,id_attr=attribut)
 				attr_capteur.save()
