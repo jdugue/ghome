@@ -18,5 +18,3 @@ class SocketSender(object):
 	def actionneur_off(self):
 		my_trame_off = 'A55A6B0570000000FF9F1E5330FF'
 		self.sock.send(my_trame_off)
-
-		
