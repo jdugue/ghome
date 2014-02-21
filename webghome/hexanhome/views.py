@@ -342,7 +342,7 @@ def get_client_ip(request):
 	return ip
 
 @csrf_exempt
-def test_pofiles(request):
+def test_profiles(request):
 	if request.method == 'POST':
 		email = request.POST.get('email', '')
 		password = request.POST.get('password', '')
