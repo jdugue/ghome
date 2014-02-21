@@ -194,10 +194,7 @@ class RuleProfile(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	def __init__(self, user):
 		super(RuleProfile, self).__init__()
-		self.rules = []
-		self.actions = []
 		self.user = user
-
 
 class RuleAction(models.Model):
 	"""docstring fos RuleAction""" 

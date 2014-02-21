@@ -6,14 +6,65 @@
 	 	{% csrf_token %}
 	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
 			<label class="control-label" for="NomProfil">Nom</label>
-			<input type="text" class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
+			<input type="text"  class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
 			{%if erreur %}
 	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
 	        	<span class="help-block">{{erreur}}</span>
 	        {%endif%}
 	  	</div>
+	  	<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Ajout d'une régle</h3>
+			</div>
+	
+			<div class="panel-body">
+				<label>Déclencheur</label>
+				<SELECT name="nomDeclencheur" id="nomDeclencheur" onchange="ChangeValue();" size="1">
+					<OPTION>Température
+					<OPTION>Présence
+					<OPTION>Jours
+					<OPTION>Heure
+					<OPTION>Météo
+		  		</SELECT>
+		  	</br>
+		  		{% if listCapteur %}
+		  			<SELECT name="nomCapteur" id="nomCapteur"  size="1">
+		  			<h2>CC</h2>
+		  			{% for capteur in listCapteur %}
+		  				<OPTION >{{capteur.nom}}
+		  			{%endfor%}
+		  		{%endif%}
+		  	</SELECT>
+		  </br>
+		  	<label>Action</label>
+		  </br>
+		  		{% if listActionneur %}
+		  			<SELECT name="nomDeclencheur" id="nomDeclencheur"  size="1">
+		  			<h2>CC</h2>
+		  			{% for actionneur in listActionneur %}
+		  				<OPTION >{{actionneur.nom}}
+		  			{%endfor%}
+		  			</SELECT>
+		  		{%endif%}	
+			</div>
+		</div>
 		<input type="submit" value="Entrer"  class="btn btn-default">
   </form>
  
+
+{% endblock %}
+{%block footer%}
+<script language="JavaScript">
+	function ChangeValue()
+	{
+		list = document.getElementById("nomDeclencheur");
+		if (list.value == 'Température')
+		{
+			capteur = document.getElementById("nomCapteur")
+			capteur.style.display="block";
+		}
+		
+	}
+</script>
 
 {% endblock %}

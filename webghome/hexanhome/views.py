@@ -38,6 +38,7 @@ def index(request):
 	return render(request , 'hexanhome/index.html')
 
 def login_view(request):
+	logout(request)
 	context = RequestContext(request)
 	email = request.POST.get('email', '')
 	password = request.POST.get('password', '')
@@ -298,14 +299,21 @@ def settings(request,profil_name_url):
 def AjouterProfil(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
-		nomprofil= request.POST['NomProfil']
-		profil = Profil(nom=nomprofil, etat = 'ON')
-		profil.save()
-		profil_url = nomprofil.replace(' ','_')
-		url = '/profil/settings/' + profil_url
-		return HttpResponseRedirect(url)
+		try:
+			nomprofil= request.POST['NomProfil']
+			profil = Profil(nom=nomprofil, etat = 'ON')
+			profil.save()
+			profil_url = nomprofil.replace(' ','_')
+			url = '/profil/settings/' + profil_url
+			return HttpResponseRedirect(url)
+		except:
+			return render_to_response('hexanhome/AjouterProfil.html',{erreur : 'pas de nom'},context)
 	else:
-		return render_to_response('hexanhome/AjouterProfil.html',context)
+		listcapteur = Capteur.objects.filter(user = request.user)
+		listActionneur = Actionneur.objects.filter(user = request.user)
+		context_dixt={'listCapteur':listcapteur}
+		context_dixt['listActionneur'] = listActionneur
+		return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 
 @csrf_exempt
 def login_client(request):
