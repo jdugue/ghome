@@ -163,6 +163,7 @@ class Attr_Capteur(models.Model):
 class RuleProfile(models.Model):
 	"""docstring fos RuleProfile"""
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
+	nom = models.CharField(max_length=200)
 	def __init__(self, user):
 		super(RuleProfile, self).__init__()
 		self.user = user
@@ -182,7 +183,7 @@ class RuleProfile(models.Model):
 			if not rule.is_verified(watcher.getWeatherCondition()):
 				return False
 		for rule in self.WeekdayRule_set.all():
-			if not rule.is_verified(watcher.getWeekday())
+			if not rule.is_verified(watcher.getWeekday()):
 				return False
 
 		for action in self.RuleAction_set.all():
@@ -203,8 +204,9 @@ class RuleAction(models.Model):
 
 	def execute_action(self):
 		if action == 'on':
-			# allumer actionneur
-		elif : action == 'off'
+			action = 'on'
+		elif action == 'off':
+			action = 'off'
 			# eteindre actionneur
 
 class PresenceRule(models.Model):
@@ -246,9 +248,8 @@ class TemperatureRule(models.Model):
 		self.isMinimum = isMinimum
 		self.idCapteur = idCapteur
 
-	def is_verified(self, temperatureValue):
-		return isMinimum ? temperatureValue < self.temperatureValue :  temperatureValue > self.temperatureValue
 
+		
 	
 class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)

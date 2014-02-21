@@ -68,7 +68,7 @@ def logout_view(request):
 @login_required(login_url='/login/')
 def profil(request):
 	context = RequestContext(request)
-	profil_list = Profil.objects.all()
+	profil_list = RuleProfile.objects.all()
 	context_dixt={'profil_list':profil_list}
 	return render_to_response('hexanhome/profil.html',context_dixt,context)
 
@@ -301,7 +301,7 @@ def AjouterProfil(request):
 	if request.method == 'POST':
 		try:
 			nomprofil= request.POST['NomProfil']
-			profil = Profil(nom=nomprofil, etat = 'ON')
+			profil = RuleProfile(nom=nomprofil)
 			profil.save()
 			profil_url = nomprofil.replace(' ','_')
 			url = '/profil/settings/' + profil_url
