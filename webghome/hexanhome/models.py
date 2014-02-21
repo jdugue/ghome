@@ -89,22 +89,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 		self.ip_adress = ip
 		self.save()
 		return True
-#TODO
-
-class Profil_activation(models.Model):
-	"""a définir"""
-	id = models.AutoField(primary_key=True)
-	nom = models.CharField(max_length=200)	
-	def __unicode__(self):
-		return unicode(self.nom)		
-
-class Profil(models.Model):
-	"""CLasse pour les profils définit par l'utilisateurs"""
-	id = models.AutoField(primary_key=True)
-	nom = models.CharField(max_length=200)	
-	etat = models.BooleanField()
-	def __unicode__(self):
-		return unicode(self.nom)
 
 class Type(models.Model):
 	"""le type de la valeur renvoyé par le capteur : temperateur, allumé/éteint, etc ..."""
@@ -150,20 +134,7 @@ class Actionneur(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
-		return unicode(self.nom)
-
-class Profil_Act(models.Model):
-	"""Modalité d'activation pour un profil"""
-	id = models.AutoField(primary_key=True)
-	id_act = models.ForeignKey(Actionneur)
-	id_profil = models.ForeignKey(Profil)
-	nouvelle_val = models.IntegerField()
-	def __unicode__(self):
-		return unicode(self.id_act)
-
-# class Users(models.Model):
-# 	"""Classe permettant de representer un Actionneur"""
-# 	nom = models.CharField(max_length=200)
+		return unicode(self.nom) 
 
 class Attribut(models.Model):
 	"""Pour si un capteur renvoie plusieurs type de valeurs"""
@@ -196,15 +167,45 @@ class RuleProfile(models.Model):
 		super(RuleProfile, self).__init__()
 		self.user = user
 
+	def test_and_execute(self):
+		watcher = HomeWatcher()
+		for rule in self.PresenceRule_set.all():
+			if not rule.is_verified(watcher.getPresence(rule.idCapteur)):
+				return False
+		for rule in self.TimeRule_set.all():
+			if not rule.is_verified(watcher.getTime()):
+				return False
+		for rule in self.TemperatureRule_set.all():
+			if not rule.is_verified(watcher.getTemperature(rule.idCapteur)):
+				return False
+		for rule in self.WeatherRule_set.all():
+			if not rule.is_verified(watcher.getWeatherCondition()):
+				return False
+		for rule in self.WeekdayRule_set.all():
+			if not rule.is_verified(watcher.getWeekday())
+				return False
+
+		for action in self.RuleAction_set.all():
+			action.execute_action()
+
+		return True
+
 class RuleAction(models.Model):
 	"""docstring fos RuleAction""" 
 	# action doit etre 'on' ou 'off'
 	action = models.CharField(max_length=200)
 	profil = models.ForeignKey(RuleProfile)
+	actionneur = models.ForeignKey(Actionneur)
 	
 	def __init__(self, action):	
 		super(RuleAction, self).__init__()
 		self.action = action
+
+	def execute_action(self):
+		if action == 'on':
+			# allumer actionneur
+		elif : action == 'off'
+			# eteindre actionneur
 
 class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
@@ -239,10 +240,14 @@ class TemperatureRule(models.Model):
 	temperatureValue = models.IntegerField()
 	isMinimum = models.IntegerField()
 
-	def __init__(self, temperatureValue, isMinimum):
+	def __init__(self, temperatureValue, isMinimum, idCapteur):
 		super(TemperatureRule, self).__init__()
 		self.temperatureValue = temperatureValue
 		self.isMinimum = isMinimum
+		self.idCapteur = idCapteur
+
+	def is_verified(self, temperatureValue):
+		return isMinimum ? temperatureValue < self.temperatureValue :  temperatureValue > self.temperatureValue
 
 	
 class WeatherRule(models.Model):
@@ -252,7 +257,7 @@ class WeatherRule(models.Model):
 	def __init__(self, weatherCondition):
 		super(WeatherRule, self).__init__()
 		self.weatherCondition = weatherCondition
-	
+
 	def is_verified(self, weatherCondition):
 		return self.weatherCondition == weatherCondition
 
@@ -260,9 +265,11 @@ class WeekdayRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	weekday = models.CharField(max_length=200)
 	"""docstring for WeekdayRule"""
+
 	def __init__(self, weekday):
 		super(WeekdayRule, self).__init__()
-		self.weekday = weekday		
+		self.weekday = weekday
+
 	def is_verified(self, weekDay):
 		self.weekday = weekDay
 		return self.weekday

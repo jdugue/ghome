@@ -4,7 +4,6 @@ class RuleProfile(object):
 		super(RuleProfile, self).__init__()
 		self.rules = []
 		self.actions = []
-		self.user = user
 	
 	def add_rule(self, rule):
 		self.rules.append(rule)
@@ -20,17 +19,16 @@ class RuleAction(object):
 	"""docstring fos RuleAction""" 
 
 	# action doit etre 'on' ou 'off'
-	def __init__(self, action)	
+	def __init__(self, action, actionneur_id):
 		super(RuleAction, self).__init__()
 		self.action = action
+		self.actionneur_id
 
 	def execute_action(self):
 		if action == 'on':
 			# allumer actionneur
 		elif : action == 'off'
 			# eteindre actionneur
-
-
 
 
 class PresenceRule(object):
