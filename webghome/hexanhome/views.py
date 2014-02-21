@@ -21,11 +21,6 @@ from django.shortcuts import *
 import requests
 from thread import *
 
-# IMPORTS AUTRES
-# from registration.forms import RegistrationForm
-# from registration.models import RegistrationProfile
-# from registration.backends.default import DefaultBackend
-
 # IMPORTS PERSO
 from hexanhome.models import *
 from hexanhome.forms import *
