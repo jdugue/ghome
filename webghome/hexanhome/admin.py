@@ -31,12 +31,8 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Capteur)
-admin.site.register(Actionneur)
-admin.site.register(Profil_activation)
-admin.site.register(Profil)
 admin.site.register(Type)
 admin.site.register(Piece)
-admin.site.register(Profil_Act)
 admin.site.register(Attribut)
 admin.site.register(Attr_Capteur)
 admin.site.register(RuleProfile)

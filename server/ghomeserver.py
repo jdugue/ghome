@@ -127,6 +127,12 @@ def traiterTrame(trame):
 def parseTemperatureFromTrame(data_trame):
 	# Récupère la valeur de température depuis la partie Data d'une trame de capteur 0.40
 	return 40*int(data_trame[4:6],16)/255
+	
+def parseContactFromTrame(data_trame):
+	# Renvoie 0 si le contacteur est "open" ou 1 si il est "close"
+	DB0 = bin(int(data_trame[6:8],16))[2:].zfill(8)
+	return DB0[4]
+	
 
 def trameIdentifiee (trame, database):
 	# Déterminer si l'identifiant de la trame est dans la base de données
@@ -135,7 +141,9 @@ def trameIdentifiee (trame, database):
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
-		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
+		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
+	else if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'F'):
+		database.updateValueForCapteur(trame.id_bytes, parseContactFromTrame(trame.data_bytes), "contact")
 	else :
 		pass
 	
@@ -147,7 +155,7 @@ def listenTrameServer ():
 
 	#Write all receptions
 	while True:
-		data = sock.recv(4096)
+		data = sock.recv(28)
 		print "%s" % data
 		start_new_thread(traiterTrame,(data,))
 ####################################################################
