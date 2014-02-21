@@ -37,7 +37,6 @@ class Database:
 	
 
 	def executeQuery (self, request):
-		
 		cursor = self.db.cursor()
 		cursor.execute(request)
 		result = cursor.fetchall()
@@ -112,8 +111,7 @@ class HomeWatcher(object):
 		return db.getValeurFromCapteur(idCapteur)
 		
 	def getWeatherCondition(self):
-
-		
+	
 	def getPresence(self, idCapteur):
 		db = Database()
 		return db.getValeurFromCapteur(idCapteur)
