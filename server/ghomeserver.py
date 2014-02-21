@@ -88,7 +88,7 @@ class Database:
 			
 	def getValeurFromCapteur(self, idCapteur):
 		self.db = self.connectDb()
-		if(self.db)
+		if(self.db):
 			getRequest = "SELECT valeur FROM hexanhome_attribut WHERE identifiant='{}'".format()
 			result = self.executeQuery(getRequest)
 			self.db.close()
@@ -112,7 +112,7 @@ class HomeWatcher(object):
 		return db.getValeurFromCapteur(idCapteur)
 		
 	def getWeatherCondition(self):
-
+		pass
 		
 	def getPresence(self, idCapteur):
 		db = Database()
@@ -133,7 +133,7 @@ def parseTemperatureFromTrame(data_trame):
 def parseContactFromTrame(data_trame):
 	# Renvoie 0 si le contacteur est "open" ou 1 si il est "close"
 	DB0 = bin(int(data_trame[6:8],16))[2:].zfill(8)
-	return DB0[4]
+	return DB0[7]
 	
 
 def trameIdentifiee (trame, database):
@@ -144,7 +144,7 @@ def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
 		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
-	else if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'F'):
+	elif (database.getIdTypeByIdCapteur(trame.id_bytes) == 'F'):
 		database.updateValueForCapteur(trame.id_bytes, parseContactFromTrame(trame.data_bytes), "contact")
 	else :
 		pass
