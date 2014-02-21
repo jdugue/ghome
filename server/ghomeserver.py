@@ -86,28 +86,37 @@ class Database:
 			self.db.close()
 			return result[0][0]
 			
+	def getValeurFromCapteur(self, idCapteur):
+		self.db = self.connectDb()
+		if(self.db)
+			getRequest = "SELECT valeur FROM hexanhome_attribut WHERE identifiant='{}'".format()
+			result = self.executeQuery(getRequest)
+			self.db.close()
+			return [0][0]
 
 class HomeWatcher(object):
 	"""docstring for HomeWatcher"""
-	def __init__(self, arg):
+	def __init__(self):
 		super(HomeWatcher, self).__init__()
 
-	def getTime():
+	def getTime(self):
 		now = datetime.datetime.now()
 		return now.hour + now.minute + now.second()
 
-	def getWeekday():
+	def getWeekday(self):
 		now = datetime.datetime.now()
 		return now.weekday()
 
-	def getTemperature():
+	def getTemperature(self, idCapteur):
+		db = Database()
+		return db.getValeurFromCapteur(idCapteur)
 		
+	def getWeatherCondition(self):
 
-	def getWeatherCondition():
 		
-
-	def getPresence():
-
+	def getPresence(self, idCapteur):
+		db = Database()
+		return db.getValeurFromCapteur(idCapteur)
 
 def traiterTrame(trame):
 	tr = Trame(trame)
@@ -128,7 +137,7 @@ def trameIdentifiee (trame, database):
 def majDonnees(trame, database):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
-		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
+		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"température")
 	else :
 		pass
 	
