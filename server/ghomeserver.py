@@ -37,7 +37,6 @@ class Database:
 	
 
 	def executeQuery (self, request):
-		
 		cursor = self.db.cursor()
 		cursor.execute(request)
 		result = cursor.fetchall()
@@ -93,30 +92,6 @@ class Database:
 			result = self.executeQuery(getRequest)
 			self.db.close()
 			return [0][0]
-
-class HomeWatcher(object):
-	"""docstring for HomeWatcher"""
-	def __init__(self):
-		super(HomeWatcher, self).__init__()
-
-	def getTime(self):
-		now = datetime.datetime.now()
-		return now.hour + now.minute + now.second()
-
-	def getWeekday(self):
-		now = datetime.datetime.now()
-		return now.weekday()
-
-	def getTemperature(self, idCapteur):
-		db = Database()
-		return db.getValeurFromCapteur(idCapteur)
-		
-	def getWeatherCondition(self):
-		pass
-		
-	def getPresence(self, idCapteur):
-		db = Database()
-		return db.getValeurFromCapteur(idCapteur)
 
 def traiterTrame(trame):
 	tr = Trame(trame)

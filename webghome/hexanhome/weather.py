@@ -30,13 +30,8 @@ class WeatherDownloader(object):
             print('Timeout exception')
         except requests.TooManyRedirects:
             print('TooManyRedirects exception')
-        parsed_data = ' '
+        parsed_data = WeatherData(None)
         return parsed_data
-
-    #def getForecastWeatherData(self):
-     #   r = requests.get
-        #TODO
-
 
     def parse_weather_condition_id(self, weather_id):
         weather_condition = None
@@ -53,18 +48,21 @@ class WeatherDownloader(object):
         return weather_condition
 
     def parseCurrentWeatherData(self, data):
-        location = data['name']
-        description = data['weather'][0]['description']
-        weather_id = data['weather'][0]['id']
-        temperature = data['main']['temp']
-        min_temp = data['main']['temp_min']
-        max_temp = data['main']['temp_max']
-        humidity = data['main']['humidity']
-        sunrise = data['sys']['sunrise']
-        sunset = data['sys']['sunset']
-        wind_speed = data['wind']['speed']
-        return WeatherData ( location, description, temperature, min_temp, max_temp, 
+        if data:
+            location = data['name']
+            description = data['weather'][0]['description']
+            weather_id = data['weather'][0]['id']
+            temperature = data['main']['temp']
+            min_temp = data['main']['temp_min']
+            max_temp = data['main']['temp_max']
+            humidity = data['main']['humidity']
+            sunrise = data['sys']['sunrise']
+            sunset = data['sys']['sunset']
+            wind_speed = data['wind']['speed']
+            return WeatherData ( location, description, temperature, min_temp, max_temp, 
             sunrise, sunset, humidity, wind_speed, self.parse_weather_condition_id(weather_id))
+        else:
+            return WeatherData()
 
     
 class WeatherData(object):
@@ -82,6 +80,19 @@ class WeatherData(object):
         self.humidity = humidity
         self.wind_speed = wind_speed
         self.weather_condition = weather_condition
+
+    def __init(self):
+        super(WeatherData, self).__init__()
+        self.location = None
+        self.description = None
+        self.current_temp = None
+        self.min_temp = None
+        self.max_temp = None
+        self.sunrise = None
+        self.sunset = None
+        self.humidity = None
+        self.wind_speed = None
+        self.weather_condition = None
 
     def __str__(self):
         return "Ville: {0} Temperature: {1} Description: {2} Condition: {3} ".format(self.location, self.current_temp, 
