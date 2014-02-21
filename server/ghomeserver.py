@@ -132,9 +132,8 @@ def parseTemperatureFromTrame(data_trame):
 	
 def parseContactFromTrame(data_trame):
 	# Renvoie 0 si le contacteur est "open" ou 1 si il est "close"
-	DB0 = Bytearray.Fromhex(data_trame[7])
-	print "VALEUR DB0 :"
-	print DB0
+	DB0 = bin(int(data_trame[6:8],16))[2:].zfill(8)
+	return DB0[4]
 	
 
 def trameIdentifiee (trame, database):
