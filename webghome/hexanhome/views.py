@@ -91,6 +91,8 @@ def AjoutPiece(request):
 	else :
 		return render_to_response('hexanhome/AjoutPiece.html',context)
 
+
+# ID / NOM / PIECE / TRAME ON / TRAME OFF / USER / IDENTFIANT
 @login_required(login_url='/login/')
 def AjoutActionneur(request):
 	c = {}
