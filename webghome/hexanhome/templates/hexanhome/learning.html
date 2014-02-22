@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Learning {{actionneur.nom}}{% endblock %}
+{% block content %}
+<h3>CC appuie sur le boutton learning  <h3>
+	<form id="category_form" method="post" action="/config/AjoutActionneur/learning/{{actionneur.nom}}/">
+        {% csrf_token %}
+        <input type="hidden" name="actionneur_identifiant" value="{{actionneur.nom}}">
+        <button type="submit" name="Supp_capteur"class="btn btn-default btn-xs ">Envoie de Trame</button>
+    </form>
+{% endblock %}
