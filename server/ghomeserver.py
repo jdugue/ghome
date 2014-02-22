@@ -78,6 +78,10 @@ class Database:
 			self.executeUpdate(updateRequest)
 			self.db.close()
 			
+	def testProfiles (self):
+		url = 'http://127.0.0.1:8000/test_profiles/'
+		params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd', 'port':'5000'}
+		r = requests.post(url, data=params)
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
