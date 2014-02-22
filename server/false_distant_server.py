@@ -3,7 +3,7 @@ import sys
 from thread import *
 import time
 
-fichier_donnees = open("trame_capteurs_13_1","r")
+fichier_donnees = open("trame_capteurs_21_2","r")
 
 #Create TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,14 +18,16 @@ sock.listen(5)
 
 def clientthread(conn):
 	while True:
-		conn.send(fichier_donnees.readline())
+		trame = raw_input("Saisissez une trame :")
+		conn.send(trame)
 		time.sleep(2)
 		
 
 #While there is no connection
 while True :
   connection, client_adress = sock.accept()
-  start_new_thread(clientthread,(connection,))
+  #start_new_thread(clientthread,(connection,))
+  clientthread(connection)
   
 connection.close()
 sock.close()
