@@ -19,7 +19,7 @@ class HomeWatcher(object):
 		capteur = Capteur.objects.filter(identifiant=idCapteur)
 		attributs = capteur.attribut_set.all()
 		for att in attributs:
-			if att.nom == 'temperature'
+			if att.nom == 'temperature':
 				return att.valeur
 		return None
 		
@@ -31,6 +31,6 @@ class HomeWatcher(object):
 		capteur = Capteur.objects.filter(identifiant=idCapteur)
 		attributs = capteur.attribut_set.all()
 		for att in attributs:
-			if att.nom == 'presence'
+			if att.nom == 'presence':
 				return att.valeur
 		return None

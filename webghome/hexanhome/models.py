@@ -165,9 +165,8 @@ class RuleProfile(models.Model):
 	"""docstring fos RuleProfile"""
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	nom = models.CharField(max_length=200)
-	def __init__(self, user):
-		super(RuleProfile, self).__init__()
-		self.user = user
+	def __unicode__(self):
+		return unicode(self.nom)
 
 	def test_and_execute(self):
 		watcher = HomeWatcher()
@@ -199,9 +198,6 @@ class RuleAction(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	actionneur = models.ForeignKey(Actionneur)
 	
-	def __init__(self, action):	
-		super(RuleAction, self).__init__()
-		self.action = action
 
 	def execute_action(self):
 		if action == 'on':
@@ -243,15 +239,6 @@ class TemperatureRule(models.Model):
 	temperatureValue = models.IntegerField()
 	isMinimum = models.IntegerField()
 
-	def __init__(self, temperatureValue, isMinimum, idCapteur):
-		super(TemperatureRule, self).__init__()
-		self.temperatureValue = temperatureValue
-		self.isMinimum = isMinimum
-		self.idCapteur = idCapteur
-
-
-		
-	
 class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	weatherCondition = models.CharField(max_length=200)
