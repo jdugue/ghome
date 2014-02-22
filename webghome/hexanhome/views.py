@@ -313,6 +313,60 @@ def AjouterProfil(request):
 			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
 			rule.save() 
+		elif nomDeclencheur == "Presence" : 
+			capteurname = request.POST['nomCapteurPresence']
+			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
+			try:
+				present = request.POST['present']
+				present='True'
+			except:
+				present= 'False'
+			presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
+			presencerule.save()
+		elif nomDeclencheur == "Jours":
+			try: 
+				weekday = request.POST['lundi']
+				jourregle = WeekdayRule(profil = profil, weekday = 0)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['mardi']
+				jourregle = WeekdayRule(profil = profil, weekday = 1)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['mercredi']
+				jourregle = WeekdayRule(profil = profil, weekday = 2)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['jeudi']
+				jourregle = WeekdayRule(profil = profil, weekday = 3)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['vendredi']
+				jourregle = WeekdayRule(profil = profil, weekday = 4)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['samedi']
+				jourregle = WeekdayRule(profil = profil, weekday = 5)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['dimanche']
+				jourregle = WeekdayRule(profil = profil, weekday = 6)
+				jourregle.save()
+			except:
+				pass
+
 		actionneurname = request.POST['nomActionneur']	
 		try:
 			action = request.POST['action']
