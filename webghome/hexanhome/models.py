@@ -170,7 +170,7 @@ class RuleProfile(models.Model):
 
 	def test_and_execute(self):
 		watcher = HomeWatcher()
-		for rule in self.PresenceRule_set.all():
+		for rule in self.presencerule_set.all():
 			if not rule.is_verified(watcher.getPresence(rule.idCapteur)):
 				return False
 		for rule in self.TimeRule_set.all():
