@@ -25,6 +25,7 @@ from thread import *
 from hexanhome.models import *
 from hexanhome.forms import *
 import weather
+import actionneur_learning
 
 from django.core.context_processors import csrf
 
@@ -373,7 +374,7 @@ def test_profiles(request):
 		password = request.POST.get('password', '')
 		user = authenticate(email=email, password=password)
 		if user is not None:
-			start_new_thread(test_profiles_process, )
+			start_new_thread(test_profiles_process,())
 	return HttpResponse('')
 
 def test_profiles_process():
