@@ -309,10 +309,12 @@ def AjouterProfil(request):
 		except:
 			return render_to_response('hexanhome/AjouterProfil.html',{erreur : 'pas de nom'},context)
 	else:
-		listcapteur = Capteur.objects.filter(user = request.user)
+		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+		listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
 		listActionneur = Actionneur.objects.filter(user = request.user)
-		context_dixt={'listCapteur':listcapteur}
+		context_dixt={'listCapteurTemperature':listcapteurTemperature}
 		context_dixt['listActionneur'] = listActionneur
+		context_dixt['listCapteurPresence'] = listcapteurPresence
 		return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 
 @csrf_exempt

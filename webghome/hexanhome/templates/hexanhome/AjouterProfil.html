@@ -27,19 +27,29 @@
 					<OPTION>Météo
 		  		</SELECT>
 		  	</br>
-		  		{% if listCapteur %}
-		  			<SELECT name="nomCapteur" id="nomCapteur"  size="1">
+		  	<label>Sélection du capteur déclencheur</label>
+		  		{% if listCapteurTemperature %}
+		  			<SELECT name="nomCapteurTemperature" id="nomCapteurTemperature"  size="1">
 		  			<h2>CC</h2>
-		  			{% for capteur in listCapteur %}
+		  			{% for capteur in listCapteurTemperature %}
 		  				<OPTION >{{capteur.nom}}
 		  			{%endfor%}
+		  			</SELECT>
 		  		{%endif%}
-		  	</SELECT>
+		  		{% if listCapteurTemperature %}
+		  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence" style="display:none" size="1">
+		  			<h2>CC</h2>
+		  			{% for capteur in listCapteurPresence %}
+		  				<OPTION >{{capteur.nom}}
+		  			{%endfor%}
+		  			</SELECT>
+		  		{%endif%}
+		  
 		  </br>
 		  	<label>Action</label>
 		  </br>
 		  		{% if listActionneur %}
-		  			<SELECT name="nomDeclencheur" id="nomDeclencheur"  size="1">
+		  			<SELECT name="nomDeclencheur2" id="nomDeclencheur2"  size="1">
 		  			<h2>CC</h2>
 		  			{% for actionneur in listActionneur %}
 		  				<OPTION >{{actionneur.nom}}
@@ -60,8 +70,16 @@
 		list = document.getElementById("nomDeclencheur");
 		if (list.value == 'Température')
 		{
-			capteur = document.getElementById("nomCapteur")
+			capteur = document.getElementById("nomCapteurTemperature")
 			capteur.style.display="block";
+			capteur2 = document.getElementById("nomCapteurPresence")
+			capteur2.style.display = "none"
+		}
+		if(list.value == 'Présence'){
+			capteur = document.getElementById("nomCapteurTemperature")
+			capteur.style.display="none";
+			capteur2 = document.getElementById("nomCapteurPresence")
+			capteur2.style.display = "block"
 		}
 		
 	}
