@@ -26,7 +26,7 @@ from hexanhome.models import *
 from hexanhome.forms import *
 import weather
 import actionneur_learning
-
+from actionneur_learning import *
 from django.core.context_processors import csrf
 
 @login_required(login_url='/login/')
@@ -97,29 +97,23 @@ def AjoutActionneur(request):
 	c.update(csrf(request))
 	context = RequestContext(request)
 	if request.method =='POST':
-		identifiant = request.POST['NumeroIdentifiant']
-		try:
-			actionneur = Actionneur.objects.get(identifiant = identifiant, user = request.user)
-			piece_list = Piece.objects.filter(user = request.user)
-			context_dixt={'pieces':piece_list}
-			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
-			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
-		except:
-			piece_name = request.POST['nomPiece']
-			nomactionneur = request.POST['NomActionneur']
-			piece = Piece.objects.get(nom=piece_name, user = request.user)
-			actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece,identifiant= identifiant)
-			actionneur.save()
-			piece_name = piece_name.replace(' ', '_')
-			url = '/profil/piece/' + piece_name +'/'
-			return HttpResponseRedirect(url)
+		piece_name = request.POST['nomPiece']
+		nomactionneur = request.POST['NomActionneur']
+		piece = Piece.objects.get(nom=piece_name, user = request.user)
+		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
+		actionneur.save()
+		actionneur.identifiant = getFictiveButtonId(actionneur.id)
+		actionneur.save()
+		piece_name = piece_name.replace(' ', '_')
+		url = '/profil/piece/' + piece_name +'/'
+		return HttpResponseRedirect(url)
 	else :
-			piece_list = Piece.objects.filter(user = request.user)
-			if piece_list:
-				context_dixt={'pieces':piece_list}
-				return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
-			else:
-				return HttpResponseRedirect('/config/AjoutPiece/')
+		piece_list = Piece.objects.filter(user = request.user)
+		if piece_list:
+			context_dixt={'pieces':piece_list}
+			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+		else:
+			return HttpResponseRedirect('/config/AjoutPiece/')
 
 def register(request):
 	context = RequestContext(request)
