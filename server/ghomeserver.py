@@ -7,6 +7,7 @@ import re
 import MySQLdb
 import ConfigParser
 from thread import *
+import requests
 
 class Trame:
 	def __init__(self, trame):
@@ -76,6 +77,7 @@ class Database:
 			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
+			
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
