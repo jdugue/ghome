@@ -295,15 +295,24 @@ def settings(request,profil_name_url):
 def AjouterProfil(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
-		try:
-			nomprofil= request.POST['NomProfil']
-			profil = RuleProfile(nom=nomprofil)
-			profil.save()
-			profil_url = nomprofil.replace(' ','_')
-			url = '/profil/settings/' + profil_url
-			return HttpResponseRedirect(url)
-		except:
-			return render_to_response('hexanhome/AjouterProfil.html',{erreur : 'pas de nom'},context)
+		nomprofil= request.POST['NomProfil']
+		profil = RuleProfile(nom = nomprofil, user = request.user)
+		profil.save()
+		nomDeclencheur = request.POST['nomDeclencheur']
+		if nomDeclencheur == "Temperature" : 
+			capteurname = request.POST['nomCapteurTemperature']
+			temperatureValue = request.POST['temperatureValue']
+			minimum = request.POST['minimum']
+			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
+			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = '0' )
+			rule.save() 
+		actionneurname = request.POST['nomActionneur']	
+		actionneur = Actionneur.objects.get(user = request.user , nom = actionneurname)
+		ruleAction = RuleAction(action = 'on' , profil= profil, actionneur= actionneur )
+		ruleAction.save()
+		profil_url = nomprofil.replace(' ','_')
+		url = '/profil/settings/' + profil_url
+		return HttpResponseRedirect(url)	
 	else:
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
 		listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
