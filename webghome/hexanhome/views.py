@@ -105,6 +105,8 @@ def AjoutActionneur(request):
 		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
 		actionneur.save()
 		actionneur.identifiant = getFictiveButtonId(actionneur.id)
+		actionneur.trame_on = getTrameON(actionneur.identifiant)
+		actionneur.trame_off = getTrameOFF(actionneur.identifiant)
 		actionneur.save()
 		piece_name = piece_name.replace(' ', '_')
 		url = '/profil/piece/' + piece_name +'/'
@@ -360,7 +362,11 @@ def AjouterProfil(request):
 				jourregle.save()
 			except:
 				pass
-
+		elif nomDeclencheur == "Heure":
+			start_time = request.POST['heuredebut']
+			end_time = request.POST['heurefin']
+			timerule = TimeRule(profil = profil,start_time = start_time ,end_time= end_time)
+			timerule.save()
 		actionneurname = request.POST['nomActionneur']	
 		try:
 			action = request.POST['action']
