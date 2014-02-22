@@ -8,9 +8,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from home_watcher import *
-
-
+import home_watcher
 
 class CustomUserManager(BaseUserManager):
 
@@ -130,8 +128,8 @@ class Actionneur(models.Model):
 	nom = models.CharField(max_length=200)
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
-	#foreign key vers les type
-	valeur = models.BooleanField(default =False)
+	trame_on = models.CharField(max_length=28)
+	trame_off = models.CharField(max_length=28)
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
@@ -165,29 +163,28 @@ class RuleProfile(models.Model):
 	"""docstring fos RuleProfile"""
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	nom = models.CharField(max_length=200)
-	def __init__(self, user):
-		super(RuleProfile, self).__init__()
-		self.user = user
+	def __unicode__(self):
+		return unicode(self.nom)
 
 	def test_and_execute(self):
-		watcher = HomeWatcher()
-		for rule in self.PresenceRule_set.all():
-			if not rule.is_verified(watcher.getPresence(rule.idCapteur)):
+		watcher = home_watcher.HomeWatcher()
+		for rule in self.presencerule_set.all():
+			if not rule.is_verified(watcher.getPresence(rule.idCapteur.identifiant)):
 				return False
-		for rule in self.TimeRule_set.all():
+		for rule in self.timerule_set.all():
 			if not rule.is_verified(watcher.getTime()):
 				return False
-		for rule in self.TemperatureRule_set.all():
-			if not rule.is_verified(watcher.getTemperature(rule.idCapteur)):
+		for rule in self.temperaturerule_set.all():
+			if not rule.is_verified(watcher.getTemperature(rule.idCapteur.identifiant)):
 				return False
-		for rule in self.WeatherRule_set.all():
+		for rule in self.weatherrule_set.all():
 			if not rule.is_verified(watcher.getWeatherCondition()):
 				return False
-		for rule in self.WeekdayRule_set.all():
+		for rule in self.weekdayrule_set.all():
 			if not rule.is_verified(watcher.getWeekday()):
 				return False
 
-		for action in self.RuleAction_set.all():
+		for action in self.ruleaction_set.all():
 			action.execute_action()
 
 		return True
@@ -199,10 +196,6 @@ class RuleAction(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	actionneur = models.ForeignKey(Actionneur)
 	
-	def __init__(self, action):	
-		super(RuleAction, self).__init__()
-		self.action = action
-
 	def execute_action(self):
 		if action == 'on':
 			action = 'on'
@@ -214,10 +207,7 @@ class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	isPresent = models.BooleanField(default =False)
 	idCapteur = models.ForeignKey(Capteur)
-	def __init__(self, isPresent):
-		super(PresenceRule, self).__init__()
-		self.isPresent = isPresent
-
+	
 	def is_verified(self, isPresent):
 		return self.isPresent == isPresent
 
@@ -241,36 +231,29 @@ class TemperatureRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	idCapteur = models.ForeignKey(Capteur)
 	temperatureValue = models.IntegerField()
-	isMinimum = models.IntegerField()
+	isMinimum = models.BooleanField()
 
-	def __init__(self, temperatureValue, isMinimum, idCapteur):
-		super(TemperatureRule, self).__init__()
-		self.temperatureValue = temperatureValue
-		self.isMinimum = isMinimum
-		self.idCapteur = idCapteur
+	def is_verified(self, actual_temp):
+		if isMinimum:
+			return actual_temp < self.temperatureValue
+		else:
+			return actual_temp > self.temperatureValue
 
 
-		
-	
 class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	weatherCondition = models.CharField(max_length=200)
 	"""docstring for WeatherRule"""
-	def __init__(self, weatherCondition):
-		super(WeatherRule, self).__init__()
-		self.weatherCondition = weatherCondition
+
 
 	def is_verified(self, weatherCondition):
 		return self.weatherCondition == weatherCondition
 
 class WeekdayRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
-	weekday = models.CharField(max_length=200)
+	weekday = models.IntegerField()
 	"""docstring for WeekdayRule"""
 
-	def __init__(self, weekday):
-		super(WeekdayRule, self).__init__()
-		self.weekday = weekday
 
 	def is_verified(self, weekDay):
 		self.weekday = weekDay

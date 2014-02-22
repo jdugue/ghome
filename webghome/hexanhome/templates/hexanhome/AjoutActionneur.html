@@ -18,14 +18,6 @@
         </SELECT>
     </div>
     {% endif %}
-     <div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
-            <label class="control-label"  for="NumeroIdentifiant">Identifiant</label>
-            <input type="text" class="form-control " name="NumeroIdentifiant" id="NumeroIdentifiant" placeholder="Enter identifiant">
-            {%if erreurID %}
-                <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                <span class="help-block">{{erreurID}}</span>
-            {%endif%}
-          </div>
     <input type="submit" value="Valider" name="AjoutActionneur"  class="btn btn-default">
 </form>
 

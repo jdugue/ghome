@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ajouter Profil{% endblock %}
 {% block content %}
-	<h1>Ajout d'une profil:</h1>
+	<h1>Ajout d'un profil:</h1>
 	<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
 	 	{% csrf_token %}
 	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
@@ -19,63 +19,78 @@
 			<div class="panel-body">
 				<label>Déclencheur</label>
 				<SELECT name="nomDeclencheur" id="nomDeclencheur" onchange="ChangeValue();" size="1">
-					<OPTION>Température
-					<OPTION>Présence
+					<OPTION>Temperature
+					<OPTION>Presence
 					<OPTION>Jours
 					<OPTION>Heure
-					<OPTION>Météo
+					<OPTION>Meteo
 		  		</SELECT>
 		  		</br>
 		  		<label>Sélection du capteur déclencheur</label>
-		  		{% if listCapteurTemperature %}
-		  			<SELECT name="nomCapteurTemperature" id="nomCapteurTemperature"  size="1">
-		  			{% for capteur in listCapteurTemperature %}
-		  				<OPTION >{{capteur.nom}}
-		  			{%endfor%}
-		  			</SELECT>
-		  		{%endif%}
-		  		{% if listCapteurTemperature %}
-		  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence" style="display:none" size="1">
-		  			{% for capteur in listCapteurPresence %}
-		  				<OPTION >{{capteur.nom}}
-		  			{%endfor%}
-		  			</SELECT>
-		  		{%endif%}
+		  		<div id="divtemperature">
+			  		{% if listCapteurTemperature %}
+			  			<SELECT name="nomCapteurTemperature" id="nomCapteurTemperature"  size="1">
+			  			{% for capteur in listCapteurTemperature %}
+			  				<OPTION >{{capteur.nom}}
+			  			{%endfor%}
+			  			</SELECT>
+			  		</br>
+			  			<label class="control-label" for="temperatureValue">Entrer la valeur de la temperature </label>
+			  			<input type="text"  class="form-control" name="temperatureValue" id="temperatureValue" placeholder="Enter Temperature">
+			  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "minimum" id="minimum" value="minimum"  > Minimum
+		  					
+			  		{%endif%}
+			  	</div>
+			  	<div id="divPresence" style="display:none" >
+			  		{% if listCapteurPresence %}
+			  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence"  size="1">
+			  			{% for capteur in listCapteurPresence %}
+			  				<OPTION >{{capteur.nom}}
+			  			{%endfor%}
+			  			</SELECT>
+			  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "isPresent" id="isPresent" value="isPresent"  > Present
+			  		{%endif%}
+		  		</div>
 		  		<div id="nomJour" style="display:none">
 			  		<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Lundi
+	  					<input type="checkbox" name="lundi" id="inlineCheckbox1" value="Lundi"> Lundi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Mardi
+	  					<input type="checkbox" name="mardi" id="inlineCheckbox1" value="Mardi"> Mardi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Mercdredi
+	  					<input type="checkbox" name="mercredi" id="inlineCheckbox1" value="Mercredi"> Mercredi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Jeudi
+	  					<input type="checkbox" name="jeudi" id="inlineCheckbox1" value="Jeudi"> Jeudi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Vendredi
+	  					<input type="checkbox" name = "vendredi" id="inlineCheckbox1" value="Vendredi"> Vendredi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Samedi
+	  					<input type="checkbox" name = "samedi"id="inlineCheckbox1" value="Samedi"> Samedi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Dimanche
+	  					<input type="checkbox" name="dimanche" id="inlineCheckbox1" value="Dimanche"> Dimanche
 					</label>
 				</div>
 		  		</br>
 		  		<label>Action</label>
 		  		</br>
 		  		{% if listActionneur %}
-		  			<SELECT name="nomDeclencheur2" id="nomDeclencheur2"  size="1">
+		  			<SELECT name="nomActionneur" id="nomActionneur"  size="1">
 		  			<h2>CC</h2>
 		  			{% for actionneur in listActionneur %}
 		  				<OPTION >{{actionneur.nom}}
 		  			{%endfor%}
 		  			</SELECT>
+		  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "action" id="action" value="action"  > On
 		  		{%endif%}	
-				</div>
+
+				
 			</div>
 		<input type="submit" value="Entrer"  class="btn btn-default">
   </form>
@@ -87,19 +102,19 @@
 	function ChangeValue()
 	{
 		list = document.getElementById("nomDeclencheur");
-		if (list.value == 'Température')
+		if (list.value == 'Temperature')
 		{
-			capteur = document.getElementById("nomCapteurTemperature");
+			capteur = document.getElementById("divtemperature");
 			capteur.style.display="block";
-			capteur2 = document.getElementById("nomCapteurPresence");
+			capteur2 = document.getElementById("divPresence");
 			capteur2.style.display = "none";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
 		}
-		if(list.value == 'Présence'){
-			capteur = document.getElementById("nomCapteurTemperature");
+		if(list.value == 'Presence'){
+			capteur = document.getElementById("divtemperature");
 			capteur.style.display="none";
-			capteur2 = document.getElementById("nomCapteurPresence");
+			capteur2 = document.getElementById("divPresence");
 			capteur2.style.display = "block";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
@@ -107,17 +122,17 @@
 		if (list.value == 'Jours'){
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="block";
-			capteurTemperature = document.getElementById("nomCapteurTemperature");
+			capteurTemperature = document.getElementById("divtemperature");
 			capteurTemperature.style.display="none";
-			capteurPresence = document.getElementById("nomCapteurPresence");
+			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
 		}
 		if (list.value == 'Heure'){
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
-			capteurTemperature = document.getElementById("nomCapteurTemperature");
+			capteurTemperature = document.getElementById("divtemperature");
 			capteurTemperature.style.display="none";
-			capteurPresence = document.getElementById("nomCapteurPresence");
+			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
 			capteurHeure = document.getElementById("Heure");
 			capteurHeure.style.display="block";
