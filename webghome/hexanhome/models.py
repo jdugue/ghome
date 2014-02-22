@@ -214,13 +214,9 @@ class PresenceRule(models.Model):
 class TimeRule(models.Model):
 	"""docstring for TimeRule"""
 	profil = models.ForeignKey(RuleProfile)
-	start_time = models.DateField()
-	end_time = models.DateField()
-	def __init__(self, start_time, end_time):
-		super(TimeRule, self).__init__()
-		self.start_time = start_time
-		self.end_time = end_time
-
+	start_time = models.CharField(max_length=200)
+	end_time = models.CharField(max_length=200)
+	
 	def is_verified(self, time):
 		if self.start_time < self.end_time :
 			return self.start_time < time < self.end_time

@@ -173,7 +173,8 @@ def listenTrameServer ():
 	while True:
 		data = sock.recv(28)
 		print "%s" % data
-		start_new_thread(traiterTrame,(data,profileManager,))
+		if (len(data) == 28):
+			start_new_thread(traiterTrame,(data,profileManager,))
 ####################################################################
 
 if __name__ == '__main__':
