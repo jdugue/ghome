@@ -130,8 +130,8 @@ class Actionneur(models.Model):
 	nom = models.CharField(max_length=200)
 	#foreign key vers les pieces
 	id_piece = models.ForeignKey(Piece)
-	#foreign key vers les type
-	valeur = models.BooleanField(default =False)
+	trame_on = models.CharField(max_length=28)
+	trame_off = models.CharField(max_length=28)
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	identifiant = models.CharField(max_length=8)
 	def __unicode__(self):
