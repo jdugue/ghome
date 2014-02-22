@@ -82,14 +82,11 @@ class Database:
 			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
-<<<<<<< HEAD
 			
 	def testProfiles (self):
 		url = 'http://127.0.0.1:8000/test_profiles/'
-		params = {'email':'ianicx@gmail.com', 'password': 'hs2jwth9'}
+		params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd'}
 		r = requests.post(url, data=params)
-=======
->>>>>>> 9cbd0cc5d60c3fe3157d0d7bcad7b733904fe7c7
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
