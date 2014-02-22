@@ -302,13 +302,22 @@ def AjouterProfil(request):
 		if nomDeclencheur == "Temperature" : 
 			capteurname = request.POST['nomCapteurTemperature']
 			temperatureValue = request.POST['temperatureValue']
-			minimum = request.POST['minimum']
+			try:
+				minimum = request.POST['minimum']
+				minimum='True'
+			except:
+				minimum= 'False'
 			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
-			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = '0' )
+			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
 			rule.save() 
 		actionneurname = request.POST['nomActionneur']	
+		try:
+			action = request.POST['action']
+			action = 'on'
+		except:
+			action = 'off'
 		actionneur = Actionneur.objects.get(user = request.user , nom = actionneurname)
-		ruleAction = RuleAction(action = 'on' , profil= profil, actionneur= actionneur )
+		ruleAction = RuleAction(action = action , profil= profil, actionneur= actionneur )
 		ruleAction.save()
 		profil_url = nomprofil.replace(' ','_')
 		url = '/profil/settings/' + profil_url

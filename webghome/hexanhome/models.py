@@ -237,7 +237,7 @@ class TemperatureRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	idCapteur = models.ForeignKey(Capteur)
 	temperatureValue = models.IntegerField()
-	isMinimum = models.IntegerField()
+	isMinimum = models.BooleanField()
 
 class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)

@@ -37,9 +37,11 @@
 			  		</br>
 			  			<label class="control-label" for="temperatureValue">Entrer la valeur de la temperature </label>
 			  			<input type="text"  class="form-control" name="temperatureValue" id="temperatureValue" placeholder="Enter Temperature">
-			  			<input type="radio" name="minimum" id="minimum" value="minimum" checked>Minimum
+			  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "minimum" id="minimum" value="minimum"  > Minimum
 		  					
 			  		{%endif%}
+			  	</div>
 			  	</id>
 		  		{% if listCapteurTemperature %}
 		  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence" style="display:none" size="1">
@@ -81,10 +83,11 @@
 		  				<OPTION >{{actionneur.nom}}
 		  			{%endfor%}
 		  			</SELECT>
-		  			<input type="radio" name="on" id="on" value="on" checked>On
+		  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "action" id="action" value="action"  > On
 		  		{%endif%}	
 
-				</div>
+				
 			</div>
 		<input type="submit" value="Entrer"  class="btn btn-default">
   </form>
