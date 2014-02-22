@@ -27,7 +27,7 @@ while True:
   data_struct = (data[:4], data[4:6], data[6:8], data[8:16], data[16:24], data[24:26], data[26:28])
   print >>sys.stderr, "Sync=[%s], LG=[%s], ORG=[%s], DB=[%s], ID=[%s], STATUS=[%s], CHECK_SUM=[%s]" % data_struct
   
-  DB0 = bin(int(data[14:16],16))[2:]
+  DB0 = bin(int(data[14:16],16))[2:].zfill(8)
   print "VALEUR DB0 :"
   print DB0
 	

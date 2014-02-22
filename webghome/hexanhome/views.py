@@ -19,11 +19,7 @@ from django.template import RequestContext
 
 from django.shortcuts import *
 import requests
-
-# IMPORTS AUTRES
-# from registration.forms import RegistrationForm
-# from registration.models import RegistrationProfile
-# from registration.backends.default import DefaultBackend
+from thread import *
 
 # IMPORTS PERSO
 from hexanhome.models import *
@@ -341,3 +337,18 @@ def get_client_ip(request):
 	else:
 		ip = request.META.get('REMOTE_ADDR')
 	return ip
+
+@csrf_exempt
+def test_profiles(request):
+	if request.method == 'POST':
+		email = request.POST.get('email', '')
+		password = request.POST.get('password', '')
+		user = authenticate(email=email, password=password)
+		if user is not None:
+			start_new_thread(test_profiles_process, )
+	return HttpResponse('')
+
+def test_profiles_process():
+	profiles = RuleProfile.objects.all()
+	for profile in profiles:
+		profile.test_and_execute()
