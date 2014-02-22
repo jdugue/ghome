@@ -8,9 +8,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from home_watcher import *
-
-
+import home_watcher
 
 class CustomUserManager(BaseUserManager):
 
@@ -169,24 +167,24 @@ class RuleProfile(models.Model):
 		return unicode(self.nom)
 
 	def test_and_execute(self):
-		watcher = HomeWatcher()
-		for rule in self.PresenceRule_set.all():
-			if not rule.is_verified(watcher.getPresence(rule.idCapteur)):
+		watcher = home_watcher.HomeWatcher()
+		for rule in self.presencerule_set.all():
+			if not rule.is_verified(watcher.getPresence(rule.idCapteur.identifiant)):
 				return False
-		for rule in self.TimeRule_set.all():
+		for rule in self.timerule_set.all():
 			if not rule.is_verified(watcher.getTime()):
 				return False
-		for rule in self.TemperatureRule_set.all():
-			if not rule.is_verified(watcher.getTemperature(rule.idCapteur)):
+		for rule in self.temperaturerule_set.all():
+			if not rule.is_verified(watcher.getTemperature(rule.idCapteur.identifiant)):
 				return False
-		for rule in self.WeatherRule_set.all():
+		for rule in self.weatherrule_set.all():
 			if not rule.is_verified(watcher.getWeatherCondition()):
 				return False
-		for rule in self.WeekdayRule_set.all():
+		for rule in self.weekdayrule_set.all():
 			if not rule.is_verified(watcher.getWeekday()):
 				return False
 
-		for action in self.RuleAction_set.all():
+		for action in self.ruleaction_set.all():
 			action.execute_action()
 
 		return True
@@ -198,7 +196,6 @@ class RuleAction(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	actionneur = models.ForeignKey(Actionneur)
 	
-
 	def execute_action(self):
 		if action == 'on':
 			action = 'on'
@@ -238,6 +235,13 @@ class TemperatureRule(models.Model):
 	idCapteur = models.ForeignKey(Capteur)
 	temperatureValue = models.IntegerField()
 	isMinimum = models.BooleanField()
+
+	def is_verified(self, actual_temp):
+		if isMinimum:
+			return actual_temp < self.temperatureValue
+		else:
+			return actual_temp > self.temperatureValue
+
 
 class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)

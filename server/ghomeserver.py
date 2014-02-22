@@ -80,7 +80,7 @@ class Database:
 			
 	def testProfiles (self):
 		url = 'http://127.0.0.1:8000/test_profiles/'
-		params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd', 'port':'5000'}
+		params = {'email':'ianicx@gmail.com', 'password': 'hs2jwth9'}
 		r = requests.post(url, data=params)
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
