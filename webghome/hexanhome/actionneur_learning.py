@@ -26,7 +26,7 @@ def getTrameOFF (id):
 def sendTrameToServer (trameList):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server_adress = ('134.214.106.23', 5000)
-	sock.connect(self.server_adress)
+	sock.connect(server_adress)
 	for trame in trameList:
 		sock.send(trame)
-	sock.close
+	sock.close()
