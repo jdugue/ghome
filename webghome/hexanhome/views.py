@@ -310,6 +310,16 @@ def AjouterProfil(request):
 			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
 			rule.save() 
+		elif nomDeclencheur == "Presence" : 
+			capteurname = request.POST['nomCapteurPresence']
+			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
+			try:
+				present = request.POST['present']
+				present='True'
+			except:
+				present= 'False'
+			presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
+			presencerule.save()
 		actionneurname = request.POST['nomActionneur']	
 		try:
 			action = request.POST['action']

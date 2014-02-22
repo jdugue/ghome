@@ -210,10 +210,7 @@ class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	isPresent = models.BooleanField(default =False)
 	idCapteur = models.ForeignKey(Capteur)
-	def __init__(self, isPresent):
-		super(PresenceRule, self).__init__()
-		self.isPresent = isPresent
-
+	
 	def is_verified(self, isPresent):
 		return self.isPresent == isPresent
 

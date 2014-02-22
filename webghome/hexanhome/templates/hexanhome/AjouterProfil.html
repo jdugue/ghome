@@ -20,10 +20,10 @@
 				<label>Déclencheur</label>
 				<SELECT name="nomDeclencheur" id="nomDeclencheur" onchange="ChangeValue();" size="1">
 					<OPTION>Temperature
-					<OPTION>Présence
+					<OPTION>Presence
 					<OPTION>Jours
 					<OPTION>Heure
-					<OPTION>Météo
+					<OPTION>Meteo
 		  		</SELECT>
 		  		</br>
 		  		<label>Sélection du capteur déclencheur</label>
@@ -42,14 +42,17 @@
 		  					
 			  		{%endif%}
 			  	</div>
-			  	</id>
-		  		{% if listCapteurTemperature %}
-		  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence" style="display:none" size="1">
-		  			{% for capteur in listCapteurPresence %}
-		  				<OPTION >{{capteur.nom}}
-		  			{%endfor%}
-		  			</SELECT>
-		  		{%endif%}
+			  	<div id="divPresence" style="display:none" >
+			  		{% if listCapteurPresence %}
+			  			<SELECT name="nomCapteurPresence" id="nomCapteurPresence"  size="1">
+			  			{% for capteur in listCapteurPresence %}
+			  				<OPTION >{{capteur.nom}}
+			  			{%endfor%}
+			  			</SELECT>
+			  			<label class="checkbox-inline">
+	  					<input type="checkbox" name = "isPresent" id="isPresent" value="isPresent"  > Present
+			  		{%endif%}
+		  		</div>
 		  		<div id="nomJour" style="display:none">
 			  		<label class="checkbox-inline">
 	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Lundi
@@ -103,15 +106,15 @@
 		{
 			capteur = document.getElementById("divtemperature");
 			capteur.style.display="block";
-			capteur2 = document.getElementById("nomCapteurPresence");
+			capteur2 = document.getElementById("divPresence");
 			capteur2.style.display = "none";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
 		}
-		if(list.value == 'Présence'){
+		if(list.value == 'Presence'){
 			capteur = document.getElementById("divtemperature");
 			capteur.style.display="none";
-			capteur2 = document.getElementById("nomCapteurPresence");
+			capteur2 = document.getElementById("divPresence");
 			capteur2.style.display = "block";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
@@ -121,7 +124,7 @@
 			capteurJour.style.display="block";
 			capteurTemperature = document.getElementById("divtemperature");
 			capteurTemperature.style.display="none";
-			capteurPresence = document.getElementById("nomCapteurPresence");
+			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
 		}
 		if (list.value == 'Heure'){
@@ -129,7 +132,7 @@
 			capteurJour.style.display="none";
 			capteurTemperature = document.getElementById("divtemperature");
 			capteurTemperature.style.display="none";
-			capteurPresence = document.getElementById("nomCapteurPresence");
+			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
 			capteurHeure = document.getElementById("Heure");
 			capteurHeure.style.display="block";
