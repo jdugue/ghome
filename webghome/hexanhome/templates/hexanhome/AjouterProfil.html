@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Ajouter Profil{% endblock %}
 {% block content %}
-	<h1>Ajout d'une profil:</h1>
+	<h1>Ajout d'un profil:</h1>
 	<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
 	 	{% csrf_token %}
 	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
@@ -55,25 +55,25 @@
 		  		</div>
 		  		<div id="nomJour" style="display:none">
 			  		<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Lundi
+	  					<input type="checkbox" name="lundi" id="inlineCheckbox1" value="Lundi"> Lundi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Mardi
+	  					<input type="checkbox" name="mardi" id="inlineCheckbox1" value="Mardi"> Mardi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Mercdredi
+	  					<input type="checkbox" name="mercredi" id="inlineCheckbox1" value="Mercredi"> Mercredi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Jeudi
+	  					<input type="checkbox" name="jeudi" id="inlineCheckbox1" value="Jeudi"> Jeudi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Vendredi
+	  					<input type="checkbox" name = "vendredi" id="inlineCheckbox1" value="Vendredi"> Vendredi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Samedi
+	  					<input type="checkbox" name = "samedi"id="inlineCheckbox1" value="Samedi"> Samedi
 					</label>
 					<label class="checkbox-inline">
-	  					<input type="checkbox" id="inlineCheckbox1" value="option1"> Dimanche
+	  					<input type="checkbox" name="dimanche" id="inlineCheckbox1" value="Dimanche"> Dimanche
 					</label>
 				</div>
 		  		</br>

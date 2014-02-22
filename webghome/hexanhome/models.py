@@ -240,21 +240,16 @@ class WeatherRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
 	weatherCondition = models.CharField(max_length=200)
 	"""docstring for WeatherRule"""
-	def __init__(self, weatherCondition):
-		super(WeatherRule, self).__init__()
-		self.weatherCondition = weatherCondition
+
 
 	def is_verified(self, weatherCondition):
 		return self.weatherCondition == weatherCondition
 
 class WeekdayRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
-	weekday = models.CharField(max_length=200)
+	weekday = models.IntegerField()
 	"""docstring for WeekdayRule"""
 
-	def __init__(self, weekday):
-		super(WeekdayRule, self).__init__()
-		self.weekday = weekday
 
 	def is_verified(self, weekDay):
 		self.weekday = weekDay
