@@ -10,10 +10,6 @@ import ConfigParser
 from thread import *
 import requests
 
-
-########### USEFULL FUNCTIONS ###################
-	
-##################################################
 class Trame:
 	def __init__(self, trame):
 		if (len(trame) == 28):
@@ -82,11 +78,6 @@ class Database:
 			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
-			
-	def testProfiles (self):
-		url = 'http://127.0.0.1:8000/test_profiles/'
-		params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd'}
-		r = requests.post(url, data=params)
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
