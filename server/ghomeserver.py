@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 import socket
+import time
 import datetime
 import sys
 import re
@@ -9,6 +10,10 @@ import ConfigParser
 from thread import *
 import requests
 
+
+########### USEFULL FUNCTIONS ###################
+	
+##################################################
 class Trame:
 	def __init__(self, trame):
 		if (len(trame) == 28):
@@ -77,11 +82,14 @@ class Database:
 			updateRequest = "UPDATE hexanhome_attribut SET valeur={0} WHERE identifiant='{1}' AND nom='{2}'".format(value,idCapteur,name)
 			self.executeUpdate(updateRequest)
 			self.db.close()
+<<<<<<< HEAD
 			
 	def testProfiles (self):
 		url = 'http://127.0.0.1:8000/test_profiles/'
 		params = {'email':'ianicx@gmail.com', 'password': 'hs2jwth9'}
 		r = requests.post(url, data=params)
+=======
+>>>>>>> 9cbd0cc5d60c3fe3157d0d7bcad7b733904fe7c7
 	
 	def getIdTypeByIdCapteur(self, idCapteur):
 		self.db = self.connectDb()
@@ -99,14 +107,6 @@ class Database:
 			self.db.close()
 			return [0][0]
 
-def traiterTrame(trame):
-	tr = Trame(trame)
-	DB = Database()
-	
-	if trameIdentifiee(tr, DB):
-		majDonnees(tr, DB)
-		
-
 def parseTemperatureFromTrame(data_trame):
 	# Récupère la valeur de température depuis la partie Data d'une trame de capteur 0.40
 	return 40*int(data_trame[4:6],16)/255
@@ -116,31 +116,64 @@ def parseContactFromTrame(data_trame):
 	DB0 = bin(int(data_trame[6:8],16))[2:].zfill(8)
 	return DB0[7]
 	
-
 def trameIdentifiee (trame, database):
 	# Déterminer si l'identifiant de la trame est dans la base de données
 	return (database.isIdPresentOnDb(trame.id_bytes))
 	
-def majDonnees(trame, database):
+def majDonnees(trame, database, profileManager):
 	# Mettre à jour la base de données avec les données de la trame
 	if (database.getIdTypeByIdCapteur(trame.id_bytes) == 'C'):
 		database.updateValueForCapteur(trame.id_bytes, parseTemperatureFromTrame(trame.data_bytes),"temperature")
 	elif (database.getIdTypeByIdCapteur(trame.id_bytes) == 'F'):
 		database.updateValueForCapteur(trame.id_bytes, parseContactFromTrame(trame.data_bytes), "contact")
-	else :
-		pass
+	profileManager.testProfiles()
+
+class ProfileGesture:
+	def __init__(self, date):
+		self.lastTest = self.timestamp(date)
+		
+	def launchThreadTestProfiles(self):	
+		start_new_thread(self.callTestProfilesEveryMinutes,())
+		
+	def callTestProfilesEveryMinutes(self):
+		while True:
+			sleeptime = 60 - datetime.datetime.now().second
+			time.sleep(sleeptime)
+			self.testProfiles()
+			
+	def testProfiles (self):
+		if (self.timestamp(datetime.datetime.now()) - self.lastTest != 0):
+			url = 'http://127.0.0.1:8000/test_profiles/'
+			params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd', 'port':'5000'}
+			r = requests.post(url, data=params)
+			self.lastTest = self.timestamp(datetime.datetime.now())
 	
+	def timestamp (self, date):
+		return time.mktime(date.timetuple())
+		
+
+def traiterTrame(trame, profileManager):
+	tr = Trame(trame)
+	DB = Database()
+	
+	if trameIdentifiee(tr, DB):
+		majDonnees(tr, DB, profileManager)
+		
 ################## COMMUNICATION ACTIONNEURS #######################
 def listenTrameServer ():
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server_adress = ('134.214.106.23', 5000)
+	#server_adress = ('134.214.106.23', 5000)
+	server_adress = ('127.0.0.1', 5000)
 	sock.connect(server_adress)
+	
+	profileManager = ProfileGesture(datetime.datetime.now())
+	profileManager.launchThreadTestProfiles()
 
 	#Write all receptions
 	while True:
 		data = sock.recv(28)
 		print "%s" % data
-		start_new_thread(traiterTrame,(data,))
+		start_new_thread(traiterTrame,(data,profileManager,))
 ####################################################################
 
 if __name__ == '__main__':

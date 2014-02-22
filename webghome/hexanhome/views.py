@@ -26,7 +26,7 @@ from hexanhome.models import *
 from hexanhome.forms import *
 import weather
 import actionneur_learning
-
+from actionneur_learning import *
 from django.core.context_processors import csrf
 
 @login_required(login_url='/login/')
@@ -91,35 +91,31 @@ def AjoutPiece(request):
 	else :
 		return render_to_response('hexanhome/AjoutPiece.html',context)
 
+
+# ID / NOM / PIECE / TRAME ON / TRAME OFF / USER / IDENTFIANT
 @login_required(login_url='/login/')
 def AjoutActionneur(request):
 	c = {}
 	c.update(csrf(request))
 	context = RequestContext(request)
 	if request.method =='POST':
-		identifiant = request.POST['NumeroIdentifiant']
-		try:
-			actionneur = Actionneur.objects.get(identifiant = identifiant, user = request.user)
-			piece_list = Piece.objects.filter(user = request.user)
-			context_dixt={'pieces':piece_list}
-			context_dixt['erreurID']='Un capteur avec cette ID existe deja'
-			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
-		except:
-			piece_name = request.POST['nomPiece']
-			nomactionneur = request.POST['NomActionneur']
-			piece = Piece.objects.get(nom=piece_name, user = request.user)
-			actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece,identifiant= identifiant)
-			actionneur.save()
-			piece_name = piece_name.replace(' ', '_')
-			url = '/profil/piece/' + piece_name +'/'
-			return HttpResponseRedirect(url)
+		piece_name = request.POST['nomPiece']
+		nomactionneur = request.POST['NomActionneur']
+		piece = Piece.objects.get(nom=piece_name, user = request.user)
+		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
+		actionneur.save()
+		actionneur.identifiant = getFictiveButtonId(actionneur.id)
+		actionneur.save()
+		piece_name = piece_name.replace(' ', '_')
+		url = '/profil/piece/' + piece_name +'/'
+		return HttpResponseRedirect(url)
 	else :
-			piece_list = Piece.objects.filter(user = request.user)
-			if piece_list:
-				context_dixt={'pieces':piece_list}
-				return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
-			else:
-				return HttpResponseRedirect('/config/AjoutPiece/')
+		piece_list = Piece.objects.filter(user = request.user)
+		if piece_list:
+			context_dixt={'pieces':piece_list}
+			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+		else:
+			return HttpResponseRedirect('/config/AjoutPiece/')
 
 def register(request):
 	context = RequestContext(request)
@@ -311,6 +307,60 @@ def AjouterProfil(request):
 			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
 			rule.save() 
+		elif nomDeclencheur == "Presence" : 
+			capteurname = request.POST['nomCapteurPresence']
+			capteur = Capteur.objects.get(user = request.user, nom = capteurname)
+			try:
+				present = request.POST['present']
+				present='True'
+			except:
+				present= 'False'
+			presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
+			presencerule.save()
+		elif nomDeclencheur == "Jours":
+			try: 
+				weekday = request.POST['lundi']
+				jourregle = WeekdayRule(profil = profil, weekday = 0)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['mardi']
+				jourregle = WeekdayRule(profil = profil, weekday = 1)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['mercredi']
+				jourregle = WeekdayRule(profil = profil, weekday = 2)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['jeudi']
+				jourregle = WeekdayRule(profil = profil, weekday = 3)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['vendredi']
+				jourregle = WeekdayRule(profil = profil, weekday = 4)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['samedi']
+				jourregle = WeekdayRule(profil = profil, weekday = 5)
+				jourregle.save()
+			except:
+				pass
+			try:
+				weekday = request.POST['dimanche']
+				jourregle = WeekdayRule(profil = profil, weekday = 6)
+				jourregle.save()
+			except:
+				pass
+
 		actionneurname = request.POST['nomActionneur']	
 		try:
 			action = request.POST['action']
