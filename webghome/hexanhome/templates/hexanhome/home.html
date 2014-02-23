@@ -44,9 +44,6 @@
                                              </div>
                                         </div>
                                 {% endfor %}
-                            
-                       
-               
                             {% for actionneur in piece.actionneur_set.all%}
                                     <div class="col-md-6">
                                          <div class="panel panel-primary">
@@ -57,20 +54,17 @@
                                                 </br>
                                                 <div class="row" >
                                                     <div class="col-md-4">
-                                                         <form id="actionneur_form" method="post" action="/home/">
-                                                                 {% csrf_token %}
+                                                       
                                                                 <input type="hidden" name="actionneur_id1" value="{{actionneur.id}}">
-                                                                <button type="submit" name="Actionner" class="btn btn-primary btn-xs  "> Allumer </button>
-                                                        </form>
-                                                    </div>
-                                                    <div class="col-md-4">
+                                                                <button  type="submit" name="Actionner" onclick="return allumer({{actionneur.id}}, 'Actionner');" class="btn btn-primary btn-xs  col-md-12"> Allumer </button>
+                                                      
+                                                    
                                                          <form id="actionneur_form" method="post" action="/home/">
                                                                  {% csrf_token %}
                                                                 <input type="hidden" name="actionneur_id2" value="{{actionneur.id}}">
                                                                 <button type="submit" name="Eteindre" class="btn btn-primary btn-xs  ">Eteindre</button>
                                                         </form>
-                                                    </div>
-                                                     <div class="col-md-4">
+                                                    
                                                          <form id="actionneur_form" method="post" action="/home/">
                                                                  {% csrf_token %}
                                                                 <input type="hidden" name="actionneur_id" value="{{actionneur.id}}">
@@ -89,12 +83,18 @@
                                     </div>
                             {% endfor %}
                         </div>
-                            <form id="category_form" method="post" action="/home/">
-                                {% csrf_token %}
-                                <input type="hidden" name="piece_nom" value="{{piece.nom}}">
-                                <button type="submit" name="Supp_piece"class="btn btn-danger btn-xs ">Supprimer pièce</button>
-                            </form>
+                      <div class="row">
+                                <form id="category_form" method="post" action="/home/">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="piece_nom" value="{{piece.nom}}">
+                                    <button type="submit" name="Supp_piece"class="btn btn-danger btn-xs ">Supprimer pièce</button>
+                                </form>
+                           
+                            <a id="lettre_{{lettre}}" href="/config/AjouterCapteur" type="button" class="btn btn-default btn-xs">Ajouter Capteur</a>
+                            <a id="lettre_{{lettre}}" href="/config/AjouterCapteur" type="button" class="btn btn-default btn-xs">Ajouter Acttionneur</a>
                         </div>
+                        
+                       </div>
                     </div>
                 </div>
             {% endfor %}
@@ -133,4 +133,17 @@
 
   
 
+{% endblock %}
+{% block footer%}
+<script language="JavaScript">
+    function allumer(idactionneur, nomboutton)
+    {
+        $.post('/home/',
+             {csrfmiddlewaretoken: '{{ csrf_token }}', idactionneur:idactionneur,nomboutton:nomboutton},
+            function(msg){
+
+            });
+        return false;
+    }
+</script>
 {% endblock %}
