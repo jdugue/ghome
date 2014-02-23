@@ -23,7 +23,7 @@ def getTrameOFF (id):
 	completeTrame = firstPart+dataBytes+idBytes+endPart
 	return completeTrame
 	
-# sendTrameToServer('AAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+# ATTENTION A BIEN PASSER UNE LISTE ! 
 def sendTrameToServer (trameList):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server_adress = ('localhost', 5050)
