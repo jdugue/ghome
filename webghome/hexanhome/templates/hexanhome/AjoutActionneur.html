@@ -4,14 +4,18 @@
 <h1>Ajout d'une actioneur:</h1>
 <form id="category_form" method="post" action="/config/AjoutActionneur/">
     {% csrf_token %}
-    <div class="form-group">
-        <label>Nom</label>
-        <input type="text" class="form-control" name="NomActionneur" id="nameActionneur" placeholder="Enter nom">
-    </div>
+        <div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
+            <label>Nom</label>
+            <input type="text" class="form-control" name="NomActionneur" id="nameActionneur" placeholder="Enter nom">
+            {%if erreurID  %}
+                <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                <span class="help-block">{{erreurID}}</span>
+            {%endif%}
+        </div>
     {% if pieces %}
     <div class="form-group">
         <label>Pièce</label>
-        <SELECT name="nomPiece" size="1">
+        <SELECT class="form-control" name="nomPiece" size="1">
             {% for piece in pieces %}
                 <OPTION>{{ piece.nom }}
             {% endfor %}
