@@ -153,12 +153,15 @@ def printInAFile (text):
 	file_object.close()
 
 def threadSender (socket_rcv, socket_snd):
+	printInAFile('DEBUT')
 	while True:
 		connection, client_adress = socket_rcv.accept()
 		data = connection.recv(28)
 		if (data == 'START'):
-			while ((data = connection.recv(28)) != 'END'):
+			data = connection.recv(28)
+			while (data != 'END'):
 				printInAFile(data)
+				data = connection.recv(28)
 				#socket_snd.send(data)
 		connection.close()
 		

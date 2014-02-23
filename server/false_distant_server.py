@@ -3,7 +3,7 @@ import sys
 from thread import *
 import time
 
-fichier_donnees = open("trame_capteurs_21_2","r")
+#fichier_donnees = open("trame_capteurs_21_2","r")
 
 #Create TCP/IP socket
 sock = socket.socket()
