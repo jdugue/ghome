@@ -14,7 +14,6 @@
 	  	</div>
 	  {% include "AjoutRegle.html" %}
  	</form>
-
 {% endblock %}
 {%block footer%}
 <script language="JavaScript">
@@ -80,7 +79,9 @@
 			capteurMeteo = document.getElementById("divMeteo");
 			capteurMeteo.style.display="block";
 		}
-		
+	$('.timepicker').timepicker({
+		showMeridian: false
+	});
 	}
 </script>
 
