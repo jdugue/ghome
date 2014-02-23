@@ -50,26 +50,20 @@
                                             </div>
                                             <div class="panel-body">
                                                 </br>
-                                                <div class="row" >
-                                                    <div class="col-md-4">
-                                                       
-                                                                <input type="hidden" name="actionneur_id1" value="{{actionneur.id}}">
-                                                                <button  type="submit" name="Actionner" onclick="return allumer({{actionneur.id}}, 'Actionner');" class="btn btn-primary btn-xs  col-md-12"> Allumer </button>
-                                                      
-                                                    
+                                                    <div class="form-inline">
                                                          <form id="actionneur_form" method="post" action="/home/">
                                                                  {% csrf_token %}
+                                                                <input type="hidden" name="actionneur_id1" value="{{actionneur.id}}">
+                                                                <button type="submit" name="Actionner" class="btn btn-primary btn-xs  "> Allumer </button>
+                                                       
                                                                 <input type="hidden" name="actionneur_id2" value="{{actionneur.id}}">
                                                                 <button type="submit" name="Eteindre" class="btn btn-primary btn-xs  ">Eteindre</button>
-                                                        </form>
-                                                    
-                                                         <form id="actionneur_form" method="post" action="/home/">
+                                                      
                                                                  {% csrf_token %}
                                                                 <input type="hidden" name="actionneur_id" value="{{actionneur.id}}">
                                                                 <button type="submit" name="Learning" class="btn btn-primary btn-xs  ">Learning</button>
                                                         </form>
                                                     </div>
-                                               </div>
                                                 </br>
                                                 <form id="category_form" method="post" action="/home/">
                                                     {% csrf_token %}
@@ -81,17 +75,14 @@
                                     </div>
                             {% endfor %}
                         </div>
-                      <div class="row">
-                                <form id="category_form" method="post" action="/home/">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="piece_nom" value="{{piece.nom}}">
-                                    <button type="submit" name="Supp_piece"class="btn btn-danger btn-xs ">Supprimer pièce</button>
-                                </form>
-                           
-                            <a id="lettre_{{lettre}}" href="/config/AjoutCapteur" type="button" class="btn btn-default btn-xs">Ajouter Capteur</a>
-                            <a id="lettre_{{lettre}}" href="/config/AjoutActionneur" type="button" class="btn btn-default btn-xs">Ajouter Actionneur</a>
-                        </div>
-                        
+                            <form id="category_form" method="post" action="/home/">
+                               {% csrf_token %}
+                                <input type="hidden" name="piece_nom" value="{{piece.nom}}">
+                                <button type="submit" name="Supp_piece"class="btn btn-danger btn-xs ">Supprimer pièce</button>
+                            
+                                <a id="lettre_{{lettre}}" href="/config/AjoutCapteur/" type="button" class="btn btn-default btn-xs">Ajouter Capteur</a>
+                                <a id="lettre_{{lettre}}" href="/config/AjoutActionneur/" type="button" class="btn btn-default btn-xs">Ajouter Acttionneur</a>
+                            </form>
                        </div>
                     </div>
                 </div>
@@ -103,26 +94,15 @@
                     <h3 class="panel-title">Météo</h3>
                 </div>
                 <div class="panel-body">
-                    {% if weather.current_temp <= 0 %}
-                        <div class="row" >
-                            <div class="col-md-8">
-                                <img  style="display:table-cell; vertical-align:middle;" alt="" src="{{MEDIA_URL}}meteo/j_ai_froid" width="50%"/>
-                                <h3  style="display:table-cell; vertical-align:middle;">Temperature: {{weather.current_temp}}&deg;C </h3>
-                            </div>
-                            <div class="col-md-4">
-                                <p style ="vertical-align:middle;">    Description: {{weather.description}} </p>
-                            </div>
+                    <div class="row" >
+                        <div class="col-md-8">
+                            <h3  style="display:table-cell; vertical-align:middle;">Temperature: {{weather.current_temp}}&deg;C </h3>
                         </div>
-                    {%else%}
-                        <div class="row" >
-                            <div class="col-md-8">
-                                <h3  style="display:table-cell; vertical-align:middle;">Temperature: {{weather.current_temp}}&deg;C </h3>
-                            </div>
-                            <div class="col-md-4">
-                                <p style ="vertical-align:middle;">    Description: {{weather.description}} </p>
-                            </div>
+                        <div class="col-md-4">
+                            <p style ="vertical-align:middle;">    Description: {{weather.description}} </p>
                         </div>
-                    {% endif%}
+                    </div>
+                   
 
                 </div>
             </div>
@@ -131,17 +111,4 @@
 
   
 
-{% endblock %}
-{% block footer%}
-<script language="JavaScript">
-    function allumer(idactionneur, nomboutton)
-    {
-        $.post('/home/',
-             {csrfmiddlewaretoken: '{{ csrf_token }}', idactionneur:idactionneur,nomboutton:nomboutton},
-            function(msg){
-
-            });
-        return false;
-    }
-</script>
 {% endblock %}
