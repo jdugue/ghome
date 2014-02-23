@@ -146,35 +146,40 @@ def traiterTrame(trame, profileManager):
 	
 	if trameIdentifiee(tr, DB):
 		majDonnees(tr, DB, profileManager)
-
-def printInAFile (text):
-	file_object = open('DEBUG.txt', 'w')
-	file_object.write(text)
-	file_object.close()
+		
+def printInAFile(text):
+	filedoc = open("DEBUG.TXT","a")
+	filedoc.write(text)
+	filedoc.close()
 
 def threadSender (socket_rcv, socket_snd):
-	printInAFile('DEBUT')
 	while True:
 		connection, client_adress = socket_rcv.accept()
+		connection.send('CONNECTION OK')
 		data = connection.recv(28)
+		connection.send('NEXT')
 		if (data == 'START'):
 			data = connection.recv(28)
+			connection.send('NEXT')
 			while (data != 'END'):
 				printInAFile(data)
-				data = connection.recv(28)
 				#socket_snd.send(data)
+				data = connection.recv(28)
+				connection.send('NEXT')
 		connection.close()
 		
 ################## COMMUNICATION ACTIONNEURS #######################
 def listenTrameServer ():
+	ip = sys.argv[1]
+	port = sys.argv[2]
+	
 	sock_listen = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server_adress_listen = ('localhost',5050)
 	sock_listen.bind(server_adress_listen)
 	sock_listen.listen(5)
 
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	#server_adress = ('134.214.106.23', 5000)
-	server_adress = ('127.0.0.1', 5000)
+	server_adress = (str(ip), int(port))
 	sock.connect(server_adress)
 	
 	start_new_thread(threadSender,(sock_listen,sock,))
