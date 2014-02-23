@@ -35,19 +35,5 @@ nosetests.xml
 .project
 .pydevproject
 
-#django settings
-settings.py
-
-#Database connection info
-configdb.cfg
-
-#Database script
-managedb.sh
-managedb.exp
-script.sql
-
-#script d'installation
-install.sh
-
 #Fichiers temporaires
 *~
