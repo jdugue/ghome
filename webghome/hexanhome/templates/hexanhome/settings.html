@@ -180,7 +180,9 @@
 			capteurMeteo = document.getElementById("divMeteo");
 			capteurMeteo.style.display="block";
 		}
-		
+	$('.timepicker').timepicker({
+		showMeridian: false
+	});
 	}
 	function supprimer(idrule,nombutton){
 		url = $(location).attr('href')

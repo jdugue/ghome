@@ -117,7 +117,7 @@ def majDonnees(trame, database, profileManager):
 	profileManager.testProfiles()
 
 class ProfileGesture:
-	def __init__(self, date):
+	def __init__(self, date=datetime.datetime.now()):
 		configParser = ConfigParser.ConfigParser()
 		configParser.read('configweb.cfg')
 		self.user = configParser.get('web_info','user')
