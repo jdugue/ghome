@@ -48,6 +48,9 @@ border-radius:5px 5px;
 
 #profilAffichage{
 padding:5px;
+border-width:1px;
+border-style:outset;
+
 /*arrondir les coins en haut à gauche et en bas à droite*/
 -moz-border-radius:5px 0;
 -webkit-border-radius:5px 0;
