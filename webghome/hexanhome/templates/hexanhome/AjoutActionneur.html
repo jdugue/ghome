@@ -15,7 +15,7 @@
     {% if pieces %}
     <div class="form-group">
         <label>Pièce</label>
-        <SELECT name="nomPiece" size="1">
+        <SELECT class="form-control" name="nomPiece" size="1">
             {% for piece in pieces %}
                 <OPTION>{{ piece.nom }}
             {% endfor %}

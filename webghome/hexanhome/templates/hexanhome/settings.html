@@ -93,11 +93,86 @@
                     </div>
                 </div>
             {% endfor %}
-			<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
-				{% csrf_token %}
-				<button type="submit" name='deletecapteur' class="btn btn-default btn-lg btn-block">Supprimer Capteur</button>
-			</form>
+		</div>
+	</div>
+	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+		{% csrf_token %}
+			  {% include "AjoutRegle.html" %}
+ 	</div>
+	<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
+		{% csrf_token %}
+		<button type="submit" name='deletecapteur' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
+	</form>
 		
 	</div>
 </div>
+{% endblock %}
+{%block footer%}
+<script language="JavaScript">
+	function ChangeValue()
+	{
+		list = document.getElementById("nomDeclencheur");
+		if (list.value == 'Temperature')
+		{
+			capteur = document.getElementById("divtemperature");
+			capteur.style.display="block";
+			capteur2 = document.getElementById("divPresence");
+			capteur2.style.display = "none";
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+		}
+		if(list.value == 'Presence'){
+			capteur = document.getElementById("divtemperature");
+			capteur.style.display="none";
+			capteur2 = document.getElementById("divPresence");
+			capteur2.style.display = "block";
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+		if (list.value == 'Jours'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="block";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+		if (list.value == 'Heure'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="block";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+			if (list.value == 'Meteo'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="block";
+		}
+		
+	}
+</script>
+
 {% endblock %}

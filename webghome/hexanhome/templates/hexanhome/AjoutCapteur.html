@@ -23,7 +23,7 @@
 		{% if pieces %}
 			<div class="form-group">
 				<label>Pièce</label>
-				<SELECT name="nomPiece" size="1">
+				<SELECT class="form-control" name="nomPiece" size="1">
 					{% for piece in pieces %}
 						<OPTION>{{ piece.nom }}
 	  				{% endfor %}
@@ -33,7 +33,7 @@
 	  	{% if typeCapteur_CHOICES %}
 			<div class="form-group">
 				<label>Type</label>
-				<SELECT name="capteurtype" size="1">
+				<SELECT class="form-control" name="capteurtype" size="1">
 					{% for typecapteur in typeCapteur_CHOICES %}
 						<OPTION value="{{typecapteur.0}}" >{{ typecapteur.1}}
 	  				{% endfor %}
