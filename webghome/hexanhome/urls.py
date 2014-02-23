@@ -17,5 +17,5 @@ urlpatterns = patterns('hexanhome.views',
     #URLS DE L'API
     url(r'login_client/$','login_client'),
     url(r'test_profiles/$','test_profiles'),
-    url(r'^config/AjoutActionneur/learning/(?P<actionneur_name>\w+)/$','learning'),    
+    url(r'^config/AjoutActionneur/learning/(?P<actionneur_id>\w+)/$','learning'),    
 )
