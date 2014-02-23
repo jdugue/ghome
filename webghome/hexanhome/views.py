@@ -266,7 +266,7 @@ def settings(request,profil_name_url):
 	profil = RuleProfile.objects.get(user = request.user, nom = profil_name)
 	if request.method == 'POST':
 		if'AjouterRegle' in request.POST:
-			Ajouteregele(request,profil)
+			AjouterRegle(request,profil)
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
 			return HttpResponseRedirect(url)
@@ -284,7 +284,7 @@ def settings(request,profil_name_url):
 		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
 
-def Ajouteregele(request, profil):
+def AjouterRegle(request, profil):
 	nomDeclencheur = request.POST['nomDeclencheur']
 	if nomDeclencheur == "Temperature" : 
 		capteurname = request.POST['nomCapteurTemperature']
@@ -418,7 +418,7 @@ def AjouterProfil(request):
 			nomprofilurl = nomprofil.replace(' ','_')
 			profil = RuleProfile(nom = nomprofil, user = request.user, url= nomprofilurl)
 			profil.save()
-			Ajouteregele(request, profil)
+			AjouterRegle(request, profil)
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
 			return HttpResponseRedirect(url)	
@@ -516,4 +516,14 @@ def AjoutActionneur(request):
 			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
 		else:
 			return HttpResponseRedirect('/config/AjoutPiece/')
+
+@csrf_exempt
+def regle(request):
+	context = RequestContext(request)
+	return render_to_response('hexanhome/AjoutRegle.html',context)
+
+@csrf_exempt
+def action(request):
+	context = RequestContext(request)
+	return render_to_response('hexanhome/AjoutAction.html',context)
 
