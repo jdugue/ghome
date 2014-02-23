@@ -22,6 +22,11 @@
                                                         {% for capteurvalue in capteur.attr_capteur_set.all%}
                                                             <h4>{{capteurvalue.id_attr}} :</h4>
                                                             <h5>{{ capteurvalue.id_attr.valeur }}</h5>
+                                                            {% if capteurvalue.id_attr == contact %}
+                                                                </br>
+                                                                 <h4>CC</h4>
+                                                                </br>
+                                                            {% endif%}
                                                         {% endfor %}
                                                     </div>
                                                     </br>
@@ -45,17 +50,31 @@
                                                 <h3 class="panel-title">{{actionneur.nom}}</h3>
                                             </div>
                                             <div class="panel-body">
-                                                <div id="capteurAffichage">
-                                                    <h4>{{actionneur.valeur}} </h4>
-
-                                                </div>
                                                 </br>
-                                                 <form id="actionneur_form" method="post" action="/home/">
-                                                         {% csrf_token %}
-                                                        <input type="hidden" name="actionneur_id" value="{{actionneur.identifiant}}">
-                                                        <button type="submit" name="Actionner" class="btn btn-primary btn-xs  ">{% if actionneur.valeur == True%}Eteindre{%else%} Allumer {%endif%}</button>
-                                                </form>
-                                                 </br>
+                                                <div class="row" >
+                                                    <div class="col-md-3">
+                                                         <form id="actionneur_form" method="post" action="/home/">
+                                                                 {% csrf_token %}
+                                                                <input type="hidden" name="actionneur_nom1" value="{{actionneur.nom}}">
+                                                                <button type="submit" name="Actionner" class="btn btn-primary btn-xs  "> Allumer </button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                         <form id="actionneur_form" method="post" action="/home/">
+                                                                 {% csrf_token %}
+                                                                <input type="hidden" name="actionneur_nom2" value="{{actionneur.nom}}">
+                                                                <button type="submit" name="Eteindre" class="btn btn-primary btn-xs  ">Eteindre</button>
+                                                        </form>
+                                                    </div>
+                                                     <div class="col-md-2">
+                                                         <form id="actionneur_form" method="post" action="/home/">
+                                                                 {% csrf_token %}
+                                                                <input type="hidden" name="actionneur_nom2" value="{{actionneur.nom}}">
+                                                                <button type="submit" name="Learning" class="btn btn-primary btn-xs  ">Eteindre</button>
+                                                        </form>
+                                                    </div>
+                                               </div>
+                                                </br>
                                                 <form id="category_form" method="post" action="/home/">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="actionneur_identifiant" value="{{actionneur.identifiant}}">

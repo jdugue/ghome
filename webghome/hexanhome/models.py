@@ -209,18 +209,13 @@ class PresenceRule(models.Model):
 	idCapteur = models.ForeignKey(Capteur)
 	
 	def is_verified(self, actual_presence):
-		print(actual_presence)
 		return self.isPresent == actual_presence
 
 class TimeRule(models.Model):
 	"""docstring for TimeRule"""
 	profil = models.ForeignKey(RuleProfile)
-	start_time = models.DateField()
-	end_time = models.DateField()
-	def __init__(self, actual_start_time, actual_end_time):
-		super(TimeRule, self).__init__()
-		self.start_time = actual_start_time
-		self.end_time = actual_end_time
+	start_time = models.CharField(max_length=200)
+	end_time = models.CharField(max_length=200)
 
 	def is_verified(self, time):
 		if self.start_time < self.end_time :
@@ -236,7 +231,6 @@ class TemperatureRule(models.Model):
 
 	def is_verified(self, actual_temp):
 		if self.isMinimum:
-			print('actual_temp' + str(actual_temp) + 'self vlue' + str(self.temperatureValue))
 			return actual_temp < self.temperatureValue
 		else:
 			return actual_temp > self.temperatureValue

@@ -79,8 +79,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'djangobower.finders.BowerFinder'
 )
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '_$6a=hh50yz!o@(oks0+#6hx+8tmm3^ga#5_9%)xw0hrda%l^b'
 

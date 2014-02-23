@@ -76,6 +76,29 @@
 	  					<input type="checkbox" name="dimanche" id="inlineCheckbox1" value="Dimanche"> Dimanche
 					</label>
 				</div>
+				<div id="divHeure" style="display:none">
+					<label class="control-label" for="Heure">Entrer l'heure de debut </label>
+			  			<input type="text"  class="form-control" name="heuredebut" id="heuredebut" placeholder="HH:MM">
+			  			<label class="control-label" for="Heure">Entrer l'heure de fin </label>
+			  			<input type="text"  class="form-control" name="heurefin" id="heurefin" placeholder="HH:MM">
+				</div>
+				<div id="divMeteo" style="display:none">
+					<label class="checkbox-inline">
+	  					<input type="checkbox" name="thunderstorm" id="inlineCheckbox1" value="thunderstorm"> thunderstorm
+					</label>
+					<label class="checkbox-inline">
+	  					<input type="checkbox" name="drizzle" id="drizzle" value="drizzle"> drizzle
+					</label>
+					<label class="checkbox-inline">
+	  					<input type="checkbox" name="rain" id="rain" value="rain"> rain
+					</label>
+					<label class="checkbox-inline">
+	  					<input type="checkbox" name="clouds" id="clouds" value="clouds"> clouds
+					</label>
+					<label class="checkbox-inline">
+	  					<input type="checkbox" name = "extreme" id="extreme" value="extreme"> extreme
+					</label>
+				</div>
 		  		</br>
 		  		<label>Action</label>
 		  		</br>
@@ -89,8 +112,6 @@
 		  			<label class="checkbox-inline">
 	  					<input type="checkbox" name = "action" id="action" value="action"  > On
 		  		{%endif%}	
-
-				
 			</div>
 		<input type="submit" value="Entrer"  class="btn btn-default">
   </form>
@@ -110,6 +131,8 @@
 			capteur2.style.display = "none";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
 		}
 		if(list.value == 'Presence'){
 			capteur = document.getElementById("divtemperature");
@@ -118,6 +141,10 @@
 			capteur2.style.display = "block";
 			capteurJour = document.getElementById("nomJour");
 			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
 		}
 		if (list.value == 'Jours'){
 			capteurJour = document.getElementById("nomJour");
@@ -126,6 +153,10 @@
 			capteurTemperature.style.display="none";
 			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
 		}
 		if (list.value == 'Heure'){
 			capteurJour = document.getElementById("nomJour");
@@ -134,8 +165,22 @@
 			capteurTemperature.style.display="none";
 			capteurPresence = document.getElementById("divPresence");
 			capteurPresence.style.display = "none";
-			capteurHeure = document.getElementById("Heure");
+			capteurHeure = document.getElementById("divHeure");
 			capteurHeure.style.display="block";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+			if (list.value == 'Meteo'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="block";
 		}
 		
 	}
