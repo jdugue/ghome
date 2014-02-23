@@ -147,6 +147,11 @@ def traiterTrame(trame, profileManager):
 	if trameIdentifiee(tr, DB):
 		majDonnees(tr, DB, profileManager)
 
+def printInAFile(text):
+	file = open("DEBUG.TXT","a")
+	file.write(text)
+	file.close()
+
 def threadSender (socket_rcv, socket_snd):
 	while True:
 		connection, client_adress = socket_rcv.accept()
@@ -157,7 +162,8 @@ def threadSender (socket_rcv, socket_snd):
 			data = connection.recv(28)
 			connection.send('NEXT')
 			while (data != 'END'):
-				socket_snd.send(data)
+				printInAFile(data+'\n')
+				#socket_snd.send(data)
 				data = connection.recv(28)
 				connection.send('NEXT')
 		connection.close()
