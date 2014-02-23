@@ -12,12 +12,29 @@
 	        	<span class="help-block">{{erreurID}}</span>
 	        {%endif%}
 	  	</div>
-	  {% include "hexanhome/AjoutRegle.html" %}
-	  {% include "hexanhome/AjoutAction.html" %}
+	  	<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Ajout d'une régle</h3>
+			</div>
+			<div class="panel-body" id="regle">
+	 			{% include "hexanhome/AjoutRegle.html" %}
+	 			<button class="btn btn-primary" onclick="return addregle();">Nouvelle Règle</button>
+	 		</div>
+	 	</div>
+
+	 	<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Ajout d'une action</h3>
+			</div>	
+			<div class="panel-body" id="action">
+	  			{% include "hexanhome/AjoutAction.html" %}
+			</div>
+  		</div>
  	</form>
+	 			<button class="btn btn-primary" onclick="addaction()">Nouvelle Action</button>
 {% endblock %}
 {%block footer%}
-<script language="JavaScript">
+<script>
 	function ChangeValue()
 	{
 		list = document.getElementById("nomDeclencheur");
@@ -85,5 +102,26 @@
 	});
 	}
 </script>
+<script>
+	function addregle()
+	{
+		$.post("/regle/", function(msg)
+			{
+				$("#regle").append(msg);
+			});
+	}
+</script>
+<script type="text/javascript">
+	function addaction()
+	{
+		$.post('/action/',
+			function(msg)
+			{
+				$('#action').append(msg);
+			});
+		return false;
+	}
+</script>	
+
 
 {% endblock %}
