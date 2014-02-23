@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.forms import *
+from django.shortcuts import redirect
 
 from django.template import RequestContext
 
@@ -93,31 +94,6 @@ def AjoutPiece(request):
 
 
 # ID / NOM / PIECE / TRAME ON / TRAME OFF / USER / IDENTFIANT
-@login_required(login_url='/login/')
-def AjoutActionneur(request):
-	c = {}
-	c.update(csrf(request))
-	context = RequestContext(request)
-	if request.method =='POST':
-		piece_name = request.POST['nomPiece']
-		nomactionneur = request.POST['NomActionneur']
-		piece = Piece.objects.get(nom=piece_name, user = request.user)
-		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
-		actionneur.save()
-		actionneur.identifiant = getFictiveButtonId(actionneur.id)
-		actionneur.trame_on = getTrameON(actionneur.identifiant)
-		actionneur.trame_off = getTrameOFF(actionneur.identifiant)
-		actionneur.save()
-		piece_name = piece_name.replace(' ', '_')
-		url = '/profil/piece/' + piece_name +'/'
-		return HttpResponseRedirect(url)
-	else :
-		piece_list = Piece.objects.filter(user = request.user)
-		if piece_list:
-			context_dixt={'pieces':piece_list}
-			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
-		else:
-			return HttpResponseRedirect('/config/AjoutPiece/')
 
 def register(request):
 	context = RequestContext(request)
@@ -252,7 +228,6 @@ def home(request):
 			piece_nom=request.POST['piece_nom']
 			piece = Piece.objects.get(nom = piece_nom, user = request.user)
 			piece.delete()	
-			return HttpResponseRedirect('/home/')
 		elif 'Supp_capteur' in request.POST:
 			capteur_id=request.POST['capteur_identifiant']
 			capteur = Capteur.objects.get(identifiant = capteur_id, user= request.user) 
@@ -260,25 +235,20 @@ def home(request):
 				capteurvalue.id_attr.delete()
 				capteurvalue.delete()
 			capteur.delete()
-			return HttpResponseRedirect('/home/')
 		elif 'Supp_actionneur' in request.POST:
 			actionneur_id=request.POST['actionneur_identifiant']
 			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
 			actionneur.delete()
-			return HttpResponseRedirect('/home/')
 		elif 'Actionner' in request.POST:
-			url = request.user.ip_adress + '/actionneur'
-			actionneur = Actionneur.objects.get(identifiant =request.POST['actionneur_id'], user = request.user )
-			if actionneur.valeur == False:
-				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'on'}
-				actionneur.valeur = True
-				actionneur.save()
-			else:
-				params = {'id_actionneur': request.POST['actionneur_id'],'action' : 'off'}
-				actionneur.valeur = False
-				actionneur.save()
-			r = requests.get(url,params = params)
-			return HttpResponseRedirect('/home/')
+			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom1'], user = request.user )
+			sendTrameToServer(actionneur.trame_on)		
+		elif 'Eteindre' in request.POST:
+			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom2'], user = request.user )
+			sendTrameToServer(actionneur.trame_off)		
+		elif 'Learning' in request.POST:
+			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom2'], user = request.user )
+			url = '/config/AjoutActionneur/learning/' + actionneur.nom
+			return HttpResponseRedirect(url)	
 	else:
 		w = weather.WeatherDownloader('Lyon')
 		parsed = w.getCurrentWeatherData()
@@ -367,6 +337,37 @@ def AjouterProfil(request):
 			end_time = request.POST['heurefin']
 			timerule = TimeRule(profil = profil,start_time = start_time ,end_time= end_time)
 			timerule.save()
+		elif nomDeclencheur == "Meteo":
+			try: 
+				meteo = request.POST['thunderstorm']
+				meteorule = WeatherRule(profil = profil, weatherCondition = meteo)
+				meteorule.save()
+			except:
+				pass
+			try: 
+				meteo = request.POST['drizzle']
+				meteorule = WeatherRule(profil = profil, weatherCondition = meteo)
+				meteorule.save()
+			except:
+				pass
+			try: 
+				meteo = request.POST['rain']
+				meteorule = WeatherRule(profil = profil, weatherCondition = meteo)
+				meteorule.save()
+			except:
+				pass
+			try: 
+				meteo = request.POST['clouds']
+				meteorule = WeatherRule(profil = profil, weatherCondition = meteo)
+				meteorule.save()
+			except:
+				pass
+			try: 
+				meteo = request.POST['extreme']
+				meteorule = WeatherRule(profil = profil, weatherCondition = meteo)
+				meteorule.save()
+			except:
+				pass
 		actionneurname = request.POST['nomActionneur']	
 		try:
 			action = request.POST['action']
@@ -419,15 +420,56 @@ def test_profiles(request):
 		email = request.POST.get('email', '')
 		password = request.POST.get('password', '')
 		user = authenticate(email=email, password=password)
-		print user
 		if user is not None:
 			start_new_thread(test_profiles_process,())
-			print 'test'
 	return HttpResponse('')
 
 def test_profiles_process():
 	profiles = RuleProfile.objects.all()
 	f = open('workfile.txt', 'w')
 	for profile in profiles:
-		f.write(profile.test_and_execute())
+		f.write(profile.nom + '\n')
+		if( profile.test_and_execute() ):
+			f.write('Ca a marche\n')
+		else:
+			f.write('ca a pas marche\n')
 	f.close()
+
+def learning(request,actionneur_name):
+	context = RequestContext(request)
+	if request.method =='POST':
+		actionneurnom = request.POST['actionneur_identifiant']
+		actionneur = Actionneur.objects.get(user = request.user, nom = actionneurnom )
+		sendTrameToServer(actionneur.trame_on)
+		return HttpResponseRedirect('/home')	
+	else :
+		actionneur = Actionneur.objects.get(user = request.user, nom = actionneur_name)
+		context_dixt={'actionneur':actionneur}
+		return render_to_response('hexanhome/learning.html',context_dixt,context)
+
+@login_required(login_url='/login/')
+def AjoutActionneur(request):
+	c = {}
+	c.update(csrf(request))
+	context = RequestContext(request)
+	if request.method =='POST':
+		piece_name = request.POST['nomPiece']
+		nomactionneur = request.POST['NomActionneur']
+		piece = Piece.objects.get(nom=piece_name, user = request.user)
+		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
+		actionneur.save()
+		actionneur.identifiant = getFictiveButtonId(actionneur.id)
+		actionneur.trame_on = getTrameON(actionneur.identifiant)
+		actionneur.trame_off = getTrameOFF(actionneur.identifiant)
+		actionneur.save()
+		piece_name = piece_name.replace(' ', '_')
+		url = '/config/AjoutActionneur/learning/' + actionneur.nom
+		return HttpResponseRedirect(url)
+	else :
+		piece_list = Piece.objects.filter(user = request.user)
+		if piece_list:
+			context_dixt={'pieces':piece_list}
+			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+		else:
+			return HttpResponseRedirect('/config/AjoutPiece/')
+
