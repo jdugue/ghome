@@ -1,43 +1,175 @@
 {% extends "base.html" %}
-{% block title %}{{profil_name}}{% endblock %}
+{% block title %}{{profil.nom}}{% endblock %}
 {% block content %}
-<div class="panel panel-primary">
-	<div class="panel-heading">
-		<h3 class="panel-title">Ajout d'un régle</h3>
-	</div>
-	<div class="panel-body">
-		{% if capteurValue %}
-			{% for capteurtest,value in capteurValue.items %}
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">{{profil.nom}}</h3>
+		</div>
+		<div class="panel-body">
+			{% for temperaturerule in profil.temperaturerule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
-						<div class="panel-heading"  onClick="ChangeName();" name="PanelHeading">
-							<form id="name_form" method="post" action="/profil/piece/{{piece_url}}/"  >
-								{% csrf_token %}
-								<h3 class="panel-title" id="ValueNomCapteur" name="oldNom">{{capteurtest.nom}}</h3>
-								<input type="hidden" name="oldname" value="{{capteurtest.nom}}">
-								<input type="text" class="form-control" name="NomCapteur" style="display:none" id="nomCapteur" placeholder="Entrer nom" value="{{capteurtest.nom}}">
-							</form>
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Temperature</h3>
 						</div>
-
 						<div class="panel-body">
-							{% if value %}
-							{%for valeur in value%}
-								{{valeur.id_attr.valeur}}
-							{% endfor %}
-							{% else %}
-								</br>
-							{% endif %}
-
-				            <i class="fa fa-pencil-square-o"> Editer</i>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-			<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
-				{% csrf_token %}
-				<button type="submit" name='deletecapteur' class="btn btn-default btn-lg btn-block">Supprimer Capteur</button>
-			</form>
-		{% endif %}
+							<h3>Capteur déclencheur</h3>
+							{{temperaturerule.idCapteur.nom}}
+							<h3>Temperature souhaitée</h3>
+							{{temperaturerule.temperatureValue}}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for presencerule in profil.presencerule_set.all %}
+				<div class="col-xs-6 col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Presence</h3>
+						</div>
+						<div class="panel-body">
+							<h3>Capteur déclencheur</h3>
+							{{presencerule.idCapteur.nom}}
+							<h3>Presence</h3>
+							{{presencerule.isPresent}}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for timerule in profil.timerule_set.all %}
+				<div class="col-xs-6 col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Temps</h3>
+						</div>
+						<div class="panel-body">
+							<h3>heure début</h3>
+							{{timerule.start_time}}
+							<h3>heure fin</h3>
+							{{timerule.end_time}}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for weatherrule in profil.weatherrule_set.all %}
+				<div class="col-xs-6 col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Meteo</h3>
+						</div>
+						<div class="panel-body">
+							<h3>Condition météo</h3>
+							{{weatherrule.weatherCondition}}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for dayrule in profil.weekdayrule_set.all %}
+				<div class="col-xs-6 col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Meteo</h3>
+						</div>
+						<div class="panel-body">
+							<h3>Jour</h3>
+							{{dayrule.weekday}}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for actionregle in profil.ruleaction_set.all %}
+				<div class="col-xs-6 col-sm-4">
+					<div class="panel panel-default">
+						<div class="panel-heading" name="PanelHeading">
+							<h3 class="panel-title">Action</h3>
+						</div>
+						<div class="panel-body">
+							<h3>Actionneur déclencheée</h3>
+							{{actionregle.actionneur.nom}}
+							<h3>Action déclencheée</h3>
+							{{actionregle.action}}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
 	</div>
-</div>
+	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+		{% csrf_token %}
+			{% include "AjoutRegle.html" %}
+	</form>
+	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+		{% csrf_token %}
+		<button type="submit" name='deleteprofil' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
+	</form>
+{% endblock %}
+{%block footer%}
+<script language="JavaScript">
+	function ChangeValue()
+	{
+		list = document.getElementById("nomDeclencheur");
+		if (list.value == 'Temperature')
+		{
+			capteur = document.getElementById("divtemperature");
+			capteur.style.display="block";
+			capteur2 = document.getElementById("divPresence");
+			capteur2.style.display = "none";
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+		}
+		if(list.value == 'Presence'){
+			capteur = document.getElementById("divtemperature");
+			capteur.style.display="none";
+			capteur2 = document.getElementById("divPresence");
+			capteur2.style.display = "block";
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+		if (list.value == 'Jours'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="block";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+		if (list.value == 'Heure'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="block";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="none";
+		}
+			if (list.value == 'Meteo'){
+			capteurJour = document.getElementById("nomJour");
+			capteurJour.style.display="none";
+			capteurTemperature = document.getElementById("divtemperature");
+			capteurTemperature.style.display="none";
+			capteurPresence = document.getElementById("divPresence");
+			capteurPresence.style.display = "none";
+			capteurHeure = document.getElementById("divHeure");
+			capteurHeure.style.display="none";
+			capteurMeteo = document.getElementById("divMeteo");
+			capteurMeteo.style.display="block";
+		}
+		
+	}
+</script>
+
 {% endblock %}
