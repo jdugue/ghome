@@ -271,6 +271,11 @@ def settings(request,profil_name_url):
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
 			return HttpResponseRedirect(url)
+		if 'AjouterAction' in request.POST:
+			AjouterAction(request,profil)
+			profil_url = profil.nom.replace(' ','_')
+			url = '/profil/settings/' + profil_url
+			return HttpResponseRedirect(url)
 		elif 'deleteprofil' in  request.POST:
 			profil.delete()
 			return HttpResponseRedirect('/profil')
@@ -316,7 +321,8 @@ def settings(request,profil_name_url):
 		context_dixt['listCapteurPresence'] = listcapteurPresence
 		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
-
+		
+@login_required(login_url='/login/')
 def AjouterRegle(request, profil):
 	nomDeclencheur = request.POST['nomDeclencheur']
 	if nomDeclencheur == "Temperature" : 
@@ -419,16 +425,20 @@ def AjouterRegle(request, profil):
 			meteorule.save()
 		except:
 			pass
-	actionneurname = request.POST['nomActionneur']	
-	try:
-		action = request.POST['action']
-		action = 'on'
-	except:
-		action = 'off'
-	actionneur = Actionneur.objects.get(user = request.user , nom = actionneurname)
-	ruleAction = RuleAction(action = action , profil= profil, actionneur= actionneur )
-	ruleAction.save()	
 	
+
+def AjouterAction(request,profil):
+	actionneurname = request.POST['nomActionneur']	
+	action = request.POST['action']
+	actionneur = Actionneur.objects.get(user = request.user , nom = actionneurname)
+	try:
+		action2 = RuleAction.objects.get(profil= profil, actionneur= actionneur)
+		if(action2.action != action):
+			action2.action = action
+			action2.save()
+	except:
+		ruleAction = RuleAction(action = action , profil= profil, actionneur= actionneur )
+		ruleAction.save()	
 
 def AjouterProfil(request):
 	context = RequestContext(request)
@@ -453,6 +463,7 @@ def AjouterProfil(request):
 			profil = RuleProfile(nom = nomprofil, user = request.user, url= nomprofilurl)
 			profil.save()
 			AjouterRegle(request, profil)
+			AjouterAction(request,profil)
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
 			return HttpResponseRedirect(url)	

@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Ajouter Profil{% endblock %}
 {% block content %}
-	<h1>Ajout d'un profil:</h1>
-	<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
-	 	{% csrf_token %}
-	  	<div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
-			<label class="control-label" for="NomProfil">Nom</label>
-			<input type="text" class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
-			{%if erreurID %}
-	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
-	        	<span class="help-block">{{erreurID}}</span>
-	        {%endif%}
-	  	</div>
-	  {% include "hexanhome/AjoutRegle.html" %}
- 	</form>
+	{%if user.piece_set.all.count == 0 %}
+		<h2>Attention il faut creer des pieces</h2>
+	
+	{% elif listActionneur.count == '0' %}
+		<h2>Attention il faut creer des actionneur</h2>
+	{% else %}
+		<h1>Ajout d'un profil:</h1>
+		<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
+		 	{% csrf_token %}
+		  	<div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
+				<label class="control-label" for="NomProfil">Nom</label>
+				<input type="text" class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
+				{%if erreurID %}
+		       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+		        	<span class="help-block">{{erreurID}}</span>
+		        {%endif%}
+		  	</div>
+		  {% include "hexanhome/AjoutRegle.html" %}
+	 	</form>
+	 {%endif%}
 {% endblock %}
 {%block footer%}
 <script language="JavaScript">

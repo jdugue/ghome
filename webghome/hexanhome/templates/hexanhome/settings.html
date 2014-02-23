@@ -109,6 +109,7 @@
 	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
 			{% include "AjoutRegle.html" %}
+			{% include "hexanhome/AjoutAction.html" %}
 	</form>
 	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
@@ -185,7 +186,6 @@
 		url = $(location).attr('href')
 		url2 = url.split('profil')[1]
 		url3 = '/profil' + url2
-		alert(url3)
 		$.post(url,{csrfmiddlewaretoken: '{{ csrf_token }}',idrule:idrule,nombutton:nombutton},function(msg){
 			$('#'+idrule).html('');
 		});
