@@ -206,7 +206,7 @@ class RuleAction(models.Model):
 
 class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
-	isPresent = models.BooleanField(default=False)
+	isPresent = models.BooleanField()
 	idCapteur = models.ForeignKey(Capteur)
 	
 	def is_verified(self, actual_presence):

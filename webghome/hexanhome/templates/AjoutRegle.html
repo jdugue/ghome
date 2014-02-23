@@ -5,15 +5,19 @@
 	<div class="panel-body">
 		<label>Déclencheur</label>
 		<SELECT class="form-control" name="nomDeclencheur" id="nomDeclencheur" onchange="ChangeValue();" size="1">
-			<OPTION>Temperature
-			<OPTION>Presence
 			<OPTION>Jours
+			{% if listCapteurTemperature %}
+			<OPTION>Temperature
+			{%endif%}
+			{% if listCapteurPresence %}
+			<OPTION>Presence
+			{%endif%}
 			<OPTION>Heure
 			<OPTION>Meteo
   		</SELECT>
   		</br>
   		<label>Sélection du capteur déclencheur</label>
-  		<div id="divtemperature">
+  		<div id="divtemperature" style="display:none">
 	  		{% if listCapteurTemperature %}
 	  			<SELECT class="form-control" name="nomCapteurTemperature" id="nomCapteurTemperature"  size="1">
 	  			{% for capteur in listCapteurTemperature %}
@@ -39,7 +43,7 @@
 					<input type="checkbox" name = "isPresent" id="isPresent" value="isPresent"  > Present
 	  		{%endif%}
   		</div>
-  		<div id="nomJour" style="display:none">
+  		<div id="nomJour">
 	  		<label class="checkbox-inline">
 					<input type="checkbox" name="lundi" id="inlineCheckbox1" value="Lundi"> Lundi
 			</label>

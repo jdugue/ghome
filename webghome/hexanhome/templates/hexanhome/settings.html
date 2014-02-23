@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{profil.nom}}{% endblock %}
 {% block content %}
+ {% if erreurID %}
+    <div class="alert alert-danger">{{erreurID}}</div>
+ {% endif %}
 
 	<div class="panel panel-primary">
 		<div class="panel-heading">

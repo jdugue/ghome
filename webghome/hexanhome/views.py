@@ -265,13 +265,17 @@ def settings(request,profil_name_url):
 	context = RequestContext(request)
 	profil_name = profil_name_url.replace('_',' ')
 	profil = RuleProfile.objects.get(user = request.user, nom = profil_name)
+	context_dixt={'profil' : profil}
 	if request.method == 'POST':
 		if'AjouterRegle' in request.POST:
-			AjouterRegle(request,profil)
-			profil_url = profil.nom.replace(' ','_')
-			url = '/profil/settings/' + profil_url
-			return HttpResponseRedirect(url)
-		if 'AjouterAction' in request.POST:
+			erreur = AjouterRegle(request,profil)
+			if erreur :
+				context_dixt['erreurID'] = erreur
+			else:
+				profil_url = profil.nom.replace(' ','_')
+				url = '/profil/settings/' + profil_url
+				return HttpResponseRedirect(url)
+		elif 'AjouterAction' in request.POST:
 			AjouterAction(request,profil)
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
@@ -301,16 +305,14 @@ def settings(request,profil_name_url):
 					idrule = request.POST['idrule']
 					actionrule = RuleAction.objects.get( id = idrule)
 					actionrule.delete()
-
-			context_dixt={'profil' : profil}
-			listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
-			listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
-			listActionneur = Actionneur.objects.filter(user = request.user)
-			context_dixt['listCapteurTemperature']=listcapteurTemperature
-			context_dixt['listActionneur'] = listActionneur
-			context_dixt['listCapteurPresence'] = listcapteurPresence
-			context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
-			return render_to_response('hexanhome/settings.html',context_dixt,context)				
+		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+		listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
+		listActionneur = Actionneur.objects.filter(user = request.user)
+		context_dixt['listCapteurTemperature']=listcapteurTemperature
+		context_dixt['listActionneur'] = listActionneur
+		context_dixt['listCapteurPresence'] = listcapteurPresence
+		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
+		return render_to_response('hexanhome/settings.html',context_dixt,context)				
 	else:
 		context_dixt={'profil' : profil}
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
@@ -321,31 +323,47 @@ def settings(request,profil_name_url):
 		context_dixt['listCapteurPresence'] = listcapteurPresence
 		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
-		
+
 @login_required(login_url='/login/')
 def AjouterRegle(request, profil):
 	nomDeclencheur = request.POST['nomDeclencheur']
 	if nomDeclencheur == "Temperature" : 
 		capteurname = request.POST['nomCapteurTemperature']
+		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 		temperatureValue = request.POST['temperatureValue']
+		if temperatureValue == '':
+			return 'Une valeur de temperature doit être donnée'
 		try:
 			minimum = request.POST['minimum']
-			minimum='True'
+			minimum=True
 		except:
-			minimum= 'False'
-		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
-		rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
-		rule.save() 
+			minimum= False
+		try:
+			temperaturerule = TemperatureRule.objects.get(profil = profil,idCapteur = capteur)
+			if(temperaturerule.temperatureValue != temperatureValue):
+				temperaturerule.temperatureValue = temperatureValue
+			if(temperaturerule.isMinimum != minimum):
+				temperaturerule.isMinimum = minimum
+			temperaturerule.save()
+		except:
+			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
+			rule.save() 
 	elif nomDeclencheur == "Presence" : 
 		capteurname = request.POST['nomCapteurPresence']
 		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 		try:
-			present = request.POST['present']
-			present='True'
+			present = request.POST['isPresent']
+			present=True
 		except:
-			present= 'False'
-		presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
-		presencerule.save()
+			present= False
+		try:
+			presencerule = PresenceRule.objects.get(profil = profil,idCapteur =capteur)
+			if presencerule.isPresent != present:
+				presencerule.isPresent = present
+				presencerule.save()
+		except:
+			presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
+			presencerule.save()
 	elif nomDeclencheur == "Jours":
 		try: 
 			weekday = request.POST['lundi']
