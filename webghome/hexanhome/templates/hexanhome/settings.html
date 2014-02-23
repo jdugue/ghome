@@ -2,11 +2,11 @@
 {% block title %}{{profil.nom}}{% endblock %}
 {% block content %}
 
-<div class="panel panel-primary">
-	<div class="panel-heading">
-		<h3 class="panel-title">{{profil.nom}}</h3>
-	</div>
-	<div class="panel-body">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">{{profil.nom}}</h3>
+		</div>
+		<div class="panel-body">
 			{% for temperaturerule in profil.temperaturerule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
@@ -18,11 +18,11 @@
 							{{temperaturerule.idCapteur.nom}}
 							<h3>Temperature souhaitée</h3>
 							{{temperaturerule.temperatureValue}}
-                        </div>
-                    </div>
-                </div>
-                {%endfor%}
-                {% for presencerule in profil.presencerule_set.all %}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for presencerule in profil.presencerule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
@@ -33,11 +33,11 @@
 							{{presencerule.idCapteur.nom}}
 							<h3>Presence</h3>
 							{{presencerule.isPresent}}
-                        </div>
-                    </div>
-                </div>
-                {%endfor%}
-                {% for timerule in profil.timerule_set.all %}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for timerule in profil.timerule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
@@ -48,11 +48,11 @@
 							{{timerule.start_time}}
 							<h3>heure fin</h3>
 							{{timerule.end_time}}
-                        </div>
-                    </div>
-                </div>
-                {%endfor%}
-                {% for weatherrule in profil.weatherrule_set.all %}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for weatherrule in profil.weatherrule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
@@ -61,11 +61,11 @@
 						<div class="panel-body">
 							<h3>Condition météo</h3>
 							{{weatherrule.weatherCondition}}
-                        </div>
-                    </div>
-                </div>
-                {%endfor%}
-                {% for dayrule in profil.weekdayrule_set.all %}
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for dayrule in profil.weekdayrule_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
@@ -74,12 +74,12 @@
 						<div class="panel-body">
 							<h3>Jour</h3>
 							{{dayrule.weekday}}
-                        </div>
-                    </div>
-                </div>
-                {%endfor%}
-                {% for actionregle in profil.ruleaction_set.all %}
-                <div class="col-xs-6 col-sm-4">
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{% for actionregle in profil.ruleaction_set.all %}
+				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
 							<h3 class="panel-title">Action</h3>
@@ -89,23 +89,20 @@
 							{{actionregle.actionneur.nom}}
 							<h3>Action déclencheée</h3>
 							{{actionregle.action}}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 	</div>
 	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
 		{% csrf_token %}
-			  {% include "AjoutRegle.html" %}
- 	</div>
-	<form id="category_form" method="post" action="/profil/piece/{{piece_name}}/">
-		{% csrf_token %}
-		<button type="submit" name='deletecapteur' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
+			{% include "AjoutRegle.html" %}
 	</form>
-		
-	</div>
-</div>
+	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+		{% csrf_token %}
+		<button type="submit" name='deleteprofil' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
+	</form>
 {% endblock %}
 {%block footer%}
 <script language="JavaScript">

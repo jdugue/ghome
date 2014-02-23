@@ -265,10 +265,14 @@ def settings(request,profil_name_url):
 	profil_name = profil_name_url.replace('_',' ')
 	profil = RuleProfile.objects.get(user = request.user, nom = profil_name)
 	if request.method == 'POST':
-		Ajouteregele(request,profil)
-		profil_url = profil.nom.replace(' ','_')
-		url = '/profil/settings/' + profil_url
-		return HttpResponseRedirect(url)
+		if'AjouterRegle' in request.POST:
+			Ajouteregele(request,profil)
+			profil_url = profil.nom.replace(' ','_')
+			url = '/profil/settings/' + profil_url
+			return HttpResponseRedirect(url)
+		if 'deleteprofil' in  request.POST:
+			profil.delete()
+			return HttpResponseRedirect('/profil')
 	else:
 		context_dixt={'profil' : profil}
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
@@ -395,15 +399,24 @@ def Ajouteregele(request, profil):
 def AjouterProfil(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
-		nomprofil= request.POST['NomProfil']
-		profil = RuleProfile(nom = nomprofil, user = request.user)
-		profil.save()
-		Ajouteregele(request, profil)
-		profil_url = profil.nom.replace(' ','_')
-		url = '/profil/settings/' + profil_url
-		return HttpResponseRedirect(url)	
-		
-		
+		try:
+			nomprofil= request.POST['NomProfil']
+			profil = RuleProfile.objects.get(user = request.user, nom = nomprofil)
+			context_dixt = {'erreurID':'Un profil avec ce nom existe deja'}
+			listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+			listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
+			listActionneur = Actionneur.objects.filter(user = request.user)
+			context_dixt['listCapteurTemperature']=listcapteurTemperature
+			context_dixt['listActionneur'] = listActionneur
+			context_dixt['listCapteurPresence'] = listcapteurPresence
+			return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
+		except:
+			profil = RuleProfile(nom = nomprofil, user = request.user)
+			profil.save()
+			Ajouteregele(request, profil)
+			profil_url = profil.nom.replace(' ','_')
+			url = '/profil/settings/' + profil_url
+			return HttpResponseRedirect(url)	
 	else:
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
 		listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')

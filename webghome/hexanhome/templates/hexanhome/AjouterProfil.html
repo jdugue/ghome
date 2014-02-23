@@ -4,16 +4,16 @@
 	<h1>Ajout d'un profil:</h1>
 	<form id="category_form" method="post" action="/profil/Ajouter_Profil/">
 	 	{% csrf_token %}
-	  	<div class="form-group {%if erreur %}has-error {%endif%} has-feedback">
+	  	<div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
 			<label class="control-label" for="NomProfil">Nom</label>
 			<input type="text"  class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
-			{%if erreur %}
+			{%if erreurID %}
 	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
-	        	<span class="help-block">{{erreur}}</span>
+	        	<span class="help-block">{{erreurID}}</span>
 	        {%endif%}
 	  	</div>
 	  {% include "AjoutRegle.html" %}
- 
+ 	</form>
 
 {% endblock %}
 {%block footer%}
