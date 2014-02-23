@@ -265,5 +265,4 @@ class WeekdayRule(models.Model):
 
 
 	def is_verified(self, weekDay):
-		self.weekday = weekDay
-		return self.weekday
+		return int(self.weekday) == weekDay
