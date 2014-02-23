@@ -401,8 +401,11 @@ def AjouterProfil(request):
 	if request.method == 'POST':
 		try:
 			nomprofil= request.POST['NomProfil']
-			profil = RuleProfile.objects.get(user = request.user, nom = nomprofil)
-			context_dixt = {'erreurID':'Un profil avec ce nom existe deja'}
+			if nomprofil == '':
+				context_dixt = {'erreurID':'Le champs profil ne doit pas être vide'}
+			else:
+				profil = RuleProfile.objects.get(user = request.user, nom = nomprofil)
+				context_dixt = {'erreurID':'Un profil avec ce nom existe deja'}
 			listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
 			listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
 			listActionneur = Actionneur.objects.filter(user = request.user)
