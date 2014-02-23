@@ -2,3 +2,7 @@ fait froid met ordi
 ca a pas marche
 il y a des gens allume ordi
 Ca a marche
+Dimanche eteindre ordi
+Ca a marche
+Si meteo nuage allumer ordi
+Ca a marche
