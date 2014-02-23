@@ -29,6 +29,7 @@ import weather
 import actionneur_learning
 from actionneur_learning import *
 from django.core.context_processors import csrf
+import json
 
 @login_required(login_url='/login/')
 def index(request):
@@ -412,6 +413,7 @@ def AjouterProfil(request):
 			context_dixt['listCapteurTemperature']=listcapteurTemperature
 			context_dixt['listActionneur'] = listActionneur
 			context_dixt['listCapteurPresence'] = listcapteurPresence
+			context_dixt['nb_times'] = 0
 			return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 		except:
 			profil = RuleProfile(nom = nomprofil, user = request.user)
@@ -427,6 +429,7 @@ def AjouterProfil(request):
 		context_dixt={'listCapteurTemperature':listcapteurTemperature}
 		context_dixt['listActionneur'] = listActionneur
 		context_dixt['listCapteurPresence'] = listcapteurPresence
+		context_dixt['nb_times'] = 0
 		return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 
 @csrf_exempt
@@ -518,10 +521,16 @@ def AjoutActionneur(request):
 @csrf_exempt
 def regle(request):
 	context = RequestContext(request)
-	return render_to_response('hexanhome/AjoutRegle.html',context)
+	listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+	listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
+	context_dixt = {'listCapteurTemperature':listcapteurTemperature}
+	context_dixt['listCapteurPresence'] = listcapteurPresence
+	return render_to_response('hexanhome/AjoutRegle.html',context_dixt,context)
 
 @csrf_exempt
 def action(request):
 	context = RequestContext(request)
-	return render_to_response('hexanhome/AjoutAction.html',context)
+	listActionneur = Actionneur.objects.filter(user = request.user)
+	context_dixt={'listActionneur': listActionneur}
+	return render_to_response('hexanhome/AjoutAction.html',context_dixt,context)
 

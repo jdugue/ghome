@@ -6,35 +6,17 @@
 	 	{% csrf_token %}
 	  	<div class="form-group {%if erreurID %}has-error {%endif%} has-feedback">
 			<label class="control-label" for="NomProfil">Nom</label>
-			<input type="text"  class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
+			<input type="text" class="form-control" name="NomProfil" id="NomProfil" placeholder="Enter nom">
 			{%if erreurID %}
 	       		<span class="glyphicon glyphicon-remove form-control-feedback"></span>
 	        	<span class="help-block">{{erreurID}}</span>
 	        {%endif%}
 	  	</div>
-	  	<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title">Ajout d'une régle</h3>
-			</div>
-			<div class="panel-body" id="regle">
-	 			{% include "hexanhome/AjoutRegle.html" %}
-	 			<button class="btn btn-primary" onclick="return addregle();">Nouvelle Règle</button>
-	 		</div>
-	 	</div>
-
-	 	<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title">Ajout d'une action</h3>
-			</div>	
-			<div class="panel-body" id="action">
-	  			{% include "hexanhome/AjoutAction.html" %}
-			</div>
-  		</div>
+	  {% include "hexanhome/AjoutRegle.html" %}
  	</form>
-	 			<button class="btn btn-primary" onclick="addaction()">Nouvelle Action</button>
 {% endblock %}
 {%block footer%}
-<script>
+<script language="JavaScript">
 	function ChangeValue()
 	{
 		list = document.getElementById("nomDeclencheur");
@@ -102,26 +84,5 @@
 	});
 	}
 </script>
-<script>
-	function addregle()
-	{
-		$.post("/regle/", function(msg)
-			{
-				$("#regle").append(msg);
-			});
-	}
-</script>
-<script type="text/javascript">
-	function addaction()
-	{
-		$.post('/action/',
-			function(msg)
-			{
-				$('#action').append(msg);
-			});
-		return false;
-	}
-</script>	
-
 
 {% endblock %}
