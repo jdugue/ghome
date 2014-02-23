@@ -118,6 +118,10 @@ def majDonnees(trame, database, profileManager):
 
 class ProfileGesture:
 	def __init__(self, date):
+		configParser = ConfigParser.ConfigParser()
+		configParser.read('configweb.cfg')
+		self.user = configParser.get('web_info','user')
+		self.passwd = configParser.get('web_info','passwd')
 		self.lastTest = self.timestamp(date)
 		
 	def launchThreadTestProfiles(self):	
@@ -132,7 +136,7 @@ class ProfileGesture:
 	def testProfiles (self):
 		if (self.timestamp(datetime.datetime.now()) - self.lastTest != 0):
 			url = 'http://127.0.0.1:8000/test_profiles/'
-			params = {'email':'vincent.durif@insa-lyon.fr', 'password': 'pwd', 'port':'5000'}
+			params = {'email':self.user, 'password': self.passwd}
 			r = requests.post(url, data=params)
 			self.lastTest = self.timestamp(datetime.datetime.now())
 	
