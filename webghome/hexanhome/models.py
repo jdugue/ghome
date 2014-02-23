@@ -197,29 +197,30 @@ class RuleAction(models.Model):
 	actionneur = models.ForeignKey(Actionneur)
 	
 	def execute_action(self):
-		if action == 'on':
+		if self.action == 'on':
 			action = 'on'
-		elif action == 'off':
+		elif self. 	action == 'off':
 			action = 'off'
 			# eteindre actionneur
 
 class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
-	isPresent = models.BooleanField(default =False)
+	isPresent = models.BooleanField(default=False)
 	idCapteur = models.ForeignKey(Capteur)
 	
-	def is_verified(self, isPresent):
-		return self.isPresent == isPresent
+	def is_verified(self, actual_presence):
+		print(actual_presence)
+		return self.isPresent == actual_presence
 
 class TimeRule(models.Model):
 	"""docstring for TimeRule"""
 	profil = models.ForeignKey(RuleProfile)
 	start_time = models.DateField()
 	end_time = models.DateField()
-	def __init__(self, start_time, end_time):
+	def __init__(self, actual_start_time, actual_end_time):
 		super(TimeRule, self).__init__()
-		self.start_time = start_time
-		self.end_time = end_time
+		self.start_time = actual_start_time
+		self.end_time = actual_end_time
 
 	def is_verified(self, time):
 		if self.start_time < self.end_time :
@@ -234,7 +235,8 @@ class TemperatureRule(models.Model):
 	isMinimum = models.BooleanField()
 
 	def is_verified(self, actual_temp):
-		if isMinimum:
+		if self.isMinimum:
+			print('actual_temp' + str(actual_temp) + 'self vlue' + str(self.temperatureValue))
 			return actual_temp < self.temperatureValue
 		else:
 			return actual_temp > self.temperatureValue
