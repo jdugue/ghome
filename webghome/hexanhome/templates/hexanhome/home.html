@@ -3,8 +3,9 @@
 {% block content %}
 	{% if user.is_authenticated %}
         <div class="row" >
+
             {% for piece in user.piece_set.all%}
-                <div class="col-md-6">
+                <div class="{%if user.piece_set.all.count == 1%}col-md-12{%else%}col-md-6 {%endif%}">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h3 class="panel-title">{{piece.nom}}</h3>
@@ -29,6 +30,15 @@
                                                                 {% else %}
                                                                     <h5>{{ capteurvalue.id_attr.valeur }}</h5>
                                                                 {% endif%}
+                                                            {%endif%}
+                                                            {% if capteurvalue.id_attr.nom == 'contact' %}
+                                                                    </br>
+                                                                    </br>
+                                                                    </br>
+                                                             {% elif capteurvalue.id_attr.nom == 'temperature' %}
+                                                                    </br>
+                                                                    </br>
+                                                                    </br>
                                                             {% endif%}
                                                         {% endfor %}
                                                     </div>
@@ -62,6 +72,7 @@
                                                                  {% csrf_token %}
                                                                 <input type="hidden" name="actionneur_id" value="{{actionneur.id}}">
                                                                 <button type="submit" name="Learning" class="btn btn-primary btn-xs  ">Learning</button>
+
                                                         </form>
                                                     </div>
                                                 </br>
@@ -108,7 +119,4 @@
             </div>
             {% endif%}
     {% endif %}
-
-  
-
 {% endblock %}

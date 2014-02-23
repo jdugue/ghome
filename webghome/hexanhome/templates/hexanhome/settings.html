@@ -65,19 +65,26 @@
 					</div>
 				</div>
 			{%endfor%}
-			{% for dayrule in profil.weekdayrule_set.all %}
+			{%if profil.weekdayrule_set.all  %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Meteo</h3>
+							<h3 class="panel-title">Jour</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Jour</h3>
-							{{dayrule.weekday}}
+							{% for dayrule in profil.weekdayrule_set.all %}	
+								{% for jour in Jourcapteur_Action %}
+									{% if jour.0 == dayrule.weekday%}
+										{{ jour.1}}
+									</br>
+									{% endif%}
+								{%endfor%}
+							{%endfor%}
 						</div>
 					</div>
 				</div>
-			{%endfor%}
+			{%endif%}
 			{% for actionregle in profil.ruleaction_set.all %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
@@ -95,11 +102,11 @@
 			{% endfor %}
 		</div>
 	</div>
-	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
 			{% include "AjoutRegle.html" %}
 	</form>
-	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
 		<button type="submit" name='deleteprofil' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
 	</form>

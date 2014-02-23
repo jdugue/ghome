@@ -281,6 +281,7 @@ def settings(request,profil_name_url):
 		context_dixt['listCapteurTemperature']=listcapteurTemperature
 		context_dixt['listActionneur'] = listActionneur
 		context_dixt['listCapteurPresence'] = listcapteurPresence
+		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
 
 def Ajouteregele(request, profil):
@@ -414,7 +415,8 @@ def AjouterProfil(request):
 			context_dixt['listCapteurPresence'] = listcapteurPresence
 			return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 		except:
-			profil = RuleProfile(nom = nomprofil, user = request.user)
+			nomprofilurl = nomprofil.replace(' ','_')
+			profil = RuleProfile(nom = nomprofil, user = request.user, url= nomprofilurl)
 			profil.save()
 			Ajouteregele(request, profil)
 			profil_url = profil.nom.replace(' ','_')
