@@ -219,8 +219,8 @@ class TimeRule(models.Model):
 	end_time = models.CharField(max_length=200)
 
 	def is_verified(self, time):
-		heuredebut = int(start_time.replace(':',''))
-		heurefin = int(end_time.replace(':',''))
+		heuredebut = int(self.start_time.replace(':',''))
+		heurefin = int(self.end_time.replace(':',''))
 		actual_time = int(time.replace(':',''))
 		if heuredebut < heurefin :
 			return heuredebut < actual_time < heurefin
