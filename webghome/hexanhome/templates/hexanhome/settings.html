@@ -8,10 +8,14 @@
 		</div>
 		<div class="panel-body">
 			{% for temperaturerule in profil.temperaturerule_set.all %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="{{temperaturerule.id}}" class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Temperature</h3>
+							<div class="block-inline">
+								 <span class="panel-title">
+									<h3 class="panel-title"> <i onclick="supprimer({{temperaturerule.id}},'supprimerTemperatureRule');" class="glyphicon glyphicon-remove "> </i> Temperature</h3>
+								</span>
+							</div>
 						</div>
 						<div class="panel-body">
 							<h3>Capteur déclencheur</h3>
@@ -23,10 +27,10 @@
 				</div>
 			{%endfor%}
 			{% for presencerule in profil.presencerule_set.all %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="{{presencerule.id}}" class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Presence</h3>
+							<h3 class="panel-title"><i onclick="supprimer({{presencerule.id}},'supprimerPresenceRule');" class="glyphicon glyphicon-remove "> </i> Presence</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Capteur déclencheur</h3>
@@ -38,10 +42,10 @@
 				</div>
 			{%endfor%}
 			{% for timerule in profil.timerule_set.all %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="{{timerule.id}}" class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Temps</h3>
+							<h3 class="panel-title"><i onclick="supprimer({{timerule.id}},'supprimerTimeRule');" class="glyphicon glyphicon-remove "> </i> Temps</h3>
 						</div>
 						<div class="panel-body">
 							<h3>heure début</h3>
@@ -53,10 +57,10 @@
 				</div>
 			{%endfor%}
 			{% for weatherrule in profil.weatherrule_set.all %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="{{weatherrule.id}}" class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Meteo</h3>
+							<h3 class="panel-title"><i onclick="supprimer({{weatherrule.id}},'supprimerWeatherRule');" class="glyphicon glyphicon-remove "> </i> Meteo</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Condition météo</h3>
@@ -65,24 +69,31 @@
 					</div>
 				</div>
 			{%endfor%}
-			{% for dayrule in profil.weekdayrule_set.all %}
+			{%if profil.weekdayrule_set.all  %}
 				<div class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Meteo</h3>
+							<h3 class="panel-title"><i class="glyphicon glyphicon-remove "> </i> Jour</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Jour</h3>
-							{{dayrule.weekday}}
+							{% for dayrule in profil.weekdayrule_set.all %}	
+								{% for jour in Jourcapteur_Action %}
+									{% if jour.0 == dayrule.weekday%}
+										{{ jour.1}}
+									</br>
+									{% endif%}
+								{%endfor%}
+							{%endfor%}
 						</div>
 					</div>
 				</div>
-			{%endfor%}
+			{%endif%}
 			{% for actionregle in profil.ruleaction_set.all %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="{{actionregle.id}}" class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title">Action</h3>
+							<h3 class="panel-title"><i onclick="supprimer({{actionregle.id}},'supprimerAction');" class="glyphicon glyphicon-remove "> </i> Action</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Actionneur déclencheée</h3>
@@ -95,11 +106,11 @@
 			{% endfor %}
 		</div>
 	</div>
-	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
 			{% include "AjoutRegle.html" %}
 	</form>
-	<form id="category_form" method="post" action="/profil/settings/{{profil.nom}}/">
+	<form id="category_form" method="post" action="/profil/settings/{{profil.url}}/">
 		{% csrf_token %}
 		<button type="submit" name='deleteprofil' class="btn btn-danger btn-lg btn-block">Supprimer Profil</button>
 	</form>
@@ -169,6 +180,15 @@
 			capteurMeteo.style.display="block";
 		}
 		
+	}
+	function supprimer(idrule,nombutton){
+		url = $(location).attr('href')
+		url2 = url.split('profil')[1]
+		url3 = '/profil' + url2
+		alert(url3)
+		$.post(url,{csrfmiddlewaretoken: '{{ csrf_token }}',idrule:idrule,nombutton:nombutton},function(msg){
+			$('#'+idrule).html('');
+		});
 	}
 </script>
 

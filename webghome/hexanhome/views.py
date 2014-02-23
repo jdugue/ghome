@@ -271,9 +271,41 @@ def settings(request,profil_name_url):
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
 			return HttpResponseRedirect(url)
-		if 'deleteprofil' in  request.POST:
+		elif 'deleteprofil' in  request.POST:
 			profil.delete()
 			return HttpResponseRedirect('/profil')
+		elif 'nombutton' in request.POST:
+			nombutton = request.POST['nombutton']
+			if nombutton == 'supprimerTemperatureRule':
+				idrule = request.POST['idrule']
+				temperaturerule = TemperatureRule.objects.get( id = idrule)
+				temperaturerule.delete()
+			elif nombutton == 'supprimerPresenceRule':
+					idrule = request.POST['idrule']
+					presencerule = PresenceRule.objects.get( id = idrule)
+					presencerule.delete()
+			elif nombutton == 'supprimerTimeRule':
+					idrule = request.POST['idrule']
+					timerule = TimeRule.objects.get( id = idrule)
+					timerule.delete()
+			elif nombutton == 'supprimerWeatherRule':
+					idrule = request.POST['idrule']
+					weatherrule = WeatherRule.objects.get( id = idrule)
+					weatherrule.delete()
+			elif nombutton == 'supprimerAction':
+					idrule = request.POST['idrule']
+					actionrule = RuleAction.objects.get( id = idrule)
+					actionrule.delete()
+
+			context_dixt={'profil' : profil}
+			listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+			listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
+			listActionneur = Actionneur.objects.filter(user = request.user)
+			context_dixt['listCapteurTemperature']=listcapteurTemperature
+			context_dixt['listActionneur'] = listActionneur
+			context_dixt['listCapteurPresence'] = listcapteurPresence
+			context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
+			return render_to_response('hexanhome/settings.html',context_dixt,context)				
 	else:
 		context_dixt={'profil' : profil}
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
@@ -282,6 +314,7 @@ def settings(request,profil_name_url):
 		context_dixt['listCapteurTemperature']=listcapteurTemperature
 		context_dixt['listActionneur'] = listActionneur
 		context_dixt['listCapteurPresence'] = listcapteurPresence
+		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
 
 def AjouterRegle(request, profil):
@@ -416,7 +449,8 @@ def AjouterProfil(request):
 			context_dixt['nb_times'] = 0
 			return render_to_response('hexanhome/AjouterProfil.html',context_dixt,context)
 		except:
-			profil = RuleProfile(nom = nomprofil, user = request.user)
+			nomprofilurl = nomprofil.replace(' ','_')
+			profil = RuleProfile(nom = nomprofil, user = request.user, url= nomprofilurl)
 			profil.save()
 			AjouterRegle(request, profil)
 			profil_url = profil.nom.replace(' ','_')

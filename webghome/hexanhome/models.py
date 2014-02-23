@@ -164,6 +164,7 @@ class RuleProfile(models.Model):
 	"""docstring fos RuleProfile"""
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	nom = models.CharField(max_length=200)
+	url = models.CharField(max_length=200)
 	def __unicode__(self):
 		return unicode(self.nom)
 
@@ -250,7 +251,16 @@ class WeatherRule(models.Model):
 
 class WeekdayRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
-	weekday = models.IntegerField()
+	Jour_CHOICES = (
+		('0','Lundi'),
+		('1','Mardi'),
+		('2','Mercredi'),
+		('3','Jeudi'),
+		('4','Vendredi'),
+		('5','Samedi'),
+		('6','Dimanche')	
+	)
+	weekday = models.CharField(max_length=1, choices=Jour_CHOICES)
 	"""docstring for WeekdayRule"""
 
 

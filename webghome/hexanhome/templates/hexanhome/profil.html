@@ -5,7 +5,7 @@
 {% block content %}
 	{% if profil_list %}
 		{% for profil in profil_list %}
-		<h5 id="profilAffichage" onClick="Redirect('/profil/settings/{{ profil.nom }}');" onmouseover="this.style.background='#428bca';" onmouseout="this.style.background='white'; ">{{profil.nom}}</h5>
+		<h5 id="profilAffichage" onClick="Redirect('/profil/settings/{{ profil.url }}');" onmouseover="this.style.background='#ebebeb';" onmouseout="this.style.background='white'; ">{{profil.nom}}</h5>
 		{% endfor %}
 	{% endif%}
 	<a class="btn btn-default btn-lg btn-block " href='/profil/Ajouter_Profil' >Ajouter Profil</a>
