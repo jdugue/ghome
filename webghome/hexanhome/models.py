@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 import home_watcher
+import actionneur_learning
 
 class CustomUserManager(BaseUserManager):
 
@@ -198,10 +199,9 @@ class RuleAction(models.Model):
 	
 	def execute_action(self):
 		if self.action == 'on':
-			action = 'on'
+			sendTrameToServer([self.actionneur.trame_on])
 		elif self. 	action == 'off':
-			action = 'off'
-			# eteindre actionneur
+			sendTrameToServer([self.actionneur.trame_off])
 
 class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
@@ -218,10 +218,13 @@ class TimeRule(models.Model):
 	end_time = models.CharField(max_length=200)
 
 	def is_verified(self, time):
-		if self.start_time < self.end_time :
-			return self.start_time < time < self.end_time
+		heuredebut = int(start_time.replace(':',''))
+		heurefin = int(end_time.replace(':',''))
+		actual_time = int(time.replace(':',''))
+		if heuredebut < heurefin :
+			return heuredebut < actual_time < heurefin
 		else:
-			return (self.start_time < time < 24) or (0 < time < self.end_time)
+			return (heuredebut < actual_time < 24) or (0 < actual_time < heurefin)
 
 class TemperatureRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)

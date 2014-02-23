@@ -1,4 +1,5 @@
 from weather import *
+import datetime
 import hexanhome.models
 
 class HomeWatcher(object):
@@ -7,8 +8,9 @@ class HomeWatcher(object):
 		super(HomeWatcher, self).__init__()
 
 	def getTime(self):
+		#Hour as string
 		now = datetime.datetime.now()
-		return now.hour + now.minute + now.second()
+		return str(now.hour)+':'+str(now.minute)
 
 	def getWeekday(self):
 		now = datetime.datetime.now()
@@ -25,6 +27,7 @@ class HomeWatcher(object):
 	def getWeatherCondition(self):
 		wd = WeatherDownloader('Lyon')
 		condition = wd.getCurrentWeatherData().weather_condition
+		return condition
 	
 	def getPresence(self, idCapteur):
 		capteur = hexanhome.models.Capteur.objects.get(identifiant=idCapteur)	

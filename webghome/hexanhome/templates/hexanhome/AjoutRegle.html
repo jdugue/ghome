@@ -63,10 +63,16 @@
 					</label>
 				</div>
 				<div id="divHeure" style="display:none">
-					<label class="control-label" for="Heure">Entrer l'heure de debut </label>
-			  			<input type="text"  class="form-control" name="heuredebut" id="heuredebut" placeholder="HH:MM">
-			  			<label class="control-label" for="Heure">Entrer l'heure de fin </label>
-			  			<input type="text"  class="form-control" name="heurefin" id="heurefin" placeholder="HH:MM">
+					<label class="control-label" for="heuredebut">Entrer l'heure de debut </label>
+					<div class="input-group bootstrap-timepicker"/>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+						<input class="form-control input input-small timepicker" type="text" name="heuredebut">
+					</div>
+					<label class="control-label" for="heurefin">Entrer l'heure de fin </label>
+					<div class="input-group bootstrap-timepicker"/>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+						<input class="form-control input input-small timepicker" type="text" name="heuredebut">
+					</div>
 				</div>
 				<div id="divMeteo" style="display:none">
 					<label class="checkbox-inline">

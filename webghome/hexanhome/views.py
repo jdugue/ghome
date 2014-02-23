@@ -224,6 +224,8 @@ def piece(request, piece_name_url):
 @login_required(login_url='/login/')
 def home(request):
 	if request.method =='POST':
+		nomboutton = request.POST['nomboutton']
+		print(request.POST)
 		if'Supp_piece' in request.POST:
 			piece_nom=request.POST['piece_nom']
 			piece = Piece.objects.get(nom = piece_nom, user = request.user)
@@ -242,13 +244,13 @@ def home(request):
 			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
 			actionneur.delete()
 			return HttpResponseRedirect('/home')
-		elif 'Actionner' in request.POST:
-			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id1'], user = request.user )
-			sendTrameToServer(actionneur.trame_on)		
+		elif nomboutton =='Actionner':
+			actionneur = Actionneur.objects.get(id =request.POST['idactionneur'], user = request.user )
+			sendTrameToServer([actionneur.trame_on])		
 			return HttpResponseRedirect('/home')
 		elif 'Eteindre' in request.POST:
 			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id2'], user = request.user )
-			sendTrameToServer(actionneur.trame_off)	
+			sendTrameToServer([actionneur.trame_off])	
 			return HttpResponseRedirect('/home')	
 		elif 'Learning' in request.POST:
 			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_id'], user = request.user )
@@ -478,7 +480,7 @@ def learning(request,actionneur_id):
 		actionneur_id = request.POST['actionneur_identifiant']
 		actionneur = Actionneur.objects.get(user = request.user, id = actionneur_id )
 		try:
-			sendTrameToServer(actionneur.trame_on)
+			sendTrameToServer([actionneur.trame_on])
 		except:
 			pass
 		return HttpResponseRedirect('/home')	
