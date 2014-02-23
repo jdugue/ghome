@@ -199,9 +199,9 @@ class RuleAction(models.Model):
 	
 	def execute_action(self):
 		if self.action == 'on':
-			self.actionneur.trame_on
+			sendTrameToServer([self.actionneur.trame_on])
 		elif self. 	action == 'off':
-			self.actionneur.trame_off
+			sendTrameToServer([self.actionneur.trame_off])
 
 class PresenceRule(models.Model):
 	profil = models.ForeignKey(RuleProfile)
