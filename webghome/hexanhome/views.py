@@ -228,6 +228,7 @@ def home(request):
 			piece_nom=request.POST['piece_nom']
 			piece = Piece.objects.get(nom = piece_nom, user = request.user)
 			piece.delete()	
+			return HttpResponseRedirect('/home')
 		elif 'Supp_capteur' in request.POST:
 			capteur_id=request.POST['capteur_identifiant']
 			capteur = Capteur.objects.get(identifiant = capteur_id, user= request.user) 
@@ -235,18 +236,22 @@ def home(request):
 				capteurvalue.id_attr.delete()
 				capteurvalue.delete()
 			capteur.delete()
+			return HttpResponseRedirect('/home')
 		elif 'Supp_actionneur' in request.POST:
 			actionneur_id=request.POST['actionneur_identifiant']
 			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
 			actionneur.delete()
+			return HttpResponseRedirect('/home')
 		elif 'Actionner' in request.POST:
-			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom1'], user = request.user )
+			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id1'], user = request.user )
 			sendTrameToServer(actionneur.trame_on)		
+			return HttpResponseRedirect('/home')
 		elif 'Eteindre' in request.POST:
-			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom2'], user = request.user )
-			sendTrameToServer(actionneur.trame_off)		
+			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id2'], user = request.user )
+			sendTrameToServer(actionneur.trame_off)	
+			return HttpResponseRedirect('/home')	
 		elif 'Learning' in request.POST:
-			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_nom2'], user = request.user )
+			actionneur = Actionneur.objects.get(nom =request.POST['actionneur_id'], user = request.user )
 			url = '/config/AjoutActionneur/learning/' + actionneur.nom
 			return HttpResponseRedirect(url)	
 	else:
@@ -258,7 +263,8 @@ def home(request):
 def settings(request,profil_name_url):
 	context = RequestContext(request)
 	profil_name = profil_name_url.replace('_',' ')
-	context_dixt={'profil_name' : profil_name}
+	profil = RuleProfile.objects.get(user = request.user, nom = profil_name)
+	context_dixt={'profil' : profil}
 	return render_to_response('hexanhome/settings.html',context_dixt,context)
 
 def AjouterProfil(request):
@@ -433,15 +439,18 @@ def test_profiles_process():
 		f.write(profile.test_and_execute())
 	f.close()
 
-def learning(request,actionneur_name):
+def learning(request,actionneur_id):
 	context = RequestContext(request)
 	if request.method =='POST':
-		actionneurnom = request.POST['actionneur_identifiant']
-		actionneur = Actionneur.objects.get(user = request.user, nom = actionneurnom )
-		sendTrameToServer(actionneur.trame_on)
+		actionneur_id = request.POST['actionneur_identifiant']
+		actionneur = Actionneur.objects.get(user = request.user, id = actionneur_id )
+		try:
+			sendTrameToServer(actionneur.trame_on)
+		except:
+			pass
 		return HttpResponseRedirect('/home')	
 	else :
-		actionneur = Actionneur.objects.get(user = request.user, nom = actionneur_name)
+		actionneur = Actionneur.objects.get(user = request.user, id = actionneur_id)
 		context_dixt={'actionneur':actionneur}
 		return render_to_response('hexanhome/learning.html',context_dixt,context)
 
@@ -453,16 +462,23 @@ def AjoutActionneur(request):
 	if request.method =='POST':
 		piece_name = request.POST['nomPiece']
 		nomactionneur = request.POST['NomActionneur']
-		piece = Piece.objects.get(nom=piece_name, user = request.user)
-		actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
-		actionneur.save()
-		actionneur.identifiant = getFictiveButtonId(actionneur.id)
-		actionneur.trame_on = getTrameON(actionneur.identifiant)
-		actionneur.trame_off = getTrameOFF(actionneur.identifiant)
-		actionneur.save()
-		piece_name = piece_name.replace(' ', '_')
-		url = '/config/AjoutActionneur/learning/' + actionneur.nom
-		return HttpResponseRedirect(url)
+		try : 
+			piece = Piece.objects.get(nom=piece_name, user = request.user)
+			actionneur = Actionneur.objects.get(nom = nomactionneur,user=request.user, id_piece = piece)
+			context_dixt = {'erreurID':'Un actionneur avec cette ID existe deja'}
+			piece_list = Piece.objects.filter(user = request.user)
+			context_dixt['pieces']=piece_list
+			return render_to_response('hexanhome/AjoutActionneur.html',context_dixt,context)
+		except:
+			actionneur = Actionneur(nom = nomactionneur,user=request.user, id_piece = piece)
+			actionneur.save()
+			actionneur.identifiant = getFictiveButtonId(actionneur.id)
+			actionneur.trame_on = getTrameON(actionneur.identifiant)
+			actionneur.trame_off = getTrameOFF(actionneur.identifiant)
+			actionneur.save()
+			piece_name = piece_name.replace(' ', '_')
+			url = '/config/AjoutActionneur/learning/' + str(actionneur.id)
+			return HttpResponseRedirect(url)
 	else :
 		piece_list = Piece.objects.filter(user = request.user)
 		if piece_list:
