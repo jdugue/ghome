@@ -15,13 +15,11 @@ class HomeWatcher(object):
 		return now.weekday()
 
 	def getTemperature(self, idCapteur):
-		capteur = hexanhome.models.Capteur.objects.filter(identifiant=idCapteur)
-		print(capteur)
-		print(dir(capteur))
-		attributs = capteur.attr_capteur_set.all
+		capteur = hexanhome.models.Capteur.objects.get(identifiant=idCapteur)
+		attributs = capteur.attr_capteur_set.all()
 		for att in attributs:
-			if att.nom == 'temperature':
-				return att.valeur
+			if str(att.id_attr) == 'temperature':
+				return att.id_attr.valeur
 		return None
 		
 	def getWeatherCondition(self):
@@ -29,10 +27,10 @@ class HomeWatcher(object):
 		condition = wd.getCurrentWeatherData().weather_condition
 	
 	def getPresence(self, idCapteur):
-		capteur = hexanhome.models.Capteur.objects.filter(identifiant=idCapteur)
-		attributs = capteur.attr_capteur_set().all()
+		capteur = hexanhome.models.Capteur.objects.get(identifiant=idCapteur)	
+		attributs = capteur.attr_capteur_set.all()
 		for att in attributs:
-			if att.nom == 'presence':
-				return att.valeur
+			if str(att.id_attr) == 'presence':
+				return att.id_attr.valeur
 		return None
 

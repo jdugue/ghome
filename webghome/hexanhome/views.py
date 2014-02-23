@@ -420,17 +420,19 @@ def test_profiles(request):
 		email = request.POST.get('email', '')
 		password = request.POST.get('password', '')
 		user = authenticate(email=email, password=password)
-		print user
 		if user is not None:
 			start_new_thread(test_profiles_process,())
-			print 'test'
 	return HttpResponse('')
 
 def test_profiles_process():
 	profiles = RuleProfile.objects.all()
 	f = open('workfile.txt', 'w')
 	for profile in profiles:
-		f.write(profile.test_and_execute())
+		f.write(profile.nom + '\n')
+		if( profile.test_and_execute() ):
+			f.write('Ca a marche\n')
+		else:
+			f.write('ca a pas marche\n')
 	f.close()
 
 def learning(request,actionneur_name):
