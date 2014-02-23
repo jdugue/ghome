@@ -445,14 +445,6 @@ def login_client(request):
 	return HttpResponse('email: ' +email+' password: '+password + " inconnu")
 	#return HttpReponse(jsondata,mimetype='application/json')
 
-def get_client_ip(request):
-	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-	if x_forwarded_for:
-		ip = x_forwarded_for.split(',')[-1].strip()
-	else:
-		ip = request.META.get('REMOTE_ADDR')
-	return ip
-
 @csrf_exempt
 def test_profiles(request):
 	if request.method == 'POST':

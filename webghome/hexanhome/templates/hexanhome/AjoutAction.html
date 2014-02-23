@@ -1,0 +1,22 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		<h3 class="panel-title">Ajout d'une action</h3>
+	</div>
+	<div class="panel-body">
+  		<label>Action</label>
+  		</br>
+  		{% if listActionneur %}
+	  		<div>
+	  			<SELECT class="form-control" name="nomActionneur" id="nomActionneur"  size="1">
+	  			<h2>CC</h2>
+	  			{% for actionneur in listActionneur %}
+	  				<OPTION >{{actionneur.nom}}
+	  			{%endfor%}
+	  			</SELECT>
+  					<input type="radio" name="action" value="on"> Allumer
+					<input type="radio" name="action" value="off" checked> Eteindre
+	  		</div>	
+	  	{%endif%}	
+		<input type="submit" value="Entrer" name="AjouterAction" class="btn btn-default">
+	</div>
+</div>
