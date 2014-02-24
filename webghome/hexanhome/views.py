@@ -576,7 +576,7 @@ def learning(request,actionneur_id):
 		actionneur_id = request.POST['actionneur_identifiant']
 		actionneur = Actionneur.objects.get(user = request.user, id = actionneur_id )
 		try:
-			sendTrameToServer([actionneur.trame_on])
+			sendTrameToServer([actionneur.trame_off])
 		except:
 			pass
 		return HttpResponseRedirect('/home')	
