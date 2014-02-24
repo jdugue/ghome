@@ -2,7 +2,7 @@
 {% block title %}Learning {{actionneur.nom}}{% endblock %}
 {% block content %}
 <h3>Initialiser l'actionneur</h3>
-	<h4>Afin de configurer l'actionneur il faut appuyer sur le bouton learning de l'actionneur, puis appuyer sur le boutton envoie de trame  <h4>
+	<h4>Afin de configurer l'actionneur il faut appuyer sur le bouton learning de l'actionneur, puis appuyer sur le bouton envoie de trame  <h4>
 	<form id="category_form" method="post" action="/config/AjoutActionneur/learning/{{actionneur.id}}/">
         {% csrf_token %}
         <input type="hidden" name="actionneur_identifiant" value="{{actionneur.id}}">
