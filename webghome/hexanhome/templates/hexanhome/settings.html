@@ -73,10 +73,10 @@
 				</div>
 			{%endfor%}
 			{%if profil.weekdayrule_set.all  %}
-				<div class="col-xs-6 col-sm-4">
+				<div id="divJour"class="col-xs-6 col-sm-4">
 					<div class="panel panel-default">
 						<div class="panel-heading" name="PanelHeading">
-							<h3 class="panel-title"><i class="glyphicon glyphicon-remove "> </i> Jour</h3>
+							<h3 class="panel-title"><i onclick="supprimerJours('supprimerWeekRule');" class="glyphicon glyphicon-remove "> </i> Jour</h3>
 						</div>
 						<div class="panel-body">
 							<h3>Jour</h3>
@@ -195,6 +195,15 @@
 			$('#'+idrule).html('');
 		});
 	}
+	function supprimerJours(nombutton){
+		url = $(location).attr('href')
+		url2 = url.split('profil')[1]
+		url3 = '/profil' + url2
+		$.post(url,{csrfmiddlewaretoken: '{{ csrf_token }}',nombutton:nombutton},function(msg){
+			$('#divJour').html('');
+		});
+	}
+
 </script>
 
 {% endblock %}
