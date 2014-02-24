@@ -9,7 +9,7 @@ def getFictiveButtonId (id):
 	
 def getTrameON (id):
 	firstPart = 'A55A6B05'
-	dataBytes = '90000000'
+	dataBytes = '50000000'
 	idBytes = id
 	endPart = '30FF'
 	completeTrame = firstPart+dataBytes+idBytes+endPart

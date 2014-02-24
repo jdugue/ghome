@@ -562,6 +562,7 @@ def test_profiles(request):
 def test_profiles_process():
 	profiles = RuleProfile.objects.all()
 	f = open('workfile.txt', 'w')
+	f.write('test profiles')
 	for profile in profiles:
 		f.write(profile.nom + '\n')
 		if( profile.test_and_execute() ):
