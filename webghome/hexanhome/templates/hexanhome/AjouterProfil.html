@@ -3,9 +3,10 @@
 {% block content %}
 	{%if user.piece_set.all.count == 0 %}
 		<h2>Attention il faut creer des pieces</h2>
-	
-	{% elif listActionneur.count == '0' %}
+		<a  href="/config/AjoutPiece/" type="button" class="btn btn-default btn-lg">Ajouter Piece</a>
+	{% elif not listActionneur %}
 		<h2>Attention il faut creer des actionneur</h2>
+		<a  href="/config/AjoutActionneur/" type="button" class="btn btn-default btn-lg">Ajouter Actionneur</a>
 	{% else %}
 		<h1>Ajout d'un profil:</h1>
 		<form id="category_form" method="post" action="/profil/Ajouter_Profil/">

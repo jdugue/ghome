@@ -167,7 +167,7 @@ def threadSender (socket_rcv, socket_snd):
 			connection.send('NEXT')
 			while (data != 'END'):
 				printInAFile(data+'\n')
-				#socket_snd.send(data)
+				socket_snd.send(data)
 				data = connection.recv(28)
 				connection.send('NEXT')
 		connection.close()

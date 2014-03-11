@@ -30,7 +30,7 @@ class WeatherDownloader(object):
             print('Timeout exception')
         except requests.TooManyRedirects:
             print('TooManyRedirects exception')
-        parsed_data = WeatherData(None)
+        parsed_data = None
         return parsed_data
 
     def parse_weather_condition_id(self, weather_id):

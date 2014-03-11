@@ -98,6 +98,7 @@ def AjoutPiece(request):
 
 def register(request):
 	context = RequestContext(request)
+	logout(request)
 	if request.method == 'POST':
 		user_form = CustomUserCreationForm(data=request.POST)
 		if user_form.is_valid() :
@@ -236,16 +237,27 @@ def home(request):
 			for capteurvalue in capteur.attr_capteur_set.all():
 				capteurvalue.id_attr.delete()
 				capteurvalue.delete()
+			if capteur.capteurtype == 'D':
+				for rules in capteur.presencerule_set.all():
+					rules.profil.delete()
+					rules.delete()
+			if capteur.capteurtype == 'C':
+				for rules in capteur.temperaturerule_set.all():
+					rules.profil.delete()
+					rules.delete()
 			capteur.delete()
 			return HttpResponseRedirect('/home')
 		elif 'Supp_actionneur' in request.POST:
 			actionneur_id=request.POST['actionneur_identifiant']
 			actionneur = Actionneur.objects.get(identifiant = actionneur_id, user = request.user)
+			for rule in actionneur.ruleaction_set.all():
+				rule.profil.delete()
+				rule.delete()
 			actionneur.delete()
 			return HttpResponseRedirect('/home')
 		elif 'Actionner' in request.POST:
 			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id1'], user = request.user )
-			sendTrameToServer([actionneur.trame_on])		
+			sendTrameToServer([actionneur.trame_on])	
 			return HttpResponseRedirect('/home')
 		elif 'Eteindre' in request.POST:
 			actionneur = Actionneur.objects.get(id =request.POST['actionneur_id2'], user = request.user )
@@ -265,13 +277,17 @@ def settings(request,profil_name_url):
 	context = RequestContext(request)
 	profil_name = profil_name_url.replace('_',' ')
 	profil = RuleProfile.objects.get(user = request.user, nom = profil_name)
+	context_dixt={'profil' : profil}
 	if request.method == 'POST':
 		if'AjouterRegle' in request.POST:
-			AjouterRegle(request,profil)
-			profil_url = profil.nom.replace(' ','_')
-			url = '/profil/settings/' + profil_url
-			return HttpResponseRedirect(url)
-		if 'AjouterAction' in request.POST:
+			erreur = AjouterRegle(request,profil)
+			if erreur :
+				context_dixt['erreurID'] = erreur
+			else:
+				profil_url = profil.nom.replace(' ','_')
+				url = '/profil/settings/' + profil_url
+				return HttpResponseRedirect(url)
+		elif 'AjouterAction' in request.POST:
 			AjouterAction(request,profil)
 			profil_url = profil.nom.replace(' ','_')
 			url = '/profil/settings/' + profil_url
@@ -286,31 +302,33 @@ def settings(request,profil_name_url):
 				temperaturerule = TemperatureRule.objects.get( id = idrule)
 				temperaturerule.delete()
 			elif nombutton == 'supprimerPresenceRule':
-					idrule = request.POST['idrule']
-					presencerule = PresenceRule.objects.get( id = idrule)
-					presencerule.delete()
+				idrule = request.POST['idrule']
+				presencerule = PresenceRule.objects.get( id = idrule)
+				presencerule.delete()
 			elif nombutton == 'supprimerTimeRule':
-					idrule = request.POST['idrule']
-					timerule = TimeRule.objects.get( id = idrule)
-					timerule.delete()
+				idrule = request.POST['idrule']
+				timerule = TimeRule.objects.get( id = idrule)
+				timerule.delete()
 			elif nombutton == 'supprimerWeatherRule':
-					idrule = request.POST['idrule']
-					weatherrule = WeatherRule.objects.get( id = idrule)
-					weatherrule.delete()
+				idrule = request.POST['idrule']
+				weatherrule = WeatherRule.objects.get( id = idrule)
+				weatherrule.delete()
+			elif nombutton == 'supprimerWeekRule':
+				weekday = WeekdayRule.objects.filter(profil = profil)
+				for rules in weekday:
+					rules.delete()
 			elif nombutton == 'supprimerAction':
-					idrule = request.POST['idrule']
-					actionrule = RuleAction.objects.get( id = idrule)
-					actionrule.delete()
-
-			context_dixt={'profil' : profil}
-			listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
-			listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
-			listActionneur = Actionneur.objects.filter(user = request.user)
-			context_dixt['listCapteurTemperature']=listcapteurTemperature
-			context_dixt['listActionneur'] = listActionneur
-			context_dixt['listCapteurPresence'] = listcapteurPresence
-			context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
-			return render_to_response('hexanhome/settings.html',context_dixt,context)				
+				idrule = request.POST['idrule']
+				actionrule = RuleAction.objects.get( id = idrule)
+				actionrule.delete()
+		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
+		listcapteurPresence = Capteur.objects.filter(user = request.user,capteurtype = 'D')
+		listActionneur = Actionneur.objects.filter(user = request.user)
+		context_dixt['listCapteurTemperature']=listcapteurTemperature
+		context_dixt['listActionneur'] = listActionneur
+		context_dixt['listCapteurPresence'] = listcapteurPresence
+		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
+		return render_to_response('hexanhome/settings.html',context_dixt,context)				
 	else:
 		context_dixt={'profil' : profil}
 		listcapteurTemperature = Capteur.objects.filter(user = request.user,capteurtype = 'C')
@@ -321,72 +339,109 @@ def settings(request,profil_name_url):
 		context_dixt['listCapteurPresence'] = listcapteurPresence
 		context_dixt['Jourcapteur_Action'] =  WeekdayRule.Jour_CHOICES
 		return render_to_response('hexanhome/settings.html',context_dixt,context)
-		
+
 @login_required(login_url='/login/')
 def AjouterRegle(request, profil):
 	nomDeclencheur = request.POST['nomDeclencheur']
 	if nomDeclencheur == "Temperature" : 
 		capteurname = request.POST['nomCapteurTemperature']
+		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 		temperatureValue = request.POST['temperatureValue']
+		if temperatureValue == '':
+			return 'Une valeur de temperature doit être donnée'
 		try:
 			minimum = request.POST['minimum']
-			minimum='True'
+			minimum=True
 		except:
-			minimum= 'False'
-		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
-		rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
-		rule.save() 
+			minimum= False
+		try:
+			temperaturerule = TemperatureRule.objects.get(profil = profil,idCapteur = capteur)
+			if(temperaturerule.temperatureValue != temperatureValue):
+				temperaturerule.temperatureValue = temperatureValue
+			if(temperaturerule.isMinimum != minimum):
+				temperaturerule.isMinimum = minimum
+			temperaturerule.save()
+		except:
+			rule = TemperatureRule(profil = profil ,idCapteur = capteur, temperatureValue = temperatureValue, isMinimum = minimum )
+			rule.save() 
 	elif nomDeclencheur == "Presence" : 
 		capteurname = request.POST['nomCapteurPresence']
 		capteur = Capteur.objects.get(user = request.user, nom = capteurname)
 		try:
-			present = request.POST['present']
-			present='True'
+			present = request.POST['isPresent']
+			present=True
 		except:
-			present= 'False'
-		presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
-		presencerule.save()
+			present= False
+		try:
+			presencerule = PresenceRule.objects.get(profil = profil,idCapteur =capteur)
+			if presencerule.isPresent != present:
+				presencerule.isPresent = present
+				presencerule.save()
+		except:
+			presencerule = PresenceRule(profil = profil ,isPresent = present,idCapteur =capteur )
+			presencerule.save()
 	elif nomDeclencheur == "Jours":
 		try: 
 			weekday = request.POST['lundi']
-			jourregle = WeekdayRule(profil = profil, weekday = 0)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 0)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 0)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['mardi']
-			jourregle = WeekdayRule(profil = profil, weekday = 1)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 1)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 1)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['mercredi']
-			jourregle = WeekdayRule(profil = profil, weekday = 2)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 2)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 2)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['jeudi']
-			jourregle = WeekdayRule(profil = profil, weekday = 3)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 3)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 3)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['vendredi']
-			jourregle = WeekdayRule(profil = profil, weekday = 4)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 4)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 4)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['samedi']
-			jourregle = WeekdayRule(profil = profil, weekday = 5)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 5)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 5)
+				jourregle.save()
 		except:
 			pass
 		try:
 			weekday = request.POST['dimanche']
-			jourregle = WeekdayRule(profil = profil, weekday = 6)
-			jourregle.save()
+			try:
+				jourregle = WeekdayRule.objects.get(profil = profil, weekday = 6)
+			except:
+				jourregle = WeekdayRule(profil = profil, weekday = 6)
+				jourregle.save()
 		except:
 			pass
 	elif nomDeclencheur == "Heure":
@@ -426,7 +481,7 @@ def AjouterRegle(request, profil):
 		except:
 			pass
 	
-
+@login_required(login_url='/login/')
 def AjouterAction(request,profil):
 	actionneurname = request.POST['nomActionneur']	
 	action = request.POST['action']
@@ -439,7 +494,7 @@ def AjouterAction(request,profil):
 	except:
 		ruleAction = RuleAction(action = action , profil= profil, actionneur= actionneur )
 		ruleAction.save()	
-
+@login_required(login_url='/login/')
 def AjouterProfil(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
@@ -507,6 +562,7 @@ def test_profiles(request):
 def test_profiles_process():
 	profiles = RuleProfile.objects.all()
 	f = open('workfile.txt', 'w')
+	f.write('test profiles')
 	for profile in profiles:
 		f.write(profile.nom + '\n')
 		if( profile.test_and_execute() ):
@@ -514,14 +570,14 @@ def test_profiles_process():
 		else:
 			f.write('ca a pas marche\n')
 	f.close()
-
+@login_required(login_url='/login/')
 def learning(request,actionneur_id):
 	context = RequestContext(request)
 	if request.method =='POST':
 		actionneur_id = request.POST['actionneur_identifiant']
 		actionneur = Actionneur.objects.get(user = request.user, id = actionneur_id )
 		try:
-			sendTrameToServer([actionneur.trame_on])
+			sendTrameToServer([actionneur.trame_off])
 		except:
 			pass
 		return HttpResponseRedirect('/home')	
